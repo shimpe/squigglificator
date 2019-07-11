@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import QGraphicsView
 
+
 class MyGraphicsView(QGraphicsView):
 
-    def __init__ (self, parent=None):
-        super(MyGraphicsView, self).__init__ (parent)
+    def __init__(self, parent=None):
+        super(MyGraphicsView, self).__init__(parent)
 
     def wheelEvent(self, event):
         # Zoom Factor
@@ -31,4 +32,4 @@ class MyGraphicsView(QGraphicsView):
         delta = newPos - oldPos
         self.translate(delta.x(), delta.y())
 
-        event.accept();
+        event.accept()

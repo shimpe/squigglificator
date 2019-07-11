@@ -5,10 +5,12 @@ from math import pi, floor, sin, fabs
 from utils import frange
 from mapping import Mapping
 
+
 class SquigglifyTab(object):
     def __init__(self, parent=None, itemsPerLayer=None):
         self.parent = parent
         self.itemsPerLayer = itemsPerLayer
+        self.localBitmap = None
 
     def setupSlots(self):
         self.parent.squigglify.clicked.connect(self.Squigglify)
@@ -41,7 +43,7 @@ class SquigglifyTab(object):
     def toBlackAndWhite(self, image):
         newImage = QImage(image)
         for ii in range(newImage.width()):
-            for jj  in range(newImage.height()):
+            for jj in range(newImage.height()):
                 gray = qGray(newImage.pixel(ii, jj))
                 newImage.setPixel(ii, jj, QColor(gray, gray, gray).rgb())
 
@@ -79,19 +81,19 @@ class SquigglifyTab(object):
                 prevY = y
                 while x < width:
                     disturbance_direction = -disturbance_direction
-                    grayvalue = 255-qGray(image.pixel(x,y))
+                    grayvalue = 255 - qGray(image.pixel(x, y))
                     if invertColors:
-                        grayvalue = 255-grayvalue
+                        grayvalue = 255 - grayvalue
                     stepSize = Mapping.linexp(grayvalue, 0, 255, maxStepSize, minStepSize)
-                    stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10/detail)
+                    stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10 / detail)
                     amplitudeSize = Mapping.linlin(grayvalue, 0, 255, 0, amplitude)
                     if x == 0:
                         path = QPainterPath()
                         path.moveTo(x, y)
                     x = prevX + stepSize
-                    newY = prevY + amplitudeSize*disturbance_direction
-                    if ((255-grayvalue) < maxBrightness and (255-grayvalue) > minBrightness):
-                        path.quadTo((prevX + x)/2, newY, x, prevY)
+                    newY = prevY + amplitudeSize * disturbance_direction
+                    if maxBrightness > (255 - grayvalue) > minBrightness:
+                        path.quadTo((prevX + x) / 2, newY, x, prevY)
                     else:
                         path.moveTo(x, prevY)
                     if x >= width:
@@ -117,19 +119,19 @@ class SquigglifyTab(object):
                 prevY = 0
                 while y < height:
                     disturbance_direction = -disturbance_direction
-                    grayvalue = 255-qGray(image.pixel(x,y))
+                    grayvalue = 255 - qGray(image.pixel(x, y))
                     if invertColors:
-                        grayvalue = 255-grayvalue
+                        grayvalue = 255 - grayvalue
                     stepSize = Mapping.linexp(grayvalue, 0, 255, maxStepSize, minStepSize)
-                    stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10/detail)
+                    stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10 / detail)
                     amplitudeSize = Mapping.linlin(grayvalue, 0, 255, 0, amplitude)
                     if y == 0:
                         path = QPainterPath()
-                        path.moveTo(   x, y)
+                        path.moveTo(x, y)
                     y = prevY + stepSize
-                    newX = prevX + amplitudeSize*disturbance_direction
-                    if ((255-grayvalue) < maxBrightness and (255-grayvalue) > minBrightness):
-                        path.quadTo(newX, (prevY+y)/2, prevX, y)
+                    newX = prevX + amplitudeSize * disturbance_direction
+                    if maxBrightness > (255 - grayvalue) > minBrightness:
+                        path.quadTo(newX, (prevY + y) / 2, prevX, y)
                     else:
                         path.moveTo(x, prevY)
                     if y >= height:
