@@ -34,12 +34,31 @@ class MyMainWindow(Ui_MainWindow):
         self.actionZoom_In.triggered.connect(self.ActionZoom_In)
         self.actionZoom_to.triggered.connect(self.ActionZoom_to)
         self.actionZoom_Out.triggered.connect(self.ActionZoom_Out)
+
+        self.actionLoad_Bitmap.triggered.connect(self.LoadBitmap)
+        self.actionExport_SVG.triggered.connect(self.ExportSVG)
+        self.actionShow_toolbar.triggered.connect(self.ShowToolbar)
+        self.actionQuit.triggered.connect(self.OnQuit)
+        self.actionQuit_2.triggered.connect(self.OnQuit)
+        self.actionShow_layers.triggered.connect(self.ShowLayers)
+        self.actionExport_SVG_one_file_per_layer.triggered.connect(self.ExportSVGPerLayer)
+
         self.addLayer.clicked.connect(self.AddLayer)
         self.removeLayer.clicked.connect(self.RemoveSelected)
         self.layersModel.itemChanged.connect(self.LayerChanged)
         self.exportSvg.clicked.connect(self.ExportSVG)
         self.exportSvgPerLayer.clicked.connect(self.ExportSVGPerLayer)
         self.squigglifyTabHandler.setupSlots()
+
+    def ShowToolbar(self):
+        self.toolBar.setVisible(True)
+
+    def ShowLayers(self):
+        self.layers.setVisible(True)
+
+    def OnQuit(self):
+        import sys
+        sys.exit()
 
     def LoadBitmap(self):
         if self.homeFolder is None:

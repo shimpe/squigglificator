@@ -319,6 +319,76 @@
           <number>255</number>
          </property>
         </widget>
+        <widget class="QSpinBox" name="minStepSize">
+         <property name="geometry">
+          <rect>
+           <x>480</x>
+           <y>90</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_4">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>100</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Min Stepsize</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_5">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>140</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max Stepsize</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxStepSize">
+         <property name="geometry">
+          <rect>
+           <x>480</x>
+           <y>130</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
        </widget>
       </widget>
      </widget>
@@ -338,8 +408,9 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoad_Image"/>
+    <addaction name="actionLoad_Bitmap"/>
     <addaction name="actionExport_SVG"/>
+    <addaction name="actionExport_SVG_one_file_per_layer"/>
     <addaction name="separator"/>
     <addaction name="actionQuit_2"/>
    </widget>
@@ -460,14 +531,14 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionLoad_Image">
+  <action name="actionLoad_Bitmap">
    <property name="text">
-    <string>Load Image</string>
+    <string>Load Bitmap</string>
    </property>
   </action>
   <action name="actionExport_SVG">
    <property name="text">
-    <string>Export SVG</string>
+    <string>Export SVG all layers</string>
    </property>
   </action>
   <action name="actionShow_toolbar">
@@ -503,6 +574,11 @@
   <action name="actionShow_layers">
    <property name="text">
     <string>Show layers</string>
+   </property>
+  </action>
+  <action name="actionExport_SVG_one_file_per_layer">
+   <property name="text">
+    <string>Export SVG one file per layer</string>
    </property>
   </action>
  </widget>

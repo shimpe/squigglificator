@@ -23,6 +23,8 @@ class SquigglifyTab(object):
         self.parent.lineWidth.valueChanged.connect(self.Squigglify)
         self.parent.maxBrightness.valueChanged.connect(self.Squigglify)
         self.parent.minBrightness.valueChanged.connect(self.Squigglify)
+        self.parent.minStepSize.valueChanged.connect(self.Squigglify)
+        self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
 
     def Squigglify(self):
         self.localBitmap = self.parent.bitmap.copy()
@@ -39,6 +41,8 @@ class SquigglifyTab(object):
         self.parent.minBrightness.setValue(0)
         layerId = self.parent.layersList.currentIndex()
         self.parent.layersModel.itemFromIndex(layerId).setCheckState(Qt.Checked)
+        self.parent.minStepSize.setValue(1)
+        self.parent.maxStepSize.setValue(10)
 
     def toBlackAndWhite(self, image):
         newImage = QImage(image)
@@ -74,8 +78,8 @@ class SquigglifyTab(object):
                 if fabs(y - height) < 1e-3 or y >= height:
                     finalRow = True
                 x = 0
-                minStepSize = 1
-                maxStepSize = 10
+                minStepSize = self.parent.minStepSize.value()
+                maxStepSize = self.parent.maxStepSize.value()
                 disturbance_direction = -1
                 prevX = 0
                 prevY = y
