@@ -2,6 +2,8 @@ class LSystemInterpreter(object):
     def __init__(self, lsystem=None, actions=None, globalstate=None):
         self.lsystem = lsystem
         self.actions = actions
+        if actions is None:
+            self.actions = {}
         self.globalstate = globalstate
 
     def set_lsystem(self, lsystem):
@@ -31,7 +33,7 @@ class LSystemInterpreter(object):
         str = self.lsystem.get_calculated_string()
         st = str[i] if len(str) > i else ""
         if not self.lsystem.has_constant(st):
-            action = self.lsystem.get_action(st)
+            action = self.get_action(st)
             if action:
                 gs = self.get_globalstate()
                 if gs:
@@ -44,4 +46,4 @@ class LSystemInterpreter(object):
             self.step(i)
 
     def run(self):
-        return self.stepRange(0, self.lsystem.size())
+        return self.stepRange(0, self.lsystem.length())

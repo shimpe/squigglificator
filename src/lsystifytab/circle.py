@@ -1,4 +1,4 @@
-from ..utils import dist
+from utils import dist
 
 
 class Circle(object):

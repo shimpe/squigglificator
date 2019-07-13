@@ -49,6 +49,18 @@ class LSystem(object):
     def get_rules(self):
         return self.rules
 
+    def set_rules(self, rules):
+        if rules != self.rules:
+            self.rules = rules
+            self.cache_valid = False
+
+    def set_constants(self, constants):
+        if self.constants != constants:
+            self.constants = set()
+            for c in constants:
+                self.add_constant(c)
+            self.cache_valid = False
+
     def add_constant(self, constant):
         if constant not in self.constants:
             self.constants.add(constant)
@@ -78,8 +90,8 @@ class LSystem(object):
                         # match!
                         newstring = newstring + self.rules[lhs]
                         rule_found = True
-            if not rule_found:
-                newstring = newstring + c
+                if not rule_found:
+                    newstring = newstring + c
             self.calculated_string = newstring
         self.cache_valid = True
         return self.calculated_string
