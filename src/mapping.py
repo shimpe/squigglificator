@@ -43,7 +43,7 @@ class Mapping(object):
             return None
 
         output = ((out_min + out_max) + (out_max - out_min) * (
-            (2 * value - (in_min + in_max)) / float(in_max - in_min))) / 2.0
+                (2 * value - (in_min + in_max)) / float(in_max - in_min))) / 2.0
         if clip:
             output = Mapping.clip_value(output, out_min, out_max)
         return output

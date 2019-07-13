@@ -1,10 +1,12 @@
-from PyQt5.QtGui import qGray, QColor, QImage, QPainterPath, QPen
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup,QMessageBox
+from math import fabs
+
 from PyQt5.QtCore import Qt, QPersistentModelIndex
-from math import pi, floor, sin, fabs
-from utils import frange
+from PyQt5.QtGui import qGray, QPainterPath, QPen
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 from mapping import Mapping
 from tab import Tab
+from utils import frange
+
 
 class SquigglifyTab(Tab):
     def __init__(self, parent=None, itemsPerLayer=None):
@@ -12,24 +14,21 @@ class SquigglifyTab(Tab):
         self.localBitmap = None
 
     def setupSlots(self):
-        self.parent.squigglify.clicked.connect(self.Squigglify)
+        self.parent.squigglify.clicked.connect(self.process)
         self.parent.setDefaults.clicked.connect(self.SetDefaults)
-        self.parent.noOfLines.valueChanged.connect(self.Squigglify)
-        self.parent.invertColors.stateChanged.connect(self.Squigglify)
-        self.parent.verticalSquiggles.stateChanged.connect(self.Squigglify)
-        self.parent.strength.valueChanged.connect(self.Squigglify)
-        self.parent.detail.valueChanged.connect(self.Squigglify)
-        self.parent.lineWidth.valueChanged.connect(self.Squigglify)
-        self.parent.maxBrightness.valueChanged.connect(self.Squigglify)
-        self.parent.minBrightness.valueChanged.connect(self.Squigglify)
-        self.parent.minStepSize.valueChanged.connect(self.Squigglify)
-        self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
+        # self.parent.noOfLines.valueChanged.connect(self.Squigglify)
+        # self.parent.invertColors.stateChanged.connect(self.Squigglify)
+        # self.parent.verticalSquiggles.stateChanged.connect(self.Squigglify)
+        # self.parent.strength.valueChanged.connect(self.Squigglify)
+        # self.parent.detail.valueChanged.connect(self.Squigglify)
+        # self.parent.lineWidth.valueChanged.connect(self.Squigglify)
+        # self.parent.maxBrightness.valueChanged.connect(self.Squigglify)
+        # self.parent.minBrightness.valueChanged.connect(self.Squigglify)
+        # self.parent.minStepSize.valueChanged.connect(self.Squigglify)
+        # self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
 
-    def Squigglify(self):
-        if self.parent.bitmap is None:
-            msgBox = QMessageBox()
-            msgBox.setText("Please load bitmap first.")
-            msgBox.exec()
+    def process(self):
+        if not self.checkBitmapLoaded():
             return
         self.localBitmap = self.parent.bitmap.copy()
         self.makeSquiggles(self.toBlackAndWhite(self.localBitmap))

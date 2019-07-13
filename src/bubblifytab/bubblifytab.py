@@ -1,11 +1,11 @@
 from random import random
 
+import numpy as np
 from PyQt5.QtCore import QPersistentModelIndex, Qt
 from PyQt5.QtGui import qGray, QPen
-from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItemGroup, QMessageBox
+from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItemGroup
 from mapping import Mapping
 from scipy import spatial
-import numpy as np
 from tab import Tab
 
 
@@ -16,7 +16,7 @@ class BubblifyTab(Tab):
 
     def setupSlots(self):
         self.parent.progressBarBubblify.setVisible(False)
-        self.parent.bubblify.clicked.connect(self.Bubblify)
+        self.parent.bubblify.clicked.connect(self.process)
         self.parent.setDefaultsBubblify.clicked.connect(self.SetDefaults)
 
     def SetDefaults(self):
@@ -29,13 +29,9 @@ class BubblifyTab(Tab):
         maxProbablity = self.parent.maxProbabilityBubblify.value(20)
         radiustolerance = self.parent.radiusToleranceBubblify.value(0.4)
 
-    def Bubblify(self):
-        if self.parent.bitmap is None:
-            msgBox = QMessageBox()
-            msgBox.setText("Please load bitmap first")
-            msgBox.exec()
+    def process(self):
+        if not self.checkBitmapLoaded():
             return
-
         self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
         self.makeBubbles(self.localBitmap)
 
@@ -48,9 +44,9 @@ class BubblifyTab(Tab):
         minCircleRadius = self.parent.minRadiusBubblify.value()
         maxCircleRadius = self.parent.maxRadiusBubblify.value()
         invertColors = self.parent.invertColorsBubblify.checkState() == Qt.Checked
-        minProbability= self.parent.minProbabilityBubblify.value()
-        maxProbablity= self.parent.maxProbabilityBubblify.value()
-        radiustolerance=self.parent.radiusToleranceBubblify.value()
+        minProbability = self.parent.minProbabilityBubblify.value()
+        maxProbablity = self.parent.maxProbabilityBubblify.value()
+        radiustolerance = self.parent.radiusToleranceBubblify.value()
         strokeWidth = 1
 
         # remove existing data on this layer
@@ -68,10 +64,10 @@ class BubblifyTab(Tab):
             for y in range(image.height()):
                 grayvalue = qGray(image.pixel(x, y))
                 if minBrightness < grayvalue < maxBrightness:
-                    probability = Mapping.linexp(grayvalue, 0, 255, maxProbablity/100, minProbability/100)
+                    probability = Mapping.linexp(grayvalue, 0, 255, maxProbablity / 100, minProbability / 100)
                     addNow = random() < probability
                     if addNow:
-                        spots.append([x,y])
+                        spots.append([x, y])
 
         print("Optimizing {0} points".format(len(spots)))
         # next find out radii we can use that avoid overlap
@@ -82,17 +78,18 @@ class BubblifyTab(Tab):
                 x = center[0]
                 y = center[1]
                 grayvalue = qGray(image.pixel(x, y))
-                proposed_radius = Mapping.linexp(grayvalue, minBrightness, maxBrightness, minCircleRadius, maxCircleRadius)
-                nearest_neighbor = tree.query(np.array([[x,y]]), 2)
-                #print("{0} nearest to {1}".format(nearest_neighbor, [x,y]))
+                proposed_radius = Mapping.linexp(grayvalue, minBrightness, maxBrightness, minCircleRadius,
+                                                 maxCircleRadius)
+                nearest_neighbor = tree.query(np.array([[x, y]]), 2)
+                # print("{0} nearest to {1}".format(nearest_neighbor, [x,y]))
                 if nearest_neighbor:
                     try:
                         distance = nearest_neighbor[0][0][1]
                         maxradius = np.floor(distance / 2)
                         minimum = min(proposed_radius, maxradius)
-                        #print("Using minimum of proposed {0} and max {1}".format(proposed_radius, maxradius))
-                        if minimum >= proposed_radius*radiustolerance:
-                            circles.append((x,y,minimum))
+                        # print("Using minimum of proposed {0} and max {1}".format(proposed_radius, maxradius))
+                        if minimum >= proposed_radius * radiustolerance:
+                            circles.append((x, y, minimum))
                     except:
                         print("weird nearest neighbor: ", nearest_neighbor)
 
@@ -103,7 +100,7 @@ class BubblifyTab(Tab):
                 x = c[0]
                 y = c[1]
                 r = c[2]
-                item = QGraphicsEllipseItem(x - r, y - r, r*2, r*2)
+                item = QGraphicsEllipseItem(x - r, y - r, r * 2, r * 2)
                 pen = QPen()
                 pen.setWidth(strokeWidth)
                 item.setPen(pen)

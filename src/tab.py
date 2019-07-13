@@ -1,4 +1,6 @@
 from PyQt5.QtGui import qGray, QColor, QImage
+from PyQt5.QtWidgets import QMessageBox
+
 
 class Tab(object):
     def __init__(self, parent=None, itemsPerLayer=None):
@@ -13,3 +15,11 @@ class Tab(object):
                 newImage.setPixel(ii, jj, QColor(gray, gray, gray).rgb())
 
         return newImage
+
+    def checkBitmapLoaded(self):
+        if self.parent.bitmap is None:
+            msgBox = QMessageBox()
+            msgBox.setText("Please load bitmap first.")
+            msgBox.exec()
+            return False
+        return True
