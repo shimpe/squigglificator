@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1061</width>
-    <height>836</height>
+    <height>816</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,13 +44,13 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>200</height>
+         <height>250</height>
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
-       <widget class="QWidget" name="tab">
+       <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
          <string>Squigglify Setup</string>
         </attribute>
@@ -387,6 +387,314 @@
          </property>
          <property name="value">
           <number>10</number>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="bubblifySetupTab">
+        <attribute name="title">
+         <string>Bubblify Setup</string>
+        </attribute>
+        <widget class="QToolButton" name="bubblify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>160</y>
+           <width>181</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Bubblify on selected layer</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="setDefaultsBubblify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>88</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Defaults</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_6">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>60</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max Brightness</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxBrightnessBubblify">
+         <property name="geometry">
+          <rect>
+           <x>480</x>
+           <y>50</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>255</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="minBrightnessBubblifyLbl">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>20</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Min Brightness</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="minBrightnessBubblify">
+         <property name="geometry">
+          <rect>
+           <x>480</x>
+           <y>10</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_8">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>60</y>
+           <width>81</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max radius</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="minRadiusBubblify">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>10</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxRadiusBubblify">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>50</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_9">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>20</y>
+           <width>71</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Min radius</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="invertColorsBubblify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>111</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Invert Colors</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_10">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>60</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max Probability</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_11">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>20</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Min Probability</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_12">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>90</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Radius tolerance</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="minProbabilityBubblify">
+         <property name="geometry">
+          <rect>
+           <x>290</x>
+           <y>10</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="maxProbabilityBubblify">
+         <property name="geometry">
+          <rect>
+           <x>290</x>
+           <y>50</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>20.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="radiusToleranceBubblify">
+         <property name="geometry">
+          <rect>
+           <x>290</x>
+           <y>90</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.400000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="progressBarBubblify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>200</y>
+           <width>561</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Please wait while calculation is running... this may take a while!</string>
          </property>
         </widget>
        </widget>

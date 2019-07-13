@@ -1,15 +1,14 @@
 from PyQt5.QtGui import qGray, QColor, QImage, QPainterPath, QPen
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup,QMessageBox
 from PyQt5.QtCore import Qt, QPersistentModelIndex
 from math import pi, floor, sin, fabs
 from utils import frange
 from mapping import Mapping
+from tab import Tab
 
-
-class SquigglifyTab(object):
+class SquigglifyTab(Tab):
     def __init__(self, parent=None, itemsPerLayer=None):
-        self.parent = parent
-        self.itemsPerLayer = itemsPerLayer
+        super().__init__(parent, itemsPerLayer)
         self.localBitmap = None
 
     def setupSlots(self):
@@ -27,8 +26,13 @@ class SquigglifyTab(object):
         self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
 
     def Squigglify(self):
+        if self.parent.bitmap is None:
+            msgBox = QMessageBox()
+            msgBox.setText("Please load bitmap first.")
+            msgBox.exec()
+            return
         self.localBitmap = self.parent.bitmap.copy()
-        self.makeSquiggles(self.localBitmap)
+        self.makeSquiggles(self.toBlackAndWhite(self.localBitmap))
 
     def SetDefaults(self):
         self.parent.noOfLines.setValue(200)
@@ -43,15 +47,6 @@ class SquigglifyTab(object):
         self.parent.layersModel.itemFromIndex(layerId).setCheckState(Qt.Checked)
         self.parent.minStepSize.setValue(1)
         self.parent.maxStepSize.setValue(10)
-
-    def toBlackAndWhite(self, image):
-        newImage = QImage(image)
-        for ii in range(newImage.width()):
-            for jj in range(newImage.height()):
-                gray = qGray(newImage.pixel(ii, jj))
-                newImage.setPixel(ii, jj, QColor(gray, gray, gray).rgb())
-
-        return newImage
 
     def makeSquiggles(self, image):
         noOfLines = self.parent.noOfLines.value()

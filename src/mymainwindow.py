@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QGraphicsPixmapItem, QG
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem, QBrush, QPainter
 from PyQt5.QtCore import Qt, QModelIndex, QPersistentModelIndex, QRect, QRectF
 from PyQt5.QtSvg import QSvgGenerator
-from squigglifytab import SquigglifyTab
+from squigglifytab.squigglifytab import SquigglifyTab
+from bubblifytab.bubblifytab import BubblifyTab
 
 
 class MyMainWindow(Ui_MainWindow):
@@ -27,6 +28,7 @@ class MyMainWindow(Ui_MainWindow):
         self.generated = {}
         self.itemsPerLayer = {}
         self.squigglifyTabHandler = SquigglifyTab(self, self.itemsPerLayer)
+        self.bubblifyTabHandler = BubblifyTab(self, self.itemsPerLayer)
 
     def setupSlots(self):
         self.loadBitmap.clicked.connect(self.LoadBitmap)
@@ -49,6 +51,7 @@ class MyMainWindow(Ui_MainWindow):
         self.exportSvg.clicked.connect(self.ExportSVG)
         self.exportSvgPerLayer.clicked.connect(self.ExportSVGPerLayer)
         self.squigglifyTabHandler.setupSlots()
+        self.bubblifyTabHandler.setupSlots()
 
     def ShowToolbar(self):
         self.toolBar.setVisible(True)
