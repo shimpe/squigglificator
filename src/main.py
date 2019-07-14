@@ -6,7 +6,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = MyMainWindow()
+    ui = MyMainWindow(app)
     ui.setupUi(MainWindow)
     ui.finishSetupUi()
     ui.setupSlots()

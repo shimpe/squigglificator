@@ -12,8 +12,9 @@ from lsystifytab.lsystifytab import LSystifyTab
 
 class MyMainWindow(Ui_MainWindow):
 
-    def __init__(self):
+    def __init__(self, application):
         super().__init__()
+        self.application = application
 
     def finishSetupUi(self):
         self.scene = QGraphicsScene()
