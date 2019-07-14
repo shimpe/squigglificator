@@ -119,6 +119,7 @@ class MyMainWindow(Ui_MainWindow):
             self.layersModel.removeRow(i.row())
         if self.layersModel.rowCount() == 0:
             self.AddLayer()
+            self.layersList.setCurrentIndex(self.layersModel.index(0,0))
 
     def ToggleBitmap(self):
         if self.bitmapVisibility:
