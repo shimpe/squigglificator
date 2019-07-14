@@ -1,4 +1,5 @@
 import numpy as np
+from circle import Circle
 from PyQt5.QtGui import QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsItemGroup, QGraphicsPathItem
 
@@ -40,7 +41,11 @@ class SquiggleMethod(object):
             ortho_dir = np.array([[-diry], [dirx]]) * self.disturbance_direction
             disturbance = ortho_dir * amplitudeSize
             disturbedPos = (self.prevPos + newPos) / 2 + disturbance
-            self.path.quadTo(disturbedPos[0][0], disturbedPos[1][0], newPos[0][0], newPos[1][0])
+            if not self.clipToBitmap or (
+                    self.clipToBitmap and not Circle(x, y, amplitudeSize).edges(self.width, self.height)):
+                self.path.quadTo(disturbedPos[0][0], disturbedPos[1][0], newPos[0][0], newPos[1][0])
+            else:
+                self.path.moveTo(newPos[0][0], newPos[1][0])
             self.prevPos = newPos
         self.disturbance_direction = -self.disturbance_direction
         return max(int(stepSize), 1)
@@ -60,4 +65,5 @@ class SquiggleMethod(object):
         pen.setWidth(self.strokeWidth)
         item.setPen(pen)
         self.group.addToGroup(item)
+        self.prevPos = None
         return self.group
