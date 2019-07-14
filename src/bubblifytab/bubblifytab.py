@@ -50,11 +50,7 @@ class BubblifyTab(Tab):
         strokeWidth = 1
 
         # remove existing data on this layer
-        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
-        if layerId not in self.itemsPerLayer:
-            self.itemsPerLayer[layerId] = None
-        if self.itemsPerLayer[layerId] is not None:
-            self.parent.scene.removeItem(self.itemsPerLayer[layerId])
+        self.removeOldGraphicsItems()
 
         # first add seeding points
         print("Seeding points")
@@ -105,8 +101,6 @@ class BubblifyTab(Tab):
                 pen.setWidth(strokeWidth)
                 item.setPen(pen)
                 group.addToGroup(item)
-            self.parent.scene.addItem(group)
-            layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
-            self.itemsPerLayer[layerId] = group
+            self.addNewGraphicsItems(group)
 
             self.parent.progressBarBubblify.setVisible(False)

@@ -1,5 +1,6 @@
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QPersistentModelIndex
 
 
 class Tab(object):
@@ -23,3 +24,15 @@ class Tab(object):
             msgBox.exec()
             return False
         return True
+
+    def removeOldGraphicsItems(self):
+        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
+        if layerId not in self.itemsPerLayer:
+            self.itemsPerLayer[layerId] = None
+        if self.itemsPerLayer[layerId] is not None:
+            self.parent.scene.removeItem(self.itemsPerLayer[layerId])
+
+    def addNewGraphicsItems(self, group):
+        self.parent.scene.addItem(group)
+        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
+        self.itemsPerLayer[layerId] = group

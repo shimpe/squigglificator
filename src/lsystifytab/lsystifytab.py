@@ -4,11 +4,11 @@ from tab import Tab
 import numpy as np
 from PyQt5.QtCore import Qt, QPersistentModelIndex
 from PyQt5.QtGui import qGray, QPainterPath, QPen
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 import re
-from mapping import Mapping
 from skimage.draw import line
-from circle import Circle
+from circlemethod import CircleMethod
+from squigglemethod import SquiggleMethod
 
 def rotmatrix(theta):
     c, s = np.cos(theta), np.sin(theta)
@@ -48,7 +48,7 @@ class LSystifyTab(Tab):
     def OnPreset(self, text):
         if text == "Hilbert":
             self.parent.iterationsLSystify.setValue(6)
-            self.parent.axiomLSystify.setText("L")
+            self.parent.axiomLSystify.setText("R")
             self.parent.rulesLSystify.setText("L = +RF-LFL-FR+; R = -LF+RFR+FL-")
             self.parent.constantsLSystify.setText("L; R")
             self.parent.invertColorsLSystify.setCheckState(Qt.Unchecked)
@@ -56,7 +56,7 @@ class LSystifyTab(Tab):
             self.parent.minAngleLSystify.setValue(-90)
             self.parent.plusAngleLSystify.setValue(90)
         elif text == "Hilbert II":
-            self.parent.iterationsLSystify.setValue(6)
+            self.parent.iterationsLSystify.setValue(4)
             self.parent.axiomLSystify.setText("X")
             self.parent.rulesLSystify.setText("X = XFYFX + F + YFXFY - F - XFYFX; Y = YFXFY - F - XFYFX + F + YFXFY")
             self.parent.constantsLSystify.setText("")
@@ -124,37 +124,50 @@ class LSystifyTab(Tab):
         self.make(self.toBlackAndWhite(self.localBitmap))
 
     def make(self, image):
-        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
-        if layerId not in self.itemsPerLayer:
-            self.itemsPerLayer[layerId] = None
-        if self.itemsPerLayer[layerId] is not None:
-            self.parent.scene.removeItem(self.itemsPerLayer[layerId])
-        group = QGraphicsItemGroup()
+        self.removeOldGraphicsItems()
+        if self.method == "Circles":
+            methodhandler = CircleMethod(self.minBrightness, self.maxBrightness,
+                                         self.minRadius, self.maxRadius,
+                                         self.minStepSize, self.maxStepSize,
+                                         self.clipToBitmap,
+                                         self.strokeWidth,
+                                         image.width(),
+                                         image.height())
+        elif self.method == "Squiggles":
+            methodhandler = SquiggleMethod(self.minBrightness, self.maxBrightness,
+                                         self.strength, self.detail,
+                                         self.minStepSize, self.maxStepSize,
+                                         self.clipToBitmap,
+                                         self.strokeWidth,
+                                         image.width(),
+                                         image.height())
+
         pos = self.reversed_pixel_order.pop()
         stepsize = 1
+
+        # visit the discretized lsystem positions
         while self.reversed_pixel_order:
             x = pos[0]
             y = pos[1]
             dir = pos[2]
+
             brightness = qGray(image.pixel(x,y))
             if self.invertColors:
                 brightness = 255 - brightness
+
+            # handle the chosen method
             if self.minBrightness <= brightness <= self.maxBrightness:
-                if self.method == "Circles":
-                    r = Mapping.linexp(brightness, self.minBrightness, self.maxBrightness, self.minRadius, self.maxRadius)
-                    stepsize = int(Mapping.linlin(brightness, self.minBrightness, self.maxBrightness, self.minStepSize,
-                                                  self.maxStepSize))
-                    if not self.clipToBitmap or (self.clipToBitmap and not Circle(x, y, r).edges(image.width(), image.height())):
-                        item = QGraphicsEllipseItem(x - r, y - r, r * 2, r * 2)
-                        pen = QPen()
-                        pen.setWidth(self.strokeWidth)
-                        item.setPen(pen)
-                        group.addToGroup(item)
+                stepsize = methodhandler.step(x, y, dir, brightness)
+            else:
+                stepsize = methodhandler.skip(x, y, dir, brightness)
+
+            # skip forward to next x,y coordinate
             for i in range(stepsize):
                 if self.reversed_pixel_order:
                     pos = self.reversed_pixel_order.pop()
-        self.parent.scene.addItem(group)
-        self.itemsPerLayer[layerId] = group
+
+        group = methodhandler.finish()
+        self.addNewGraphicsItems(group)
 
 
     def parse_rules(self, rules):

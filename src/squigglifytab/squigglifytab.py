@@ -56,13 +56,9 @@ class SquigglifyTab(Tab):
         detail = self.parent.detail.value()
         invertColors = self.parent.invertColors.checkState() == Qt.Checked
         verticalSquiggles = self.parent.verticalSquiggles.checkState() == Qt.Checked
-        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
         maxBrightness = self.parent.maxBrightness.value()
         minBrightness = self.parent.minBrightness.value()
-        if layerId not in self.itemsPerLayer:
-            self.itemsPerLayer[layerId] = None
-        if self.itemsPerLayer[layerId] is not None:
-            self.parent.scene.removeItem(self.itemsPerLayer[layerId])
+        self.removeOldGraphicsItems()
         group = QGraphicsItemGroup()
         finalRow = False
         # TODO: too much code duplication!
@@ -142,5 +138,4 @@ class SquigglifyTab(Tab):
                     prevY = y
                 if finalRow:
                     break
-        self.parent.scene.addItem(group)
-        self.itemsPerLayer[layerId] = group
+        self.addNewGraphicsItems(group)
