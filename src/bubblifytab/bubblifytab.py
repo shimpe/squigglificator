@@ -1,11 +1,12 @@
 from random import random
 
 import numpy as np
-from PyQt5.QtCore import QPersistentModelIndex, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import qGray, QPen
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItemGroup
-from mapping import Mapping
 from scipy import spatial
+
+from mapping import Mapping
 from tab import Tab
 
 

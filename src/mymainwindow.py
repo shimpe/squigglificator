@@ -4,10 +4,11 @@ from PyQt5.QtCore import Qt, QPersistentModelIndex, QRect
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem, QPainter
 from PyQt5.QtSvg import QSvgGenerator
 from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QGraphicsPixmapItem, QGraphicsItemGroup
+
 from bubblifytab.bubblifytab import BubblifyTab
 from img2svg import Ui_MainWindow
-from squigglifytab.squigglifytab import SquigglifyTab
 from lsystifytab.lsystifytab import LSystifyTab
+from squigglifytab.squigglifytab import SquigglifyTab
 
 
 class MyMainWindow(Ui_MainWindow):

@@ -1,19 +1,23 @@
-from lsystem import LSystem
-from lsysteminterpreter import LSystemInterpreter
-from tab import Tab
+import re
+
 import numpy as np
 from PyQt5.QtCore import Qt, QPersistentModelIndex
 from PyQt5.QtGui import qGray, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
-import re
 from skimage.draw import line
+
 from circlemethod import CircleMethod
+from lsystem import LSystem
+from lsysteminterpreter import LSystemInterpreter
 from squigglemethod import SquiggleMethod
+from tab import Tab
+
 
 def rotmatrix(theta):
     c, s = np.cos(theta), np.sin(theta)
     R = np.array(((c, -s), (s, c)))
     return R
+
 
 class LSystifyTab(Tab):
     def __init__(self, parent=None, itemsPerLayer=None):
@@ -135,12 +139,12 @@ class LSystifyTab(Tab):
                                          image.height())
         elif self.method == "Squiggles":
             methodhandler = SquiggleMethod(self.minBrightness, self.maxBrightness,
-                                         self.strength, self.detail,
-                                         self.minStepSize, self.maxStepSize,
-                                         self.clipToBitmap,
-                                         self.strokeWidth,
-                                         image.width(),
-                                         image.height())
+                                           self.strength, self.detail,
+                                           self.minStepSize, self.maxStepSize,
+                                           self.clipToBitmap,
+                                           self.strokeWidth,
+                                           image.width(),
+                                           image.height())
 
         pos = self.reversed_pixel_order.pop()
         stepsize = 1
@@ -151,7 +155,7 @@ class LSystifyTab(Tab):
             y = pos[1]
             dir = pos[2]
 
-            brightness = qGray(image.pixel(x,y))
+            brightness = qGray(image.pixel(x, y))
             if self.invertColors:
                 brightness = 255 - brightness
 
@@ -168,7 +172,6 @@ class LSystifyTab(Tab):
 
         group = methodhandler.finish()
         self.addNewGraphicsItems(group)
-
 
     def parse_rules(self, rules):
         result = {}
@@ -210,8 +213,9 @@ class LSystifyTab(Tab):
         self.yoffs = self.parent.yOffsetLSystify.value()
         self.xscale = self.parent.xScaleLSystify.value()
         self.yscale = self.parent.yScaleLSystify.value()
-        self.init_dir = np.matmul(rotmatrix(np.deg2rad(self.parent.initialAngleLSystify.value())), np.array([[1,],[0,]]))
-        self.init_pos = np.array([[0,],[0,]])
+        self.init_dir = np.matmul(rotmatrix(np.deg2rad(self.parent.initialAngleLSystify.value())),
+                                  np.array([[1, ], [0, ]]))
+        self.init_pos = np.array([[0, ], [0, ]])
         self.strokeWidth = self.parent.lineWidthLSystify.value()
         self.minBrightness = self.parent.minBrightnessLSystify.value()
         self.maxBrightness = self.parent.maxBrightnessLSystify.value()
@@ -237,7 +241,6 @@ class LSystifyTab(Tab):
             self.parent.minRadiusLSystify.setEnabled(False)
             self.parent.maxRadiusLSystify.setEnabled(False)
 
-
     def run_lsystem(self):
         self.lsystem.set_axiom(self.axiom)
         self.lsystem.set_rules(self.rules)
@@ -245,11 +248,11 @@ class LSystifyTab(Tab):
         self.lsystem.set_iterations(self.iterations)
         self.lsysteminterpreter.set_lsystem(self.lsystem)
         self.lsysteminterpreter.set_globalstate({
-            "pts" : [(self.init_pos, self.init_dir)],
-            "x,y" : self.init_pos,
-            "dir" : self.init_dir,
-            "posstack" : [],
-            "dirstack" : [],
+            "pts": [(self.init_pos, self.init_dir)],
+            "x,y": self.init_pos,
+            "dir": self.init_dir,
+            "posstack": [],
+            "dirstack": [],
         })
         self.lsysteminterpreter.add_action("A", self.add_dir)
         self.lsysteminterpreter.add_action("B", self.add_dir)
@@ -283,9 +286,9 @@ class LSystifyTab(Tab):
             x = x * self.xscale + self.xoffs
             y = y * self.yscale + self.yoffs
             if idx == 0:
-                path.moveTo(x,y)
+                path.moveTo(x, y)
             else:
-                path.lineTo(x,y)
+                path.lineTo(x, y)
         item = QGraphicsPathItem(path)
         pen = QPen()
         pen.setWidth(self.strokeWidth)
@@ -305,16 +308,15 @@ class LSystifyTab(Tab):
             dir = point[1]
             x = x * self.xscale + self.xoffs
             y = y * self.yscale + self.yoffs
-            finalxy.append((int(x),int(y),dir))
+            finalxy.append((int(x), int(y), dir))
             if idx > 0:
                 # line uses bresenham's algorithm to convert the theoretical lsystem positions into pixel positions
                 xs, ys = line(finalxy[-2][0], finalxy[-2][1], finalxy[-1][0], finalxy[-1][1])
-                for ptindex, (x,y) in enumerate(zip(xs,ys)):
+                for ptindex, (x, y) in enumerate(zip(xs, ys)):
                     # never include last point
-                    if ptindex < len(xs)-1:
-                        discretized.append((x,y,dir))
+                    if ptindex < len(xs) - 1:
+                        discretized.append((x, y, dir))
         # add final point, if any
         if len(xs):
             discretized.append((xs[-1], ys[-1], dir))
         return discretized
-

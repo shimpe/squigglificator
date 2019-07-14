@@ -1,6 +1,6 @@
+from PyQt5.QtCore import QPersistentModelIndex
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QPersistentModelIndex
 
 
 class Tab(object):

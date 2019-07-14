@@ -29,7 +29,8 @@ class Ui_MainWindow(object):
         self.graphicsView.setMinimumSize(QtCore.QSize(0, 400))
         self.graphicsView.setObjectName("graphicsView")
         self.squigglifySetup = QtWidgets.QTabWidget(self.splitter)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,
+                                           QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.squigglifySetup.sizePolicy().hasHeightForWidth())
@@ -639,7 +640,8 @@ class Ui_MainWindow(object):
         self.lineWidthLabel_3.setText(_translate("MainWindow", "Max Brightness"))
         self.lineWidthLabel_4.setText(_translate("MainWindow", "Min Stepsize"))
         self.lineWidthLabel_5.setText(_translate("MainWindow", "Max Stepsize"))
-        self.squigglifySetup.setTabText(self.squigglifySetup.indexOf(self.squigglifySetupTab), _translate("MainWindow", "Squigglify Setup"))
+        self.squigglifySetup.setTabText(self.squigglifySetup.indexOf(self.squigglifySetupTab),
+                                        _translate("MainWindow", "Squigglify Setup"))
         self.bubblify.setText(_translate("MainWindow", "Bubblify on selected layer"))
         self.setDefaultsBubblify.setText(_translate("MainWindow", "Set Defaults"))
         self.lineWidthLabel_6.setText(_translate("MainWindow", "Max Brightness"))
@@ -650,8 +652,10 @@ class Ui_MainWindow(object):
         self.lineWidthLabel_10.setText(_translate("MainWindow", "Max Probability"))
         self.lineWidthLabel_11.setText(_translate("MainWindow", "Min Probability"))
         self.lineWidthLabel_12.setText(_translate("MainWindow", "Radius tolerance"))
-        self.progressBarBubblify.setText(_translate("MainWindow", "Please wait while calculation is running... this may take a while!"))
-        self.squigglifySetup.setTabText(self.squigglifySetup.indexOf(self.bubblifySetupTab), _translate("MainWindow", "Bubblify Setup"))
+        self.progressBarBubblify.setText(
+            _translate("MainWindow", "Please wait while calculation is running... this may take a while!"))
+        self.squigglifySetup.setTabText(self.squigglifySetup.indexOf(self.bubblifySetupTab),
+                                        _translate("MainWindow", "Bubblify Setup"))
         self.lsystify.setText(_translate("MainWindow", "LSystify on selected layer"))
         self.invertColorsLSystify.setText(_translate("MainWindow", "Invert Colors"))
         self.drawLSystemLSystify.setText(_translate("MainWindow", "Draw LSystem"))
@@ -678,7 +682,7 @@ class Ui_MainWindow(object):
         self.label_14.setText(_translate("MainWindow", "- Angle"))
         self.label_15.setText(_translate("MainWindow", "+ Angle"))
         self.label_16.setText(_translate("MainWindow", "Supported symbols: F, X, Y, R, L, A, B,\n"
-"+ (turn clockwise), - (turn counter clockwise), [ (push state), ] (pop state)"))
+                                                       "+ (turn clockwise), - (turn counter clockwise), [ (push state), ] (pop state)"))
         self.methodLSystify.setItemText(0, _translate("MainWindow", "Circles"))
         self.methodLSystify.setItemText(1, _translate("MainWindow", "Squiggles"))
         self.label_17.setText(_translate("MainWindow", "Method"))
@@ -692,7 +696,8 @@ class Ui_MainWindow(object):
         self.lineWidthLabel_18.setText(_translate("MainWindow", "Strength"))
         self.lineWidthLabel_19.setText(_translate("MainWindow", "Detail"))
         self.clipToBitmapLSystify.setText(_translate("MainWindow", "Clip to bitmap"))
-        self.squigglifySetup.setTabText(self.squigglifySetup.indexOf(self.tab), _translate("MainWindow", "LSystify Setup"))
+        self.squigglifySetup.setTabText(self.squigglifySetup.indexOf(self.tab),
+                                        _translate("MainWindow", "LSystify Setup"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "Toolbar"))

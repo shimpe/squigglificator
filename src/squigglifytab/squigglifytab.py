@@ -1,8 +1,9 @@
 from math import fabs
 
-from PyQt5.QtCore import Qt, QPersistentModelIndex
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import qGray, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
+
 from mapping import Mapping
 from tab import Tab
 from utils import frange
