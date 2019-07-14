@@ -117,6 +117,8 @@ class MyMainWindow(Ui_MainWindow):
                 self.scene.removeItem(self.itemsPerLayer[index])
                 del self.itemsPerLayer[index]
             self.layersModel.removeRow(i.row())
+        if self.layersModel.rowCount() == 0:
+            self.AddLayer()
 
     def ToggleBitmap(self):
         if self.bitmapVisibility:
