@@ -62,6 +62,8 @@ class SquigglifyTab(Tab):
         self.removeOldGraphicsItems()
         group = QGraphicsItemGroup()
         finalRow = False
+        minStepSize = self.parent.minStepSize.value()
+        maxStepSize = self.parent.maxStepSize.value()
         # TODO: too much code duplication!
         if not verticalSquiggles:
             scaledystep = max(1, height / noOfLines)
@@ -69,8 +71,6 @@ class SquigglifyTab(Tab):
                 if fabs(y - height) < 1e-3 or y >= height:
                     finalRow = True
                 x = 0
-                minStepSize = self.parent.minStepSize.value()
-                maxStepSize = self.parent.maxStepSize.value()
                 disturbance_direction = -1
                 prevX = 0
                 prevY = y
@@ -107,8 +107,6 @@ class SquigglifyTab(Tab):
                 if fabs(x - width) < 1e-3 or x >= width:
                     finalRow = True
                 y = 0
-                minStepSize = 1
-                maxStepSize = 10
                 disturbance_direction = -1
                 prevX = x
                 prevY = 0
