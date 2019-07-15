@@ -26,7 +26,7 @@ class SquiggleMethod(object):
         self.previous_stepsize = 1
 
     def step(self, x, y, dir, brightness):
-        stepSize = Mapping.linexp(brightness, 0, 255, self.maxStepSize, self.minStepSize)
+        stepSize = Mapping.linexp(brightness, 0, 255, self.minStepSize, self.maxStepSize)
         stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10 / self.detail)
         self.previous_stepsize = stepSize
         amplitudeSize = Mapping.linlin(brightness, 0, 255, self.strength, 0)
