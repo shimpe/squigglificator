@@ -2,11 +2,22 @@ import numpy as np
 
 
 class BezierCurve(object):
-    def __init__(self, p1, c1, c2, p2):
+    def __init__(self, p1=None, c1=None, c2=None, p2=None):
+        self.from_cubic_bezier(p1,c1,c2,p2)
+
+    def from_cubic_bezier(self, p1, c1, c2, p2):
         self.p1 = p1
         self.c1 = c1
         self.c2 = c2
         self.p2 = p2
+        return self
+
+    def from_quadratic_bezier(self, p1, c, p2):
+        self.p1 = p1
+        self.p2 = p2
+        self.c1 = p1 + 2/3*(c-p1)
+        self.c2 = p2 + 2/3*(c-p2)
+        return self
 
     def point_at(self, t):
         return np.power(1 - t, 3) * self.p1 + (3 * np.power(1 - t, 2) * t) * self.c1 + (

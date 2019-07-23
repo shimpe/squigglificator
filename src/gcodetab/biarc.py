@@ -1,7 +1,7 @@
 import numpy as np
 
-from arc import Arc
-from line import Line
+from gcodetab.arc import Arc
+from gcodetab.line import Line
 
 
 class Biarc(object):

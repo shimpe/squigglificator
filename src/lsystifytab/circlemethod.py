@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QPen
 from PyQt5.QtWidgets import QGraphicsItemGroup, QGraphicsEllipseItem
 
-from circle import Circle
+from lsystifytab.circle import Circle
 from mapping import Mapping
 
 

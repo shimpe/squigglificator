@@ -9,6 +9,7 @@ from bubblifytab.bubblifytab import BubblifyTab
 from img2svg import Ui_MainWindow
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
+from gcodetab.gcodetab import GcodeTab
 
 
 class MyMainWindow(Ui_MainWindow):
@@ -34,6 +35,7 @@ class MyMainWindow(Ui_MainWindow):
         self.squigglifyTabHandler = SquigglifyTab(self, self.itemsPerLayer)
         self.bubblifyTabHandler = BubblifyTab(self, self.itemsPerLayer)
         self.lsystifyTabHandler = LSystifyTab(self, self.itemsPerLayer)
+        self.gcodeTabHandler = GcodeTab(self, self.itemsPerLayer)
 
     def setupSlots(self):
         self.loadBitmap.clicked.connect(self.LoadBitmap)
@@ -58,6 +60,7 @@ class MyMainWindow(Ui_MainWindow):
         self.squigglifyTabHandler.setupSlots()
         self.bubblifyTabHandler.setupSlots()
         self.lsystifyTabHandler.setupSlots()
+        self.gcodeTabHandler.setupSlots()
 
     def ShowToolbar(self):
         self.toolBar.setVisible(True)
@@ -90,6 +93,7 @@ class MyMainWindow(Ui_MainWindow):
                 self.scene.addItem(self.bitmapItem)
                 self.hideBitmap.setText("Hide Bitmap")
                 self.bitmapVisibility = True
+        self.gcodeTabHandler.update_size_label()
 
     def ActionZoom_In(self):
         # Zoom Factor

@@ -6,10 +6,10 @@ from PyQt5.QtGui import qGray, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 from skimage.draw import line
 
-from circlemethod import CircleMethod
-from lsystem import LSystem
-from lsysteminterpreter import LSystemInterpreter
-from squigglemethod import SquiggleMethod
+from lsystifytab.circlemethod import CircleMethod
+from lsystifytab.lsystem import LSystem
+from lsystifytab.lsysteminterpreter import LSystemInterpreter
+from lsystifytab.squigglemethod import SquiggleMethod
 from tab import Tab
 
 

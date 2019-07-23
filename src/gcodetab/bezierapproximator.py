@@ -1,6 +1,6 @@
 import numpy as np
-from line import Line
-from biarc import Biarc
+from gcodetab.line import Line
+from gcodetab.biarc import Biarc
 
 
 class BezierApproximator(object):
@@ -94,7 +94,7 @@ class BezierApproximator(object):
         return biarcs
 
 if __name__=="__main__":
-    from beziercurve import BezierCurve
+    from gcodetab.beziercurve import BezierCurve
     b = BezierCurve(p1=np.array([[1.7, ], [2.2, ]]),
                     c1=np.array([[4.3, ], [-1.3, ]]),
                     c2=np.array([[-2.5, ], [3.3, ]]),
