@@ -20,10 +20,16 @@ class GCodeGenerator(object):
         self.add_header()
 
     def corr_y(self, y):
-        return self.yscale*(self.ph - (y + self.yo))
+        value = (self.ph - self.yscale*(y + self.yo))
+        if value < 0:
+            print("GCODE GENERATION WARNING! Negative y value generated?!")
+        return value
 
     def corr_x(self, x):
-        return self.xscale*(x + self.xo)
+        value = self.xscale*(x + self.xo)
+        if value < 0:
+            print("GCODE GENERATION WARNING! Negative x value generated?!")
+        return value
 
     def corr_radius(self, r):
         return self.xscale*r
