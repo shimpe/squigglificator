@@ -111,7 +111,22 @@ class GcodeTab(Tab):
             rawheight = 0
         bmwidth = rawwidth* self.parent.xScaleGcode.value()
         bmheight = rawheight * self.parent.yScaleGcode.value()
-        self.parent.labelSizeGcode.setText("(current size: {0:.2f}mm x {1:.2f}mm)".format(bmwidth, bmheight))
+        ym = self.parent.yMarginGcode.value()
+        xm = self.parent.xMarginGcode.value()
+        maxheight = self.parent.pageHeightGcode.value() - 2*ym
+        maxwidth = self.parent.pageWidthGcode.value() - 2*xm
+        warnings = []
+        jointwarning = ""
+        if bmheight > maxheight:
+            warnings.append("too high")
+        if bmwidth > maxwidth:
+            warnings.append("too wide")
+        if warnings:
+            jointwarning = " and ".join(warnings) + " to fit within margins. Max scale = {0:.2f}".format(min(maxheight/rawheight, maxwidth/rawwidth))
+        else:
+            jointwarning = "fits within margins"
+
+        self.parent.labelSizeGcode.setText("current size: {0:.2f}mm x {1:.2f}mm -> {2}".format(bmwidth, bmheight, jointwarning))
         return bmheight, bmwidth
 
     def OnGenerateGCodeAllLayers(self):
