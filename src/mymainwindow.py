@@ -93,6 +93,7 @@ class MyMainWindow(Ui_MainWindow):
                 self.scene.addItem(self.bitmapItem)
                 self.hideBitmap.setText("Hide Bitmap")
                 self.bitmapVisibility = True
+        self.gcodeTabHandler.OnOffsetPresetGcode(self.offsetPresetGcode.currentText())
         self.gcodeTabHandler.update_size_label()
 
     def ActionZoom_In(self):
