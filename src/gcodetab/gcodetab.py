@@ -145,6 +145,7 @@ class GcodeTab(Tab):
                              self.parent.xOffsetGcode.value(),
                              self.parent.yOffsetGcode.value(),
                              self.parent.homeGcode.checkState() == Qt.Checked,
+                             self.parent.homeEndGcode.checkState() == Qt.Checked,
                              self.parent.penUpCmdGcode.text(),
                              self.parent.penDownCmdGcode.text(),
                              self.parent.drawingSpeedGcode.value(),
@@ -156,10 +157,12 @@ class GcodeTab(Tab):
                 if item.__class__ == QGraphicsEllipseItem:
                     gen.circle(item)
                 elif item.__class__ == QGraphicsPathItem:
-                    print("tweede prijs! path")
+                    gen.path(item)
                 else:
                     print("boehoe - {0}".format(item.__class__))
 
+        gen.add_statistics()
+        gen.footer()
         with open(filename, "w") as f:
             f.write(gen.code)
 
