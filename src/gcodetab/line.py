@@ -5,6 +5,8 @@ class Line(object):
     def __init__(self):
         self.p = None
         self.m = None
+        self.origp1 = None
+        self.origp2 = None
 
     def from_points(self, p1, p2):
         """

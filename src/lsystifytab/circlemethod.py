@@ -20,7 +20,7 @@ class CircleMethod(object):
         self.width = imageWidth
         self.height = imageHeight
 
-    def step(self, x, y, dir, brightness):
+    def step(self, x, y, direction, brightness):
         r = Mapping.linexp(brightness, self.minBrightness, self.maxBrightness, self.maxRadius, self.minRadius)
         stepsize = int(Mapping.linlin(brightness, self.minBrightness, self.maxBrightness, self.minStepSize,
                                       self.maxStepSize))
@@ -32,7 +32,7 @@ class CircleMethod(object):
             self.group.addToGroup(item)
         return max(int(stepsize), 1)
 
-    def skip(self, x, y, dir, brightness):
+    def skip(self, x, y, direction, brightness):
         stepsize = int(Mapping.linlin(brightness, self.minBrightness, self.maxBrightness, self.minStepSize,
                                       self.maxStepSize))
         return max(int(stepsize), 1)

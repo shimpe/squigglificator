@@ -11,6 +11,7 @@ from gcodetab.line import Line
 
 FORCE_PRINT = True
 
+
 class GCodeGenerator(object):
     def __init__(self, pageheight,
                  xscale, yscale,
@@ -106,12 +107,13 @@ G01 {1} F100 (start from known state: pen up)
         if self.pen_state == "up":
             fast = True
         if self.add_drawing_speed:
-            self.code += "G0{0} X{1:.3f} Y{2:.3f} F{3} {4}{5}".format("0" if fast else "1",
-                                                                      self.corr_x(x),
-                                                                      self.corr_y(y),
-                                                                      self.pen_down_speed if fast else self.drawing_speed,
-                                                                      "(" + comment + ")" if comment else "",
-                                                                      os.linesep)
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} F{3} {4}{5}".format(
+                "0" if fast else "1",
+                self.corr_x(x),
+                self.corr_y(y),
+                self.pen_down_speed if fast else self.drawing_speed,
+                "(" + comment + ")" if comment else "",
+                os.linesep)
             self.add_drawing_speed = False
         else:
             self.code += "G0{0} X{1:.3f} Y{2:.3f} {3}{4}".format("0" if fast else "1",
@@ -142,22 +144,23 @@ G01 {1} F100 (start from known state: pen up)
         self.move_to(center.x() + xradius, center.y(), "goto first point on circle")
         self.pen_down()
         if self.add_drawing_speed:
-            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J0 F{4} {5}{6}".format("2" if clockwise else "3",
-                                                                                  self.corr_x(center.x() + xradius),
-                                                                                  self.corr_y(center.y()),
-                                                                                  self.corr_radius(-xradius),
-                                                                                  self.pen_down_speed if fast else self.drawing_speed,
-                                                                                  "(circle w/ radius {0:.3f})".format(
-                                                                                      self.corr_radius(xradius)),
-                                                                                  os.linesep)
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J0 F{4} {5}{6}".format(
+                "2" if clockwise else "3",
+                self.corr_x(center.x() + xradius),
+                self.corr_y(center.y()),
+                self.corr_radius(-xradius),
+                self.pen_down_speed if fast else self.drawing_speed,
+                "(circle w/ radius {0:.3f})".format(self.corr_radius(xradius)),
+                os.linesep)
         else:
-            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J0 {4}{5}".format("2" if clockwise else "3",
-                                                                             self.corr_x(center.x() + xradius),
-                                                                             self.corr_y(center.y()),
-                                                                             self.corr_radius(-xradius),
-                                                                             "(circle w/ radius {0:.3f})".format(
-                                                                                 self.corr_radius(xradius)),
-                                                                             os.linesep)
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J0 {4}{5}".format(
+                "2" if clockwise else "3",
+                self.corr_x(center.x() + xradius),
+                self.corr_y(center.y()),
+                self.corr_radius(-xradius),
+                "(circle w/ radius {0:.3f})".format(
+                    self.corr_radius(xradius)),
+                os.linesep)
         self.statistics.circles += 1
 
     def path(self, pathitem):
@@ -165,7 +168,6 @@ G01 {1} F100 (start from known state: pen up)
         if path.isEmpty():
             return
         prev_position = (0, 0)
-        idx = 0
         accumulated_data_points = []
         for idx in range(path.elementCount()):
             element = path.elementAt(idx)
@@ -221,37 +223,27 @@ G01 {1} F100 (start from known state: pen up)
         fast = self.pen_state == "up"
         self.pen_down()
         if self.add_drawing_speed:
-            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J{4:.3f} F{5} {6}{7}".format("2" if clockwise else "3",
-                                                                                        ex,
-                                                                                        ey,
-                                                                                        cx - bx,
-                                                                                        cy - by,
-                                                                                        self.pen_down_speed if fast else self.drawing_speed,
-                                                                                        "(arc w/ radius {0:.3f} from {1:.3f},{2:.3f} to {3:.3f},{4:.3f} around center {5:.3f},{6:.3f})".format(
-                                                                                            self.corr_radius(radius),
-                                                                                            bx,
-                                                                                            by,
-                                                                                            ex,
-                                                                                            ey,
-                                                                                            cx,
-                                                                                            cy),
-                                                                                        os.linesep)
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J{4:.3f} F{5} {6}{7}".format(
+                "2" if clockwise else "3",
+                ex,
+                ey,
+                cx - bx,
+                cy - by,
+                self.pen_down_speed if fast else self.drawing_speed,
+                "(arc w/ radius {0:.3f} from {1:.3f},{2:.3f} to {3:.3f},{4:.3f} around center {5:.3f},{6:.3f})".format(
+                    self.corr_radius(radius), bx, by, ex, ey, cx, cy),
+                os.linesep)
             self.add_drawing_speed = False
         else:
-            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J{4:.3f} {5}{6}".format("2" if clockwise else "3",
-                                                                                   ex,
-                                                                                   ey,
-                                                                                   cx - bx,
-                                                                                   cy - by,
-                                                                                   "(arc w/ radius {0:.3f} from {1:.3f},{2:.3f} to {3:.3f},{4:.3f} around center {5:.3f},{6:.3f})".format(
-                                                                                       self.corr_radius(radius),
-                                                                                       bx,
-                                                                                       by,
-                                                                                       ex,
-                                                                                       ey,
-                                                                                       cx,
-                                                                                       cy),
-                                                                                   os.linesep)
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} I{3:.3f} J{4:.3f} {5}{6}".format(
+                "2" if clockwise else "3",
+                ex,
+                ey,
+                cx - bx,
+                cy - by,
+                "(arc w/ radius {0:.3f} from {1:.3f},{2:.3f} to {3:.3f},{4:.3f} around center {5:.3f},{6:.3f})".format(
+                    self.corr_radius(radius), bx, by, ex, ey, cx, cy),
+                os.linesep)
         self.statistics.subpaths += 1
 
     def gen_curve(self, prev_position, accumulated_data_points):
@@ -259,6 +251,7 @@ G01 {1} F100 (start from known state: pen up)
             print(
                 "Error! Skipping unsupported curve type with {0} control points.".format(len(accumulated_data_points)))
         else:
+            c = None
             if len(accumulated_data_points) == 3:
                 p1 = np.array([[prev_position[0], ], [prev_position[1], ]])
                 c1 = np.array([[accumulated_data_points[0][0], ], [accumulated_data_points[0][1], ]])
@@ -274,6 +267,8 @@ G01 {1} F100 (start from known state: pen up)
                 c1 = c.c1
                 c2 = c.c2
                 p2 = c.p2
+            else:
+                print("Unknown curve type ignored. Keeping fingers crossed...")
 
             b = BezierApproximator()
             biarcs = b.approx_cubic_bezier(c, self.sampling_step, self.tolerance)
@@ -281,7 +276,7 @@ G01 {1} F100 (start from known state: pen up)
             for biarc in biarcs:
                 if biarc.__class__ == Line:
                     # self.pen_down()
-                    assert(biarc.origp2 is not None)
+                    assert (biarc.origp2 is not None)
                     newx = biarc.origp2[0][0]
                     newy = biarc.origp2[1][0]
                     self.pen_down()

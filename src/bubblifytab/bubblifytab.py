@@ -21,14 +21,14 @@ class BubblifyTab(Tab):
         self.parent.setDefaultsBubblify.clicked.connect(self.SetDefaults)
 
     def SetDefaults(self):
-        minBrightness = self.parent.minBrightnessBubblify.setValue(0)
-        maxBrightness = self.parent.maxBrightnessBubblify.setValue(255)
-        minCircleRadius = self.parent.minRadiusBubblify.setValue(1)
-        maxCircleRadius = self.parent.maxRadiusBubblify.setValue(10)
-        invertColors = self.parent.invertColorsBubblify.setCheckState(Qt.Unchecked)
-        minProbability = self.parent.minProbabilityBubblify.setValue(1)
-        maxProbablity = self.parent.maxProbabilityBubblify.value(20)
-        radiustolerance = self.parent.radiusToleranceBubblify.value(0.4)
+        self.parent.minBrightnessBubblify.setValue(0)
+        self.parent.maxBrightnessBubblify.setValue(255)
+        self.parent.minRadiusBubblify.setValue(1)
+        self.parent.maxRadiusBubblify.setValue(10)
+        self.parent.invertColorsBubblify.setCheckState(Qt.Unchecked)
+        self.parent.minProbabilityBubblify.setValue(1)
+        self.parent.maxProbabilityBubblify.value(20)
+        self.parent.radiusToleranceBubblify.value(0.4)
 
     def process(self):
         if not self.checkBitmapLoaded():
@@ -60,6 +60,8 @@ class BubblifyTab(Tab):
         for x in range(image.width()):
             for y in range(image.height()):
                 grayvalue = qGray(image.pixel(x, y))
+                if invertColors:
+                    grayvalue = 255-grayvalue
                 if minBrightness < grayvalue < maxBrightness:
                     probability = Mapping.linexp(grayvalue, 0, 255, maxProbablity / 100, minProbability / 100)
                     addNow = random() < probability

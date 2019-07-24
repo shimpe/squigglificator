@@ -3,7 +3,11 @@ import numpy as np
 
 class BezierCurve(object):
     def __init__(self, p1=None, c1=None, c2=None, p2=None):
-        self.from_cubic_bezier(p1,c1,c2,p2)
+        self.p1 = None
+        self.c1 = None
+        self.c2 = None
+        self.p2 = None
+        self.from_cubic_bezier(p1, c1, c2, p2)
 
     def from_cubic_bezier(self, p1, c1, c2, p2):
         self.p1 = p1
@@ -15,8 +19,8 @@ class BezierCurve(object):
     def from_quadratic_bezier(self, p1, c, p2):
         self.p1 = p1
         self.p2 = p2
-        self.c1 = p1 + 2/3*(c-p1)
-        self.c2 = p2 + 2/3*(c-p2)
+        self.c1 = p1 + 2 / 3 * (c - p1)
+        self.c2 = p2 + 2 / 3 * (c - p2)
         return self
 
     def point_at(self, t):
@@ -52,7 +56,7 @@ class BezierCurve(object):
             # don't divide by zero
             return None, None
 
-        if (b*b - 4*a*c) < 0:
+        if (b * b - 4 * a * c) < 0:
             # we're only interested in real inflexion points
             return None, None
 

@@ -2,6 +2,7 @@ import numpy as np
 from gcodetab.line import Line
 from gcodetab.biarc import Biarc
 
+
 class BezierApproximator(object):
     def __init__(self):
         pass
@@ -19,7 +20,7 @@ class BezierApproximator(object):
         y2 = p2[1][0]
         x3 = p3[0][0]
         y3 = p3[1][0]
-        area = np.abs(x1*(y2-y3) + x2*(y3-y1) + x3*(y1-y2))
+        area = np.abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2))
         if area < tolerance:
             return True
         return False
@@ -70,7 +71,7 @@ class BezierApproximator(object):
         while curves:
             bezier = curves.pop()
             if self.almost_collinear(bezier.p1, bezier.c1, bezier.c2, tolerance) and \
-                self.almost_collinear(bezier.c1, bezier.c2, bezier.p2, tolerance):
+                    self.almost_collinear(bezier.c1, bezier.c2, bezier.p2, tolerance):
                 biarcs.append(Line().from_points(bezier.p1, bezier.p2))
             else:
                 # Calculate the transition point for the BiArc
@@ -114,8 +115,10 @@ class BezierApproximator(object):
                     biarcs.append(biarc)
         return biarcs
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     from gcodetab.beziercurve import BezierCurve
+
     b = BezierCurve(p1=np.array([[1.7, ], [2.2, ]]),
                     c1=np.array([[4.3, ], [-1.3, ]]),
                     c2=np.array([[-2.5, ], [3.3, ]]),
@@ -123,4 +126,3 @@ if __name__=="__main__":
     a = BezierApproximator()
     result = a.approx_cubic_bezier(b, 0.1, 0.1)
     print(result)
-

@@ -30,8 +30,8 @@ class LSystemInterpreter(object):
         return self.lsystem.size()
 
     def step(self, i):
-        str = self.lsystem.get_calculated_string()
-        st = str[i] if len(str) > i else ""
+        calculated = self.lsystem.get_calculated_string()
+        st = calculated[i] if len(calculated) > i else ""
         if not self.lsystem.has_constant(st):
             action = self.get_action(st)
             if action:

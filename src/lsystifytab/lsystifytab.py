@@ -110,9 +110,9 @@ class LSystifyTab(Tab):
         gs["dirstack"] = gs["dirstack"].append(gs["dir"])
 
     def pop_state(self, gs):
-        if gs["posstack"] != []:
+        if gs["posstack"]:
             gs["posstack"].pop()
-        if gs["dirstack"] != []:
+        if gs["dirstack"]:
             gs["dirstack"].pop()
 
     def process(self):
@@ -145,6 +145,8 @@ class LSystifyTab(Tab):
                                            self.strokeWidth,
                                            image.width(),
                                            image.height())
+        else:
+            assert(False)
 
         pos = self.reversed_pixel_order.pop()
         stepsize = 1
@@ -153,7 +155,7 @@ class LSystifyTab(Tab):
         while self.reversed_pixel_order:
             x = pos[0]
             y = pos[1]
-            dir = pos[2]
+            direction = pos[2]
 
             brightness = qGray(image.pixel(x, y))
             if self.invertColors:
@@ -161,9 +163,9 @@ class LSystifyTab(Tab):
 
             # handle the chosen method
             if self.minBrightness <= brightness <= self.maxBrightness:
-                stepsize = methodhandler.step(x, y, dir, brightness)
+                stepsize = methodhandler.step(x, y, direction, brightness)
             else:
-                stepsize = methodhandler.skip(x, y, dir, brightness)
+                stepsize = methodhandler.skip(x, y, direction, brightness)
 
             # skip forward to next x,y coordinate
             for i in range(stepsize):
@@ -230,12 +232,12 @@ class LSystifyTab(Tab):
         self.clipToBitmap = self.parent.clipToBitmapLSystify.checkState() == Qt.Checked
 
     def OnMethod(self, text):
-        if (text == "Circles"):
+        if text == "Circles":
             self.parent.detailLSystify.setEnabled(False)
             self.parent.strengthLSystify.setEnabled(False)
             self.parent.minRadiusLSystify.setEnabled(True)
             self.parent.maxRadiusLSystify.setEnabled(True)
-        elif (text == "Squiggles"):
+        elif text == "Squiggles":
             self.parent.detailLSystify.setEnabled(True)
             self.parent.strengthLSystify.setEnabled(True)
             self.parent.minRadiusLSystify.setEnabled(False)
@@ -282,7 +284,7 @@ class LSystifyTab(Tab):
         for idx, point in enumerate(self.lsysteminterpreter.globalstate["pts"]):
             x = point[0][0][0]
             y = point[0][1][0]
-            dir = point[1]
+            direction = point[1]
             x = x * self.xscale + self.xoffs
             y = y * self.yscale + self.yoffs
             if idx == 0:
@@ -302,21 +304,22 @@ class LSystifyTab(Tab):
         finalxy = []
         xs = []
         ys = []
+        direction = np.array([[0,],[1,]])
         for idx, point in enumerate(self.lsysteminterpreter.globalstate["pts"]):
             x = point[0][0][0]
             y = point[0][1][0]
-            dir = point[1]
+            direction = point[1]
             x = x * self.xscale + self.xoffs
             y = y * self.yscale + self.yoffs
-            finalxy.append((int(x), int(y), dir))
+            finalxy.append((int(x), int(y), direction))
             if idx > 0:
                 # line uses bresenham's algorithm to convert the theoretical lsystem positions into pixel positions
                 xs, ys = line(finalxy[-2][0], finalxy[-2][1], finalxy[-1][0], finalxy[-1][1])
                 for ptindex, (x, y) in enumerate(zip(xs, ys)):
                     # never include last point
                     if ptindex < len(xs) - 1:
-                        discretized.append((x, y, dir))
+                        discretized.append((x, y, direction))
         # add final point, if any
         if len(xs):
-            discretized.append((xs[-1], ys[-1], dir))
+            discretized.append((xs[-1], ys[-1], direction))
         return discretized

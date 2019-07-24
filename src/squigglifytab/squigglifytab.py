@@ -65,6 +65,7 @@ class SquigglifyTab(Tab):
         minStepSize = self.parent.minStepSize.value()
         maxStepSize = self.parent.maxStepSize.value()
         # TODO: too much code duplication!
+        path = QPainterPath()
         if not verticalSquiggles:
             scaledystep = max(1, height / noOfLines)
             for y in frange(0, height, scaledystep):

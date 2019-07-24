@@ -25,7 +25,7 @@ class SquiggleMethod(object):
         self.disturbance_direction = 1
         self.previous_stepsize = 1
 
-    def step(self, x, y, dir, brightness):
+    def step(self, x, y, direction, brightness):
         stepSize = Mapping.linexp(brightness, 0, 255, self.minStepSize, self.maxStepSize)
         stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10 / self.detail)
         self.previous_stepsize = stepSize
@@ -36,8 +36,8 @@ class SquiggleMethod(object):
             self.prevPos = np.array([[x, ], [y, ]])
         else:
             newPos = np.array([[x, ], [y, ]])
-            dirx = dir[0][0]
-            diry = dir[1][0]
+            dirx = direction[0][0]
+            diry = direction[1][0]
             ortho_dir = np.array([[-diry], [dirx]]) * self.disturbance_direction
             disturbance = ortho_dir * amplitudeSize
             disturbedPos = (self.prevPos + newPos) / 2 + disturbance
@@ -50,7 +50,7 @@ class SquiggleMethod(object):
         self.disturbance_direction = -self.disturbance_direction
         return max(int(stepSize), 1)
 
-    def skip(self, x, y, dir, brightness):
+    def skip(self, x, y, direction, brightness):
         if self.prevPos is None:
             self.path = QPainterPath()
             self.path.moveTo(x, y)

@@ -1,12 +1,14 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QGraphicsPathItem, QGraphicsItemGroup, QGraphicsEllipseItem
-
 from collections import namedtuple
-from tab import Tab
-from gcodetab.gcodegenerator import GCodeGenerator
 from os.path import expanduser
 
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QFileDialog, QGraphicsPathItem, QGraphicsEllipseItem
+
+from gcodetab.gcodegenerator import GCodeGenerator
+from tab import Tab
+
 PaperOptions = namedtuple("PaperOptions", "width, height, xmargin, ymargin")
+
 
 class GcodeTab(Tab):
     def __init__(self, parent=None, itemsPerLayer=None):
@@ -72,35 +74,35 @@ class GcodeTab(Tab):
         ys = self.parent.yScaleGcode.value()
 
         if text == "Center on page":
-            self.parent.xOffsetGcode.setValue(xs*(pw - bmwidth) / 2.0)
-            self.parent.yOffsetGcode.setValue(ys*(ph - bmheight) / 2.0)
+            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth) / 2.0)
+            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight) / 2.0)
         if text == "Top left page":
             self.parent.xOffsetGcode.setValue(0)
-            self.parent.yOffsetGcode.setValue(ys*(ph - bmheight))
+            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight))
         if text == "Top right page":
-            self.parent.xOffsetGcode.setValue(xs*(pw - bmwidth))
-            self.parent.yOffsetGcode.setValue(ys*(ph - bmheight))
+            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth))
+            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight))
         if text == "Bottom left page":
             self.parent.xOffsetGcode.setValue(0)
             self.parent.yOffsetGcode.setValue(0)
         if text == "Bottom right page":
-            self.parent.xOffsetGcode.setValue(xs*(pw - bmwidth))
+            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth))
             self.parent.yOffsetGcode.setValue(0)
         if text == "Center between margins":
-            self.parent.xOffsetGcode.setValue(xs*(xm + (pw - xm - xm - bmwidth) / 2.0))
-            self.parent.yOffsetGcode.setValue(ys*(ym + (ph - ym - ym - bmheight) / 2.0))
+            self.parent.xOffsetGcode.setValue(xs * (xm + (pw - xm - xm - bmwidth) / 2.0))
+            self.parent.yOffsetGcode.setValue(ys * (ym + (ph - ym - ym - bmheight) / 2.0))
         if text == "Top left margins":
-            self.parent.xOffsetGcode.setValue(xs*xm)
-            self.parent.yOffsetGcode.setValue(ys*(ph - bmheight - ym))
+            self.parent.xOffsetGcode.setValue(xs * xm)
+            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight - ym))
         if text == "Top right margins":
-            self.parent.xOffsetGcode.setValue(xs*(pw - bmwidth - xm))
-            self.parent.yOffsetGcode.setValue(ys*(ph - bmheight - ym))
+            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth - xm))
+            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight - ym))
         if text == "Bottom left margins":
-            self.parent.xOffsetGcode.setValue(xs*xm)
-            self.parent.yOffsetGcode.setValue(ys*ym)
+            self.parent.xOffsetGcode.setValue(xs * xm)
+            self.parent.yOffsetGcode.setValue(ys * ym)
         if text == "Bottom right margins":
-            self.parent.xOffsetGcode.setValue(xs*(pw - bmwidth - xm))
-            self.parent.yOffsetGcode.setValue(ys*ym)
+            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth - xm))
+            self.parent.yOffsetGcode.setValue(ys * ym)
 
     def update_size_label(self):
         if self.parent.bitmap:
@@ -109,12 +111,12 @@ class GcodeTab(Tab):
         else:
             rawwidth = 0
             rawheight = 0
-        bmwidth = rawwidth* self.parent.xScaleGcode.value()
+        bmwidth = rawwidth * self.parent.xScaleGcode.value()
         bmheight = rawheight * self.parent.yScaleGcode.value()
         ym = self.parent.yMarginGcode.value()
         xm = self.parent.xMarginGcode.value()
-        maxheight = self.parent.pageHeightGcode.value() - 2*ym
-        maxwidth = self.parent.pageWidthGcode.value() - 2*xm
+        maxheight = self.parent.pageHeightGcode.value() - 2 * ym
+        maxwidth = self.parent.pageWidthGcode.value() - 2 * xm
         warnings = []
         jointwarning = ""
         if bmheight > maxheight:
@@ -122,11 +124,13 @@ class GcodeTab(Tab):
         if bmwidth > maxwidth:
             warnings.append("too wide")
         if warnings:
-            jointwarning = " and ".join(warnings) + " to fit within margins. Max scale = {0:.2f}".format(min(maxheight/rawheight, maxwidth/rawwidth))
+            jointwarning = " and ".join(warnings) + " to fit within margins. Max scale = {0:.2f}".format(
+                min(maxheight / rawheight, maxwidth / rawwidth))
         else:
             jointwarning = "fits within margins"
 
-        self.parent.labelSizeGcode.setText("current size: {0:.2f}mm x {1:.2f}mm -> {2}".format(bmwidth, bmheight, jointwarning))
+        self.parent.labelSizeGcode.setText(
+            "current size: {0:.2f}mm x {1:.2f}mm -> {2}".format(bmwidth, bmheight, jointwarning))
         return bmheight, bmwidth
 
     def OnGenerateGCodeAllLayers(self):
