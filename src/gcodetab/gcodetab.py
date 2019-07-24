@@ -149,7 +149,9 @@ class GcodeTab(Tab):
                              self.parent.penUpCmdGcode.text(),
                              self.parent.penDownCmdGcode.text(),
                              self.parent.drawingSpeedGcode.value(),
-                             self.parent.penDownSpeedGcode.value())
+                             self.parent.penDownSpeedGcode.value(),
+                             self.parent.samplingDistanceGcode.value(),
+                             self.parent.maximumApproximationErrorGcode.value())
         for layer in self.itemsPerLayer:
             for item in self.itemsPerLayer[layer].childItems():
                 if not item.isVisible():

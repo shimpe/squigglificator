@@ -47,6 +47,16 @@ class BezierCurve(object):
         a = big_b[0][0] * big_c[1][0] - big_b[1][0] * big_c[0][0] + 0j
         b = big_a[0][0] * big_c[1][0] - big_a[1][0] * big_c[0][0] + 0j
         c = big_a[0][0] * big_b[1][0] - big_a[1][0] * big_b[0][0] + 0j
+
+        if a == 0:
+            # don't divide by zero
+            return None, None
+
+        if (b*b - 4*a*c) < 0:
+            # we're only interested in real inflexion points
+            return None, None
+
         t1 = (-b + np.sqrt(b * b - 4 * a * c)) / (2 * a)
         t2 = (-b - np.sqrt(b * b - 4 * a * c)) / (2 * a)
+
         return t1, t2

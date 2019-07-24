@@ -13,7 +13,11 @@ class Line(object):
         :param p2: end point
         :return:
         """
-        return self.from_point_slope(p1, self.slope(p1, p2))
+
+        newline = self.from_point_slope(p1, self.slope(p1, p2))
+        newline.origp1 = p1
+        newline.origp2 = p2
+        return newline
 
     def from_point_slope(self, p, m):
         """
@@ -22,6 +26,8 @@ class Line(object):
         :param m: slope
         :return:
         """
+        self.origp1 = p
+        self.origp2 = None
         self.p = p
         self.m = m
         return self
@@ -39,7 +45,7 @@ class Line(object):
     def vertical_intersection(self, line):
         x = self.p[0][0]
         y = line.m * (x - line.p[0][0]) + line.p[1][0]
-        np.array([[x, ], [y, ]])
+        return np.array([[x, ], [y, ]])
 
     @staticmethod
     def create_perpendicular_at(p, p1):
