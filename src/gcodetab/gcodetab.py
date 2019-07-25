@@ -1,8 +1,8 @@
 from collections import namedtuple
-from os.path import expanduser
+from os.path import expanduser, splitext
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QGraphicsPixmapItem, QGraphicsItemGroup
 
 from gcodetab.gcodegenerator import GCodeGenerator
 from tab import Tab
@@ -166,4 +166,53 @@ class GcodeTab(Tab):
             f.write(gen.code)
 
     def OnGenerateGCodePerLayer(self):
-        pass
+        newPath = QFileDialog.getSaveFileName(self.parent.centralwidget, "Export .cnc per layer",
+                                              self.homeFolder,
+                                              "CNC files (*.cnc)")
+        if not newPath[0]:
+            return
+
+        filename = newPath[0]
+
+        # make stuff invisible to avoid sending it to gcode
+        for idx, layer in enumerate(self.itemsPerLayer):
+            print("*** iteration {0}".format(idx))
+            layer_filename = "{0}_layer{1}.cnc".format(splitext(filename)[0], idx + 1)
+            for item in self.parent.scene.items():
+                item.setVisible(True)
+                forceAlwaysInvisible = item.__class__ == QGraphicsPixmapItem
+                forceInvisibleInCurrentLayer = item.__class__ == QGraphicsItemGroup and \
+                                               (item != self.itemsPerLayer[layer] or \
+                                                self.parent.layersModel.item(idx).checkState() != Qt.Checked)
+                if forceAlwaysInvisible or forceInvisibleInCurrentLayer:  # ouch
+                    print("setting idx to invisible for item {0}".format(item))
+                    item.setVisible(False)
+            if self.parent.layersModel.item(idx).checkState() == Qt.Checked:
+                gen = GCodeGenerator(self.parent.pageHeightGcode.value(),
+                                     self.parent.xScaleGcode.value(),
+                                     self.parent.yScaleGcode.value(),
+                                     self.parent.xOffsetGcode.value(),
+                                     self.parent.yOffsetGcode.value(),
+                                     self.parent.homeGcode.checkState() == Qt.Checked,
+                                     self.parent.homeEndGcode.checkState() == Qt.Checked,
+                                     self.parent.penUpCmdGcode.text(),
+                                     self.parent.penDownCmdGcode.text(),
+                                     self.parent.drawingSpeedGcode.value(),
+                                     self.parent.penDownSpeedGcode.value(),
+                                     self.parent.samplingDistanceGcode.value(),
+                                     self.parent.maximumApproximationErrorGcode.value())
+                for layer in self.itemsPerLayer:
+                    for item in self.itemsPerLayer[layer].childItems():
+                        gen.process_item(item)
+
+                gen.add_statistics()
+                gen.footer()
+                with open(layer_filename, "w") as f:
+                    f.write(gen.code)
+
+        # restore visibility
+        for idx, layer in enumerate(self.itemsPerLayer):
+            for item in self.parent.scene.items():
+                if item.__class__ == QGraphicsItemGroup and \
+                        self.parent.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
+                    item.setVisible(True)
