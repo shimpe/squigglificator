@@ -22,6 +22,8 @@ class CircleMethod(object):
 
     def step(self, x, y, direction, brightness):
         r = Mapping.linexp(brightness, self.minBrightness, self.maxBrightness, self.maxRadius, self.minRadius)
+        if not r:
+            r = self.minRadius
         stepsize = int(Mapping.linlin(brightness, self.minBrightness, self.maxBrightness, self.minStepSize,
                                       self.maxStepSize))
         if not self.clipToBitmap or (self.clipToBitmap and not Circle(x, y, r).edges(self.width, self.height)):
