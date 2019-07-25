@@ -79,12 +79,12 @@ class GCodeGenerator(object):
 ( File created:  {0} )
 
 G21 (All units in mm)
-G01 {1} F100 (start from known state: pen up)
-""".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.pen_up_cmd)
+G01 {1} F{2} (start from known state: pen up)
+""".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.pen_up_cmd, self.pen_down_speed)
 
         if self.home_at_begin:
             self.pen_up()
-            self.move_to(0, 0, "Go fast to 0,0 position")
+            self.move_to_nocorrection(0, 0, "Go fast to 0,0 position")
             self.code += "G28 X0 Y0 (Home machine)" + os.linesep
             self.statistics.home += 1
         else:
@@ -92,7 +92,7 @@ G01 {1} F100 (start from known state: pen up)
 
     def footer(self):
         self.pen_up()
-        self.move_to(0, 0, "Go fast to 0,0 position")
+        self.move_to_nocorrection(0, 0, "Go fast to 0,0 position")
         if self.home_at_end:
             self.code += "G28 X0 Y0 (Home machine)" + os.linesep
             self.statistics.home += 1
@@ -111,6 +111,32 @@ G01 {1} F100 (start from known state: pen up)
                 self.pen_down_speed) + " (pen down)" + os.linesep
             self.statistics.pendown += 1
             self.add_drawing_speed = True
+
+    def move_to_nocorrection(self, x, y, comment=""):
+        fast = False
+        if self.pen_state == "up":
+            fast = True
+        if self.add_drawing_speed:
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} F{3} {4}{5}".format(
+                "0" if fast else "1",
+                x,
+                y,
+                self.pen_down_speed if fast else self.drawing_speed,
+                "(" + comment + ")" if comment else "",
+                os.linesep)
+            self.add_drawing_speed = False
+        else:
+            self.code += "G0{0} X{1:.3f} Y{2:.3f} {3}{4}".format("0" if fast else "1",
+                                                                 x,
+                                                                 y,
+                                                                 "(" + comment + ")" if comment else "",
+                                                                 os.linesep)
+
+        if fast:
+            self.statistics.movetofast += 1
+        else:
+            self.statistics.movetoslow += 1
+
 
     def move_to(self, x, y, comment=""):
         fast = False
