@@ -9,7 +9,7 @@ from gcodetab.biarc import Biarc
 from gcodetab.gcodestatistics import GcodeStatistics
 from gcodetab.line import Line
 
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsPixmapItem
 
 FORCE_PRINT = True
 
@@ -46,6 +46,8 @@ class GCodeGenerator(object):
                 self.ellipse(item)
             elif item.__class__ == QGraphicsPathItem:
                 self.path(item)
+            elif item.__class__ == QGraphicsPixmapItem:
+                pass # ignore bitmap
             else:
                 print("Unknown QGraphicsItem type?! Please extend GCodeGenerator.process_item for class {0}".format(item.__class__))
 
