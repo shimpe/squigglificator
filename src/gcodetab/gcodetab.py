@@ -74,35 +74,35 @@ class GcodeTab(Tab):
         ys = self.parent.yScaleGcode.value()
 
         if text == "Center on page":
-            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth) / 2.0)
-            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight) / 2.0)
+            self.parent.xOffsetGcode.setValue((pw - bmwidth) / 2.0)
+            self.parent.yOffsetGcode.setValue((ph - bmheight) / 2.0)
         if text == "Top left page":
             self.parent.xOffsetGcode.setValue(0)
-            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight))
+            self.parent.yOffsetGcode.setValue((ph - bmheight))
         if text == "Top right page":
-            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth))
-            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight))
+            self.parent.xOffsetGcode.setValue((pw - bmwidth))
+            self.parent.yOffsetGcode.setValue((ph - bmheight))
         if text == "Bottom left page":
             self.parent.xOffsetGcode.setValue(0)
             self.parent.yOffsetGcode.setValue(0)
         if text == "Bottom right page":
-            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth))
+            self.parent.xOffsetGcode.setValue((pw - bmwidth))
             self.parent.yOffsetGcode.setValue(0)
         if text == "Center between margins":
-            self.parent.xOffsetGcode.setValue(xs * (xm + (pw - xm - xm - bmwidth) / 2.0))
-            self.parent.yOffsetGcode.setValue(ys * (ym + (ph - ym - ym - bmheight) / 2.0))
+            self.parent.xOffsetGcode.setValue((xm + (pw - xm - xm - bmwidth) / 2.0))
+            self.parent.yOffsetGcode.setValue((ym + (ph - ym - ym - bmheight) / 2.0))
         if text == "Top left margins":
-            self.parent.xOffsetGcode.setValue(xs * xm)
-            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight - ym))
+            self.parent.xOffsetGcode.setValue(xm)
+            self.parent.yOffsetGcode.setValue((ph - bmheight - ym))
         if text == "Top right margins":
-            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth - xm))
-            self.parent.yOffsetGcode.setValue(ys * (ph - bmheight - ym))
+            self.parent.xOffsetGcode.setValue((pw - bmwidth - xm))
+            self.parent.yOffsetGcode.setValue((ph - bmheight - ym))
         if text == "Bottom left margins":
-            self.parent.xOffsetGcode.setValue(xs * xm)
-            self.parent.yOffsetGcode.setValue(ys * ym)
+            self.parent.xOffsetGcode.setValue(xm)
+            self.parent.yOffsetGcode.setValue(ym)
         if text == "Bottom right margins":
-            self.parent.xOffsetGcode.setValue(xs * (pw - bmwidth - xm))
-            self.parent.yOffsetGcode.setValue(ys * ym)
+            self.parent.xOffsetGcode.setValue((pw - bmwidth - xm))
+            self.parent.yOffsetGcode.setValue(ym)
 
     def update_size_label(self):
         if self.parent.bitmap:

@@ -58,13 +58,15 @@ class GCodeGenerator(object):
         self.code = self.statistics.summarize() + self.code
 
     def corr_y(self, y):
-        value = (self.ph - self.yscale * (y + self.yo))
+        # yoffset calculation already took yscale into account; don't apply twice
+        value = (self.ph - (self.yscale * y + self.yo))
         if value < 0:
             self.add_comment("GCODE GENERATION WARNING! Negative y value generated?!", FORCE_PRINT)
         return value
 
     def corr_x(self, x):
-        value = self.xscale * (x + self.xo)
+        # xoffset calculation already took yscale into account; don't apply twice
+        value = self.xscale * x + self.xo
         if value < 0:
             self.add_comment("GCODE GENERATION WARNING! Negative x value generated?!", FORCE_PRINT)
         return value
@@ -218,18 +220,19 @@ G01 {1} F{2} (start from known state: pen up)
                 prev_position = self.gen_curve(prev_position, accumulated_data_points)
                 accumulated_data_points = []
 
-            if element.isMoveTo():
+            if element.isMoveTo() and idx != (path.elementCount() - 1):
+                # last element of a path is a moveto? ignore it as the next path will start with a move to as well
                 self.pen_up()
                 x = element.x
                 y = element.y
                 prev_position = (x, y)
-                self.move_to(x, y, "(move to {0},{1}".format(x, y))
+                self.move_to(x, y, "move to {0},{1}".format(x, y))
             elif element.isLineTo():
                 x = element.x
                 y = element.y
                 prev_position = (x, y)
                 self.pen_down()
-                self.move_to(x, y, "(Subpath: line to {0},{1}".format(x, y))
+                self.move_to(x, y, "Subpath: line to {0},{1}".format(x, y))
                 self.statistics.subpaths += 1
             elif element.isCurveTo():
                 accumulated_data_points = [(element.x, element.y)]
