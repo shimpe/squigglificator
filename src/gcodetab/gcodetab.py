@@ -2,7 +2,7 @@ from collections import namedtuple
 from os.path import expanduser
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QGraphicsPathItem, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QFileDialog
 
 from gcodetab.gcodegenerator import GCodeGenerator
 from tab import Tab
@@ -158,14 +158,7 @@ class GcodeTab(Tab):
                              self.parent.maximumApproximationErrorGcode.value())
         for layer in self.itemsPerLayer:
             for item in self.itemsPerLayer[layer].childItems():
-                if not item.isVisible():
-                    continue
-                if item.__class__ == QGraphicsEllipseItem:
-                    gen.circle(item)
-                elif item.__class__ == QGraphicsPathItem:
-                    gen.path(item)
-                else:
-                    print("boehoe - {0}".format(item.__class__))
+                gen.process_item(item)
 
         gen.add_statistics()
         gen.footer()

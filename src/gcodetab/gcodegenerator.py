@@ -9,8 +9,9 @@ from gcodetab.biarc import Biarc
 from gcodetab.gcodestatistics import GcodeStatistics
 from gcodetab.line import Line
 
-FORCE_PRINT = True
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem
 
+FORCE_PRINT = True
 
 class GCodeGenerator(object):
     def __init__(self, pageheight,
@@ -38,6 +39,15 @@ class GCodeGenerator(object):
         self.sampling_step = sampling_step
         self.tolerance = tolerance
         self.add_header()
+
+    def process_item(self, item):
+        if item.isVisible():
+            if item.__class__ == QGraphicsEllipseItem:
+                self.ellipse(item)
+            elif item.__class__ == QGraphicsPathItem:
+                self.path(item)
+            else:
+                print("Unknown QGraphicsItem type?! Please extend GCodeGenerator.process_item for class {0}".format(item.__class__))
 
     def add_comment(self, comment, force_print=False):
         if force_print:
@@ -127,7 +137,7 @@ G01 {1} F100 (start from known state: pen up)
         else:
             self.statistics.movetoslow += 1
 
-    def circle(self, ellipseitem, clockwise=True):
+    def ellipse(self, ellipseitem, clockwise=True):
         rect = ellipseitem.rect()
         center = rect.center()
         xradius = rect.width() / 2.0
