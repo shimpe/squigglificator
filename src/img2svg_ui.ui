@@ -48,7 +48,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -1581,7 +1581,7 @@
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>Gcode options</string>
+         <string>Gcode generation</string>
         </attribute>
         <widget class="QLabel" name="label_19">
          <property name="geometry">
@@ -2356,6 +2356,223 @@ Check in simulator e.g. Camotics</string>
          </property>
         </widget>
        </widget>
+       <widget class="QWidget" name="tab_3">
+        <attribute name="title">
+         <string>Gcode sender</string>
+        </attribute>
+        <widget class="QLabel" name="label_29">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>20</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Serial/USB port</string>
+         </property>
+         <property name="buddy">
+          <cstring>portGcodeSender</cstring>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="portGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>10</y>
+           <width>291</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>Not connected</string>
+          </property>
+         </item>
+        </widget>
+        <widget class="QPushButton" name="sendFileGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>50</y>
+           <width>91</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Send file</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="serialMonitorGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>130</y>
+           <width>901</width>
+           <height>231</height>
+          </rect>
+         </property>
+         <property name="documentTitle">
+          <string/>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Serial Monitor</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="sendRawTextGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>90</y>
+           <width>321</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>Type here a manual command to send to plotter</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="refreshPortsGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>420</x>
+           <y>10</y>
+           <width>121</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Refresh ports</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pauzeGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>91</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Pauze</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="cancelGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>90</y>
+           <width>91</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_35">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>60</y>
+           <width>61</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Send task</string>
+         </property>
+         <property name="buddy">
+          <cstring>sendTaskGcodeSender</cstring>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="sendTaskGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>50</y>
+           <width>161</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>No task selected</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Home</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pen Up</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pen Down</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Draw page outline (set up in Gcode generation tab)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Draw page margins (set up in Gcode generation tab)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mark page corners (set up in Gcode generation tab)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Draw 200x200 cross (to calibrate PPM)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Draw empty music paper (hah! didn't see that one coming did you!?)</string>
+          </property>
+         </item>
+        </widget>
+        <widget class="QPushButton" name="sendSketchGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>91</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Send sketch</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="sendByLayerGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>50</y>
+           <width>91</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Send by layer</string>
+         </property>
+        </widget>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -2634,6 +2851,16 @@ Check in simulator e.g. Camotics</string>
   <tabstop>homeEndGcode</tabstop>
   <tabstop>eport2dGcode</tabstop>
   <tabstop>eport2dGcodePerLayer</tabstop>
+  <tabstop>portGcodeSender</tabstop>
+  <tabstop>refreshPortsGcodeSender</tabstop>
+  <tabstop>sendSketchGcodeSender</tabstop>
+  <tabstop>sendByLayerGcodeSender</tabstop>
+  <tabstop>sendFileGcodeSender</tabstop>
+  <tabstop>sendTaskGcodeSender</tabstop>
+  <tabstop>pauzeGcodeSender</tabstop>
+  <tabstop>cancelGcodeSender</tabstop>
+  <tabstop>sendRawTextGcodeSender</tabstop>
+  <tabstop>serialMonitorGcodeSender</tabstop>
  </tabstops>
  <resources/>
  <connections/>
