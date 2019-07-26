@@ -48,7 +48,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2041,7 +2041,7 @@
           <string>pen up command</string>
          </property>
          <property name="text">
-          <string>Z60.0</string>
+          <string>Z70.0</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_32">
@@ -2449,7 +2449,7 @@ Check in simulator e.g. Camotics</string>
           <string>Refresh ports</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pauzeGcodeSender">
+        <widget class="QPushButton" name="pauseGcodeSender">
          <property name="geometry">
           <rect>
            <x>20</x>
@@ -2459,7 +2459,7 @@ Check in simulator e.g. Camotics</string>
           </rect>
          </property>
          <property name="text">
-          <string>Pauze</string>
+          <string>Pause</string>
          </property>
         </widget>
         <widget class="QPushButton" name="cancelGcodeSender">
@@ -2507,17 +2507,27 @@ Check in simulator e.g. Camotics</string>
          </item>
          <item>
           <property name="text">
-           <string>Home</string>
+           <string>Pen up</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Pen Up</string>
+           <string>Pen down</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Pen Down</string>
+           <string>Go to 0,0 (fast)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Home (slowly, more accurate)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Move along page outline with pen up</string>
           </property>
          </item>
          <item>
@@ -2533,11 +2543,6 @@ Check in simulator e.g. Camotics</string>
          <item>
           <property name="text">
            <string>Mark page corners (set up in Gcode generation tab)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Draw 200x200 cross (to calibrate PPM)</string>
           </property>
          </item>
          <item>
@@ -2571,6 +2576,99 @@ Check in simulator e.g. Camotics</string>
          <property name="text">
           <string>Send by layer</string>
          </property>
+        </widget>
+        <widget class="QLineEdit" name="initFinishedGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>750</x>
+           <y>50</y>
+           <width>113</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>start</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_37">
+         <property name="geometry">
+          <rect>
+           <x>560</x>
+           <y>50</y>
+           <width>201</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>String returned from machine
+when initialization is finished</string>
+         </property>
+         <property name="buddy">
+          <cstring>initFinishedGcodeSender</cstring>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="cmdFinishedGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>750</x>
+           <y>90</y>
+           <width>113</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>ok</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_38">
+         <property name="geometry">
+          <rect>
+           <x>560</x>
+           <y>90</y>
+           <width>201</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>String returned from machine
+when command is finished</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmdFinishedGcodeSender</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_39">
+         <property name="geometry">
+          <rect>
+           <x>560</x>
+           <y>20</y>
+           <width>58</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Baudrate</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="baudRateGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>750</x>
+           <y>10</y>
+           <width>111</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>115200</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9600</string>
+          </property>
+         </item>
         </widget>
        </widget>
       </widget>
@@ -2857,7 +2955,7 @@ Check in simulator e.g. Camotics</string>
   <tabstop>sendByLayerGcodeSender</tabstop>
   <tabstop>sendFileGcodeSender</tabstop>
   <tabstop>sendTaskGcodeSender</tabstop>
-  <tabstop>pauzeGcodeSender</tabstop>
+  <tabstop>pauseGcodeSender</tabstop>
   <tabstop>cancelGcodeSender</tabstop>
   <tabstop>sendRawTextGcodeSender</tabstop>
   <tabstop>serialMonitorGcodeSender</tabstop>
