@@ -26,6 +26,10 @@ class GcodeTab(Tab):
         self.parent.eport2dGcode.clicked.connect(self.OnGenerateGCodeAllLayers)
         self.parent.eport2dGcodePerLayer.clicked.connect(self.OnGenerateGCodePerLayer)
 
+    def after_load_bitmap(self):
+        self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
+        self.update_size_label()
+
     def OnXScaleChanged(self, value, skip_update_dependent=False):
         if not skip_update_dependent and self.parent.lockXYGcode.isChecked():
             self.parent.xScaleGcode.blockSignals(True)

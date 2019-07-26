@@ -8,6 +8,9 @@ class Tab(object):
         self.parent = parent
         self.itemsPerLayer = itemsPerLayer
 
+    def after_load_bitmap(self):
+        pass
+
     def toBlackAndWhite(self, image):
         newImage = QImage(image)
         for ii in range(newImage.width()):

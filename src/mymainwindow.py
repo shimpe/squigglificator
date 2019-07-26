@@ -10,6 +10,7 @@ from img2svg import Ui_MainWindow
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
 from gcodetab.gcodetab import GcodeTab
+from gcodesendertab.gcodesendertab import GcodeSenderTab
 
 
 class MyMainWindow(Ui_MainWindow):
@@ -32,10 +33,8 @@ class MyMainWindow(Ui_MainWindow):
         self.bitmapVisibility = True
         self.generated = {}
         self.itemsPerLayer = {}
-        self.squigglifyTabHandler = SquigglifyTab(self, self.itemsPerLayer)
-        self.bubblifyTabHandler = BubblifyTab(self, self.itemsPerLayer)
-        self.lsystifyTabHandler = LSystifyTab(self, self.itemsPerLayer)
-        self.gcodeTabHandler = GcodeTab(self, self.itemsPerLayer)
+        self.tabs = [SquigglifyTab, BubblifyTab, LSystifyTab, GcodeTab, GcodeSenderTab]
+        self.tabhandlers = [ t(self, self.itemsPerLayer) for t in self.tabs]
 
     def setupSlots(self):
         self.loadBitmap.clicked.connect(self.LoadBitmap)
@@ -57,10 +56,8 @@ class MyMainWindow(Ui_MainWindow):
         self.layersModel.itemChanged.connect(self.LayerChanged)
         self.exportSvg.clicked.connect(self.ExportSVG)
         self.exportSvgPerLayer.clicked.connect(self.ExportSVGPerLayer)
-        self.squigglifyTabHandler.setupSlots()
-        self.bubblifyTabHandler.setupSlots()
-        self.lsystifyTabHandler.setupSlots()
-        self.gcodeTabHandler.setupSlots()
+        for t in self.tabhandlers:
+            t.setupSlots()
 
     def ShowToolbar(self):
         self.toolBar.setVisible(True)
@@ -93,8 +90,9 @@ class MyMainWindow(Ui_MainWindow):
                 self.scene.addItem(self.bitmapItem)
                 self.hideBitmap.setText("Hide Bitmap")
                 self.bitmapVisibility = True
-        self.gcodeTabHandler.OnOffsetPresetGcode(self.offsetPresetGcode.currentText())
-        self.gcodeTabHandler.update_size_label()
+
+        for t in self.tabhandlers:
+            t.after_load_bitmap()
 
     def ActionZoom_In(self):
         # Zoom Factor
