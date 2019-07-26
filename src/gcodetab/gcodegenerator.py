@@ -82,6 +82,7 @@ class GCodeGenerator(object):
 ( https://github.com/shimpe/squigglificator )
 ( File created:  {0} )
 
+G90 (Absolute mode)
 G21 (All units in mm)
 G01 {1} F{2} (start from known state: pen up)
 """.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.pen_up_cmd, self.pen_down_speed)
