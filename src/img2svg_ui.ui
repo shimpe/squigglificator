@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Image to SVG</string>
+   <string>Squigglificator</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -48,7 +48,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2408,9 +2408,9 @@ Check in simulator e.g. Camotics</string>
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>130</y>
-           <width>901</width>
-           <height>231</height>
+           <y>170</y>
+           <width>731</width>
+           <height>201</height>
           </rect>
          </property>
          <property name="documentTitle">
@@ -2669,6 +2669,38 @@ when command is finished</string>
            <string>9600</string>
           </property>
          </item>
+        </widget>
+        <widget class="QLabel" name="label_40">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>140</y>
+           <width>201</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Commands queued on server</string>
+         </property>
+         <property name="buddy">
+          <cstring>queueSizeGcodeSender</cstring>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="queueSizeGcodeSender">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>130</y>
+           <width>171</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
         </widget>
        </widget>
       </widget>
@@ -2958,6 +2990,10 @@ when command is finished</string>
   <tabstop>pauseGcodeSender</tabstop>
   <tabstop>cancelGcodeSender</tabstop>
   <tabstop>sendRawTextGcodeSender</tabstop>
+  <tabstop>baudRateGcodeSender</tabstop>
+  <tabstop>initFinishedGcodeSender</tabstop>
+  <tabstop>cmdFinishedGcodeSender</tabstop>
+  <tabstop>queueSizeGcodeSender</tabstop>
   <tabstop>serialMonitorGcodeSender</tabstop>
  </tabstops>
  <resources/>
