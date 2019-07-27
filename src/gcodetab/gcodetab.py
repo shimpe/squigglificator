@@ -69,7 +69,7 @@ class GcodeTab(Tab):
         self.parent.yMarginGcode.setValue(options[text].ymargin)
 
     def OnOffsetPresetGcode(self, text):
-        bmheight, bmwidth = self.update_size_label()
+        bmheight, bmwidth, warnings = self.update_size_label()
         pw = self.parent.pageWidthGcode.value()
         ph = self.parent.pageHeightGcode.value()
         xm = self.parent.xMarginGcode.value()
@@ -135,7 +135,7 @@ class GcodeTab(Tab):
 
         self.parent.labelSizeGcode.setText(
             "current size: {0:.2f}mm x {1:.2f}mm -> {2}".format(bmwidth, bmheight, jointwarning))
-        return bmheight, bmwidth
+        return bmheight, bmwidth, warnings
 
     def OnGenerateGCodeAllLayers(self):
         newPath = QFileDialog.getSaveFileName(self.parent.centralwidget, "Export .cnc all layers",
@@ -233,3 +233,7 @@ class GcodeTab(Tab):
                     item.setVisible(True)
 
         return list_of_gen
+
+    def check_drawing_fits(self):
+        bmwidth, bmheight, warnings = self.update_size_label()
+        return warnings

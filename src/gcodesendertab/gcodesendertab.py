@@ -4,6 +4,7 @@ from serial.tools.list_ports import comports
 from os import linesep
 from gcodesendertab.plotterserver import PlotterServer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from time import sleep
 
 SETTLING_TIME = 2.0
 TIMEOUT = 10
@@ -40,6 +41,7 @@ class GcodeSenderTab(Tab):
 
     def on_quit(self):
         self.server.kill()
+        sleep(1)
 
     def OnQueueSizeChanged(self, newsize):
         self.parent.queueSizeGcodeSender.setText("{0}".format(newsize))
@@ -206,20 +208,43 @@ class GcodeSenderTab(Tab):
         return percentage_lines
 
     def OnSendSketch(self):
-        self.Log("[UI] Please wait while code is being generated.")
-        self.parent.application.processEvents()
-        gen = self.parent.get_sketch_code()
-        percentage_lines = 0
-        for line in gen.code.splitlines():
-            percentage_lines = self.submit_line(line, percentage_lines)
+        margin_errors = self.parent.check_drawing_fits()
+        ret = QMessageBox.Ok
+        if margin_errors:
+            msg_box = QMessageBox()
+            msg_box.setText("Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(" and ".join(margin_errors)))
+            msg_box.setInformativeText("Do you want to abort plotting?")
+            msg_box.setStandardButtons(QMessageBox.Ok |QMessageBox.Cancel)
+            msg_box.setDefaultButton(QMessageBox.Ok)
+            ret = msg_box.exec()
 
-
-    def OnSendByLayer(self):
-        self.Log("[UI] Please wait while code is being generated.")
-        self.parent.application.processEvents()
-        list_of_gen = self.parent.get_sketch_by_layer()
-        for idx,gen in enumerate(list_of_gen):
+        if ret == QMessageBox.Cancel:
+            self.Log("[UI] Please wait while code is being generated.")
+            self.parent.application.processEvents()
+            gen = self.parent.get_sketch_code()
             percentage_lines = 0
-            self.submit_line("%%% Layer change", percentage_lines)
             for line in gen.code.splitlines():
                 percentage_lines = self.submit_line(line, percentage_lines)
+        else:
+            self.Log("[UI] Aborting.")
+
+    def OnSendByLayer(self):
+        margin_errors = self.parent.check_drawing_fits()
+        ret = QMessageBox.Ok
+        if margin_errors:
+            msg_box = QMessageBox()
+            msg_box.setText("Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(" and ".join(margin_errors)))
+            msg_box.setInformativeText("Do you want to abort plotting?")
+            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msg_box.setDefaultButton(QMessageBox.Ok)
+            ret = msg_box.exec()
+
+        if ret == QMessageBox.Cancel:
+            self.Log("[UI] Please wait while code is being generated.")
+            self.parent.application.processEvents()
+            list_of_gen = self.parent.get_sketch_by_layer()
+            for idx,gen in enumerate(list_of_gen):
+                percentage_lines = 0
+                self.submit_line("%%% Layer change", percentage_lines)
+                for line in gen.code.splitlines():
+                    percentage_lines = self.submit_line(line, percentage_lines)

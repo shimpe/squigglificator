@@ -14,6 +14,9 @@ class Tab(object):
     def on_quit(self):
         pass
 
+    def check_drawing_fits(self):
+        return True
+
     def toBlackAndWhite(self, image):
         newImage = QImage(image)
         for ii in range(newImage.width()):

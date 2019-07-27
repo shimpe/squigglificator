@@ -225,3 +225,7 @@ class MyMainWindow(Ui_MainWindow):
     def get_sketch_by_layer(self):
         tabidx = self.tabs.index(GcodeTab)
         return self.tabhandlers[tabidx].get_sketch_by_layer()
+
+    def check_drawing_fits(self):
+        tabidx = self.tabs.index(GcodeTab)
+        return self.tabhandlers[tabidx].check_drawing_fits()
