@@ -11,6 +11,9 @@ class Tab(object):
     def after_load_bitmap(self):
         pass
 
+    def on_quit(self):
+        pass
+
     def toBlackAndWhite(self, image):
         newImage = QImage(image)
         for ii in range(newImage.width()):

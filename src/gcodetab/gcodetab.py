@@ -147,25 +147,7 @@ class GcodeTab(Tab):
         self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
         filename = newPath[0]
 
-        gen = GCodeGenerator(self.parent.pageHeightGcode.value(),
-                             self.parent.xScaleGcode.value(),
-                             self.parent.yScaleGcode.value(),
-                             self.parent.xOffsetGcode.value(),
-                             self.parent.yOffsetGcode.value(),
-                             self.parent.homeGcode.checkState() == Qt.Checked,
-                             self.parent.homeEndGcode.checkState() == Qt.Checked,
-                             self.parent.penUpCmdGcode.text(),
-                             self.parent.penDownCmdGcode.text(),
-                             self.parent.drawingSpeedGcode.value(),
-                             self.parent.penDownSpeedGcode.value(),
-                             self.parent.samplingDistanceGcode.value(),
-                             self.parent.maximumApproximationErrorGcode.value())
-        for layer in self.itemsPerLayer:
-            for item in self.itemsPerLayer[layer].childItems():
-                gen.process_item(item)
-
-        gen.add_statistics()
-        gen.footer()
+        gen = self.generate_code()
         with open(filename, "w") as f:
             f.write(gen.code)
 
@@ -192,25 +174,7 @@ class GcodeTab(Tab):
                     print("setting idx to invisible for item {0}".format(item))
                     item.setVisible(False)
             if self.parent.layersModel.item(idx).checkState() == Qt.Checked:
-                gen = GCodeGenerator(self.parent.pageHeightGcode.value(),
-                                     self.parent.xScaleGcode.value(),
-                                     self.parent.yScaleGcode.value(),
-                                     self.parent.xOffsetGcode.value(),
-                                     self.parent.yOffsetGcode.value(),
-                                     self.parent.homeGcode.checkState() == Qt.Checked,
-                                     self.parent.homeEndGcode.checkState() == Qt.Checked,
-                                     self.parent.penUpCmdGcode.text(),
-                                     self.parent.penDownCmdGcode.text(),
-                                     self.parent.drawingSpeedGcode.value(),
-                                     self.parent.penDownSpeedGcode.value(),
-                                     self.parent.samplingDistanceGcode.value(),
-                                     self.parent.maximumApproximationErrorGcode.value())
-                for layer in self.itemsPerLayer:
-                    for item in self.itemsPerLayer[layer].childItems():
-                        gen.process_item(item)
-
-                gen.add_statistics()
-                gen.footer()
+                gen = self.generate_code()
                 with open(layer_filename, "w") as f:
                     f.write(gen.code)
 
@@ -220,3 +184,52 @@ class GcodeTab(Tab):
                 if item.__class__ == QGraphicsItemGroup and \
                         self.parent.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
                     item.setVisible(True)
+
+    def generate_code(self):
+        gen = GCodeGenerator(self.parent.pageHeightGcode.value(),
+                             self.parent.xScaleGcode.value(),
+                             self.parent.yScaleGcode.value(),
+                             self.parent.xOffsetGcode.value(),
+                             self.parent.yOffsetGcode.value(),
+                             self.parent.homeGcode.checkState() == Qt.Checked,
+                             self.parent.homeEndGcode.checkState() == Qt.Checked,
+                             self.parent.penUpCmdGcode.text(),
+                             self.parent.penDownCmdGcode.text(),
+                             self.parent.drawingSpeedGcode.value(),
+                             self.parent.penDownSpeedGcode.value(),
+                             self.parent.samplingDistanceGcode.value(),
+                             self.parent.maximumApproximationErrorGcode.value())
+        for layer in self.itemsPerLayer:
+            for item in self.itemsPerLayer[layer].childItems():
+                gen.process_item(item)
+        gen.add_statistics()
+        gen.footer()
+        return gen
+
+    def get_sketch_code(self):
+        self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
+        return self.generate_code()
+
+    def get_sketch_by_layer(self):
+        # make stuff invisible to avoid sending it to gcode
+        list_of_gen = []
+        for idx, layer in enumerate(self.itemsPerLayer):
+            for item in self.parent.scene.items():
+                item.setVisible(True)
+                forceAlwaysInvisible = item.__class__ == QGraphicsPixmapItem
+                forceInvisibleInCurrentLayer = item.__class__ == QGraphicsItemGroup and \
+                                               (item != self.itemsPerLayer[layer] or \
+                                                self.parent.layersModel.item(idx).checkState() != Qt.Checked)
+                if forceAlwaysInvisible or forceInvisibleInCurrentLayer:  # ouch
+                    item.setVisible(False)
+            if self.parent.layersModel.item(idx).checkState() == Qt.Checked:
+                list_of_gen.append(self.generate_code())
+
+        # restore visibility
+        for idx, layer in enumerate(self.itemsPerLayer):
+            for item in self.parent.scene.items():
+                if item.__class__ == QGraphicsItemGroup and \
+                        self.parent.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
+                    item.setVisible(True)
+
+        return list_of_gen

@@ -48,7 +48,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2330,7 +2330,7 @@ Check in simulator e.g. Camotics</string>
           </rect>
          </property>
          <property name="text">
-          <string>Home plotter at the start of drawing</string>
+          <string>Home plotter at the start of each layer</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -2349,10 +2349,10 @@ Check in simulator e.g. Camotics</string>
           </rect>
          </property>
          <property name="text">
-          <string>Home plotter at the end of drawing</string>
+          <string>Home plotter at the end of each layer</string>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </widget>
@@ -2543,11 +2543,6 @@ Check in simulator e.g. Camotics</string>
          <item>
           <property name="text">
            <string>Mark page corners (set up in Gcode generation tab)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Draw empty music paper (hah! didn't see that one coming did you!?)</string>
           </property>
          </item>
         </widget>

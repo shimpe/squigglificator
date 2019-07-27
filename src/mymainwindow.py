@@ -66,6 +66,8 @@ class MyMainWindow(Ui_MainWindow):
         self.layers.setVisible(True)
 
     def OnQuit(self):
+        for t in self.tabhandlers:
+            t.on_quit()
         import sys
         sys.exit()
 
@@ -215,3 +217,11 @@ class MyMainWindow(Ui_MainWindow):
                 if item.__class__ == QGraphicsItemGroup and \
                         self.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
                     item.setVisible(True)
+
+    def get_sketch_code(self):
+        tabidx = self.tabs.index(GcodeTab)
+        return self.tabhandlers[tabidx].get_sketch_code()
+
+    def get_sketch_by_layer(self):
+        tabidx = self.tabs.index(GcodeTab)
+        return self.tabhandlers[tabidx].get_sketch_by_layer()

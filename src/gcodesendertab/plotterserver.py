@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 from serial.serialutil import SerialException
 from serial import serial_for_url
+from constants import LAYER_CHANGE_CMD
 from time import sleep
 from os import linesep
 import io
@@ -14,6 +15,7 @@ class PlotterServer(QObject):
     enabledisable_send_controls = pyqtSignal(bool)
     log = pyqtSignal(str)
     on_pause = pyqtSignal()
+    request_layer_change = pyqtSignal()
     on_resume = pyqtSignal()
     on_cancel = pyqtSignal()
     on_killed = pyqtSignal()
@@ -66,20 +68,28 @@ class PlotterServer(QObject):
                             break
                     cmd = queue.get()
                     self.on_queuesize_changed.emit(self.queue.qsize())
-                    self.write_to_serial(cmd, self.okstring)
+                    if cmd == LAYER_CHANGE_CMD:
+                        self.request_layer_change.emit()
+                        sleep(1.0)
+                    else:
+                        self.write_to_serial(cmd, self.okstring)
                     queue.task_done()
             if self.canceled:
-                while not queue.empty():
-                    try:
-                        queue.get(False)
-                    except Empty:
-                        continue
-                    queue.task_done()
-                    self.on_queuesize_changed.emit(self.queue.qsize())
+                self.cleanup_remaining_queue_entries(queue)
                 self.canceled = False
 
+        self.cleanup_remaining_queue_entries(queue)
         self.close()
         self.on_killed.emit()
+
+    def cleanup_remaining_queue_entries(self, queue):
+        while not queue.empty():
+            try:
+                queue.get(False)
+            except Empty:
+                continue
+            queue.task_done()
+            self.on_queuesize_changed.emit(self.queue.qsize())
 
     def cancel(self):
         self.canceled = True

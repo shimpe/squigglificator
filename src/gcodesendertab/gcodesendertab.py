@@ -3,7 +3,7 @@ from os.path import expanduser
 from serial.tools.list_ports import comports
 from os import linesep
 from gcodesendertab.plotterserver import PlotterServer
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 SETTLING_TIME = 2.0
 TIMEOUT = 10
@@ -22,6 +22,8 @@ class GcodeSenderTab(Tab):
         self.parent.sendRawTextGcodeSender.returnPressed.connect(self.OnSendRawCommand)
         self.parent.sendTaskGcodeSender.activated.connect(self.OnSendTask)
         self.parent.sendFileGcodeSender.clicked.connect(self.OnSendFile)
+        self.parent.sendSketchGcodeSender.clicked.connect(self.OnSendSketch)
+        self.parent.sendByLayerGcodeSender.clicked.connect(self.OnSendByLayer)
         self.EnableDisableSendControls(False)
         self.parent.pauseGcodeSender.clicked.connect(self.OnPauseCode)
         self.parent.cancelGcodeSender.clicked.connect(self.OnCancelCode)
@@ -30,10 +32,14 @@ class GcodeSenderTab(Tab):
         self.server.enabledisable_send_controls.connect(self.EnableDisableSendControls)
         self.server.log.connect(self.Log)
         self.server.on_pause.connect(self.OnPauseServer)
+        self.server.request_layer_change.connect(self.RequestPause)
         self.server.on_resume.connect(self.OnResumeServer)
         self.server.on_cancel.connect(self.OnCancelServer)
         self.server.on_killed.connect(self.OnKilledServer)
         self.server.on_queuesize_changed.connect(self.OnQueueSizeChanged)
+
+    def on_quit(self):
+        self.server.kill()
 
     def OnQueueSizeChanged(self, newsize):
         self.parent.queueSizeGcodeSender.setText("{0}".format(newsize))
@@ -59,6 +65,10 @@ class GcodeSenderTab(Tab):
             self.server.pause()
         else:
             self.server.resume()
+
+    def RequestPause(self):
+        self.Log("[Server] Requesting layer change. Please resume when ready to start next layer.")
+        self.server.pause()
 
     def OnPauseServer(self):
         self.parent.pauseGcodeSender.setText("Resume")
@@ -183,11 +193,33 @@ class GcodeSenderTab(Tab):
         percentage_lines = 0
         with open(loadpath[0], "r") as f:
             for line in f.readlines():
-                # filter out the % lines (start/stop of file)
-                if line.strip() == "%":
-                    percentage_lines += 1 # no need to submit to plotter server
-                else:
-                    # everything after second % is ignored
-                    if percentage_lines < 2:
-                        self.server.submit(line)
+                percentage_lines = self.submit_line(line, percentage_lines)
 
+    def submit_line(self, line, percentage_lines):
+        # filter out the % lines (start/stop of file)
+        if line.strip() == "%":
+            percentage_lines += 1  # no need to submit to plotter server
+        else:
+            # everything after second % is ignored
+            if percentage_lines < 2:
+                self.server.submit(line)
+        return percentage_lines
+
+    def OnSendSketch(self):
+        self.Log("[UI] Please wait while code is being generated.")
+        self.parent.application.processEvents()
+        gen = self.parent.get_sketch_code()
+        percentage_lines = 0
+        for line in gen.code.splitlines():
+            percentage_lines = self.submit_line(line, percentage_lines)
+
+
+    def OnSendByLayer(self):
+        self.Log("[UI] Please wait while code is being generated.")
+        self.parent.application.processEvents()
+        list_of_gen = self.parent.get_sketch_by_layer()
+        for idx,gen in enumerate(list_of_gen):
+            percentage_lines = 0
+            self.submit_line("%%% Layer change", percentage_lines)
+            for line in gen.code.splitlines():
+                percentage_lines = self.submit_line(line, percentage_lines)
