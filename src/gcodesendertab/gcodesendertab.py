@@ -209,7 +209,7 @@ class GcodeSenderTab(Tab):
 
     def OnSendSketch(self):
         margin_errors = self.parent.check_drawing_fits()
-        ret = QMessageBox.Ok
+        ret = QMessageBox.Cancel
         if margin_errors:
             msg_box = QMessageBox()
             msg_box.setText("Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(" and ".join(margin_errors)))
@@ -230,7 +230,7 @@ class GcodeSenderTab(Tab):
 
     def OnSendByLayer(self):
         margin_errors = self.parent.check_drawing_fits()
-        ret = QMessageBox.Ok
+        ret = QMessageBox.Cancel
         if margin_errors:
             msg_box = QMessageBox()
             msg_box.setText("Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(" and ".join(margin_errors)))
