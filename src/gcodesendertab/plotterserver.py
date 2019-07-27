@@ -141,13 +141,14 @@ class PlotterServer(QObject):
             print("[Server] port = '{0}' not present in {1}".format(port, item_to_device.keys()))
 
     def write_to_serial(self, cmd, okstring):
+        original_cmd = cmd[:]
         cmd = cmd.split("(")[0]  # cut off comments
         cmd = cmd.split(";")[0]  # cut off comments
         cmd = cmd.strip().upper()
         if cmd:
             if self.serial_is_open:
                 cmd = cmd + linesep
-                self.log.emit("[Server] < " + cmd)
+                self.log.emit("[Server] < " + original_cmd)
                 self.sio.write(cmd)
                 self.sio.flush()  # it is buffering. required to get the data out *now*
                 ok = False
