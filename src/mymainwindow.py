@@ -12,6 +12,8 @@ from squigglifytab.squigglifytab import SquigglifyTab
 from gcodetab.gcodetab import GcodeTab
 from gcodesendertab.gcodesendertab import GcodeSenderTab
 
+TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab]
+TABS_OVER_ALL_LAYERS = [GcodeTab, GcodeSenderTab]
 
 class MyMainWindow(Ui_MainWindow):
     """
@@ -34,6 +36,8 @@ class MyMainWindow(Ui_MainWindow):
         self.homeFolder = None
         self.layersModel = QStandardItemModel()
         self.layersList.setModel(self.layersModel)
+        self.layersExtraProperties = {}
+        self.previousActiveLayer = None
         self.AddLayer()
         self.layersList.setCurrentIndex(self.layersModel.index(0, 0))
         self.bitmapVisibility = True
@@ -66,6 +70,7 @@ class MyMainWindow(Ui_MainWindow):
         self.addLayer.clicked.connect(self.AddLayer)
         self.removeLayer.clicked.connect(self.RemoveSelected)
         self.layersModel.itemChanged.connect(self.LayerChanged)
+        self.layersList.clicked.connect(self.LayerSelectionChanged)
         self.exportSvg.clicked.connect(self.ExportSVG)
         self.exportSvgPerLayer.clicked.connect(self.ExportSVGPerLayer)
         for t in self.tabhandlers:
@@ -190,6 +195,37 @@ class MyMainWindow(Ui_MainWindow):
                 self.scene.addItem(self.bitmapItem)
             self.hideBitmap.setText("Hide Bitmap")
             self.bitmapVisibility = True
+
+    def LayerSelectionChanged(self, new_layer):
+        new_layer = QPersistentModelIndex(new_layer)
+
+        if self.previousActiveLayer is None:
+            previous_layer = QPersistentModelIndex(self.layersModel.index(0, 0))
+        else:
+            previous_layer = self.previousActiveLayer
+
+        self.previousActiveLayer = new_layer
+
+        # remember parameter settings from previous layer when switching to new layer
+        self.layersExtraProperties[previous_layer] = {}
+        self.layersExtraProperties["GENERAL"] = {}
+        for t in TABS_WITH_PER_LAYER_PARAMS:
+            tabidx = self.tabs.index(t)
+            self.layersExtraProperties[previous_layer][tabidx] = self.tabhandlers[tabidx].ui_to_model()
+        for t in TABS_OVER_ALL_LAYERS:
+            tabidx = self.tabs.index(t)
+            self.layersExtraProperties["GENERAL"][tabidx] = self.tabhandlers[tabidx].ui_to_model()
+
+        # show parameter settings on newly selected layer if they were stored in a previous visit already
+        if new_layer in self.layersExtraProperties:
+            for t in TABS_WITH_PER_LAYER_PARAMS:
+                tabidx = self.tabs.index(t)
+                if tabidx in self.layersExtraProperties[new_layer]:
+                    self.tabhandlers[tabidx].model_to_ui(self.layersExtraProperties[new_layer][tabidx])
+            for t in TABS_OVER_ALL_LAYERS:
+                tabidx = self.tabs.index(t)
+                if tabidx in self.layersExtraProperties[new_layer]:
+                    self.tabhandlers[tabidx].model_to_ui(self.layersExtraProperties["GENERAL"][tabidx])
 
     def LayerChanged(self):
         """
