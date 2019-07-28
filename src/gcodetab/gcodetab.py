@@ -15,6 +15,7 @@ class GcodeTab(Tab):
     """
     gcode generation tab
     """
+
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.homeFolder = expanduser("~")
@@ -38,26 +39,19 @@ class GcodeTab(Tab):
         return GCODETAB
 
     def ui_to_model(self):
-        model = {}
-        model['pagePreset'] = self.parent.pagePresetGcode.currentText()
-        model['pageWidth'] = self.parent.pageWidthGcode.value()
-        model['pageHeight'] = self.parent.pageHeightGcode.value()
-        model['xMargin'] = self.parent.xMarginGcode.value()
-        model['yMargin'] = self.parent.yMarginGcode.value()
-        model['xScale'] = self.parent.xScaleGcode.value()
-        model['yScale'] = self.parent.yScaleGcode.value()
-        model['lockXY'] = self.parent.lockXYGcode.isChecked()
-        model['offsetPreset'] = self.parent.offsetPresetGcode.currentText()
-        model['xOffset'] = self.parent.xOffsetGcode.value()
-        model['yOffset'] = self.parent.yOffsetGcode.value()
-        model['penUp'] = self.parent.penUpCmdGcode.text()
-        model['penDown'] = self.parent.penDownCmdGcode.text()
-        model['drawingSpeed'] = self.parent.drawingSpeedGcode.value()
-        model['penDownSpeed'] = self.parent.penDownSpeedGcode.value()
-        model['samplingDistance'] = self.parent.samplingDistanceGcode.value()
-        model['approximationError'] = self.parent.maximumApproximationErrorGcode.value()
-        model['homeBegin'] = self.parent.homeGcode.checkState()
-        model['homeEdnd'] = self.parent.homeEndGcode.checkState()
+        model = {'pagePreset': self.parent.pagePresetGcode.currentText(),
+                 'pageWidth': self.parent.pageWidthGcode.value(), 'pageHeight': self.parent.pageHeightGcode.value(),
+                 'xMargin': self.parent.xMarginGcode.value(), 'yMargin': self.parent.yMarginGcode.value(),
+                 'xScale': self.parent.xScaleGcode.value(), 'yScale': self.parent.yScaleGcode.value(),
+                 'lockXY': self.parent.lockXYGcode.isChecked(),
+                 'offsetPreset': self.parent.offsetPresetGcode.currentText(),
+                 'xOffset': self.parent.xOffsetGcode.value(), 'yOffset': self.parent.yOffsetGcode.value(),
+                 'penUp': self.parent.penUpCmdGcode.text(), 'penDown': self.parent.penDownCmdGcode.text(),
+                 'drawingSpeed': self.parent.drawingSpeedGcode.value(),
+                 'penDownSpeed': self.parent.penDownSpeedGcode.value(),
+                 'samplingDistance': self.parent.samplingDistanceGcode.value(),
+                 'approximationError': self.parent.maximumApproximationErrorGcode.value(),
+                 'homeBegin': self.parent.homeGcode.checkState(), 'homeEdnd': self.parent.homeEndGcode.checkState()}
         return model
 
     def model_to_ui(self, model):
@@ -160,8 +154,6 @@ class GcodeTab(Tab):
         ph = self.parent.pageHeightGcode.value()
         xm = self.parent.xMarginGcode.value()
         ym = self.parent.yMarginGcode.value()
-        xs = self.parent.xScaleGcode.value()
-        ys = self.parent.yScaleGcode.value()
 
         if text == "Center on page":
             self.parent.xOffsetGcode.setValue((pw - bmwidth) / 2.0)

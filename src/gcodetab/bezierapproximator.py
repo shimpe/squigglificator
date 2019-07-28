@@ -22,7 +22,8 @@ class BezierApproximator(object):
             return False
         return 0 < pt.real < 1
 
-    def almost_collinear(self, p1, p2, p3, tolerance):
+    @staticmethod
+    def almost_collinear(p1, p2, p3, tolerance):
         """
         check if three points are (almost) collinear
         if so, the system can generate a line segment instead of a biarc

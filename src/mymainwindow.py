@@ -15,10 +15,12 @@ from gcodesendertab.gcodesendertab import GcodeSenderTab
 TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab]
 TABS_OVER_ALL_LAYERS = [GcodeTab, GcodeSenderTab]
 
+
 class MyMainWindow(Ui_MainWindow):
     """
     main window class
     """
+
     def __init__(self, application):
         super().__init__()
         self.application = application
@@ -44,7 +46,7 @@ class MyMainWindow(Ui_MainWindow):
         self.generated = {}
         self.itemsPerLayer = {}
         self.tabs = [SquigglifyTab, BubblifyTab, LSystifyTab, GcodeTab, GcodeSenderTab]
-        self.tabhandlers = [ t(self, self.itemsPerLayer) for t in self.tabs]
+        self.tabhandlers = [t(self, self.itemsPerLayer) for t in self.tabs]
 
     def setupSlots(self):
         """

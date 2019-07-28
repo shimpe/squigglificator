@@ -6,6 +6,7 @@ class Line(object):
     class to represent a line
     (and it's abused a bit to also represent a line segment :( )
     """
+
     def __init__(self):
         self.p = None
         self.m = None
@@ -22,7 +23,7 @@ class Line(object):
         """
 
         newline = self.from_point_slope(p1, self.slope(p1, p2))
-        newline.origp1 = p1 # origp1 and origp2 are kept because Line is also abused to represent a line segment
+        newline.origp1 = p1  # origp1 and origp2 are kept because Line is also abused to represent a line segment
         newline.origp2 = p2
         return newline
 

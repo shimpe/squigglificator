@@ -57,7 +57,8 @@ class Tab(QObject):
         """
         pass
 
-    def toBlackAndWhite(self, image):
+    @staticmethod
+    def toBlackAndWhite(image):
         """
         convenience method to convert a color image to b&w
         :param image: any image

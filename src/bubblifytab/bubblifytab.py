@@ -10,10 +10,12 @@ from mapping import Mapping
 from tab import Tab
 from tab_constants import BUBBLIFYTAB
 
+
 class BubblifyTab(Tab):
     """
     this tab implements the "Bubblify" wizard
     """
+
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.localBitmap = None
@@ -45,15 +47,14 @@ class BubblifyTab(Tab):
         return BUBBLIFYTAB
 
     def ui_to_model(self):
-        model = {}
-        model['minRadius'] = self.parent.minRadiusBubblify.value()
-        model['maxRadius'] = self.parent.maxRadiusBubblify.value()
-        model['invertColors'] = self.parent.invertColors.checkState()
-        model['minProbability'] = self.parent.minProbabilityBubblify.value()
-        model['maxProbability'] = self.parent.maxProbabilityBubblify.value()
-        model['radiusTolerance'] = self.parent.radiusToleranceBubblify.value()
-        model['minBrightness'] = self.parent.minBrightnessBubblify.value()
-        model['maxBrightness'] = self.parent.maxBrightnessBubblify.value()
+        model = {'minRadius': self.parent.minRadiusBubblify.value(),
+                 'maxRadius': self.parent.maxRadiusBubblify.value(),
+                 'invertColors': self.parent.invertColors.checkState(),
+                 'minProbability': self.parent.minProbabilityBubblify.value(),
+                 'maxProbability': self.parent.maxProbabilityBubblify.value(),
+                 'radiusTolerance': self.parent.radiusToleranceBubblify.value(),
+                 'minBrightness': self.parent.minBrightnessBubblify.value(),
+                 'maxBrightness': self.parent.maxBrightnessBubblify.value()}
         return model
 
     def model_to_ui(self, model):
@@ -107,7 +108,7 @@ class BubblifyTab(Tab):
             for y in range(image.height()):
                 grayvalue = qGray(image.pixel(x, y))
                 if invertColors:
-                    grayvalue = 255-grayvalue
+                    grayvalue = 255 - grayvalue
                 if minBrightness < grayvalue < maxBrightness:
                     probability = Mapping.linexp(grayvalue, 0, 255, maxProbablity / 100, minProbability / 100)
                     addNow = random() < probability

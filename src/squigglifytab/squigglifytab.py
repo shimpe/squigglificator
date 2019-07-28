@@ -70,17 +70,12 @@ class SquigglifyTab(Tab):
         summarize ui controls in a model (dict of key->value)
         :return: model
         """
-        model = {}
-        model['noOfLines'] = self.parent.noOfLines.value()
-        model['invertColors'] = self.parent.invertColors.checkState()
-        model['verticalSquiggles'] = self.parent.verticalSquiggles.checkState()
-        model['strength'] = self.parent.strength.value()
-        model['detail'] = self.parent.detail.value()
-        model['lineWidth'] = self.parent.lineWidth.value()
-        model['minBrightness'] = self.parent.minBrightness.value()
-        model['maxBrightness'] = self.parent.maxBrightness.value()
-        model['minStepSize'] = self.parent.minStepSize.value()
-        model['maxStepSize'] = self.parent.maxStepSize.value()
+        model = {'noOfLines': self.parent.noOfLines.value(), 'invertColors': self.parent.invertColors.checkState(),
+                 'verticalSquiggles': self.parent.verticalSquiggles.checkState(),
+                 'strength': self.parent.strength.value(), 'detail': self.parent.detail.value(),
+                 'lineWidth': self.parent.lineWidth.value(), 'minBrightness': self.parent.minBrightness.value(),
+                 'maxBrightness': self.parent.maxBrightness.value(), 'minStepSize': self.parent.minStepSize.value(),
+                 'maxStepSize': self.parent.maxStepSize.value()}
         return model
 
     def model_to_ui(self, model):

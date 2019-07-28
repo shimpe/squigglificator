@@ -24,6 +24,7 @@ class LSystifyTab(Tab):
     """
     tab to represent the lsystify wizard
     """
+
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.localBitmap = None
@@ -46,31 +47,23 @@ class LSystifyTab(Tab):
         return LSYSTIFYTAB
 
     def ui_to_model(self):
-        model = {}
-        model['preset'] = self.parent.presetLSystify.currentText()
-        model['iterations'] = self.parent.iterationsLSystify.value()
-        model['axiom'] = self.parent.axiomLSystify.text()
-        model['rules'] = self.parent.rulesLSystify.text()
-        model['constants'] = self.parent.constantsLSystify.text()
-        model['invertColors'] = self.parent.invertColorsLSystify.checkState()
-        model['lineWidth'] = self.parent.lineWidthLSystify.value()
-        model['clip'] = self.parent.clipToBitmapLSystify.checkState()
-        model['initialAngle'] = self.parent.initialAngleLSystify.value()
-        model['plusAngle'] = self.parent.plusAngleLSystify.value()
-        model['minAngle'] = self.parent.minAngleLSystify.value()
-        model['xScale'] = self.parent.xScaleLSystify.value()
-        model['yScale'] = self.parent.yScaleLSystify.value()
-        model['xOffset'] = self.parent.xOffsetLSystify.value()
-        model['yOffset'] = self.parent.yOffsetLSystify.value()
-        model['method'] = self.parent.methodLSystify.currentText()
-        model['minBrightness'] = self.parent.minBrightnessLSystify.value()
-        model['maxBrightness'] = self.parent.maxBrightnessLSystify.value()
-        model['minRadius'] = self.parent.minRadiusLSystify.value()
-        model['maxRadius'] = self.parent.maxRadiusLSystify.value()
-        model['minStepSize'] = self.parent.minStepSizeLSystify.value()
-        model['maxStepSize'] = self.parent.maxStepSizeLSystify.value()
-        model['strength'] = self.parent.strengthLSystify.value()
-        model['detail'] = self.parent.detailLSystify.value()
+        model = {'preset': self.parent.presetLSystify.currentText(),
+                 'iterations': self.parent.iterationsLSystify.value(), 'axiom': self.parent.axiomLSystify.text(),
+                 'rules': self.parent.rulesLSystify.text(), 'constants': self.parent.constantsLSystify.text(),
+                 'invertColors': self.parent.invertColorsLSystify.checkState(),
+                 'lineWidth': self.parent.lineWidthLSystify.value(),
+                 'clip': self.parent.clipToBitmapLSystify.checkState(),
+                 'initialAngle': self.parent.initialAngleLSystify.value(),
+                 'plusAngle': self.parent.plusAngleLSystify.value(), 'minAngle': self.parent.minAngleLSystify.value(),
+                 'xScale': self.parent.xScaleLSystify.value(), 'yScale': self.parent.yScaleLSystify.value(),
+                 'xOffset': self.parent.xOffsetLSystify.value(), 'yOffset': self.parent.yOffsetLSystify.value(),
+                 'method': self.parent.methodLSystify.currentText(),
+                 'minBrightness': self.parent.minBrightnessLSystify.value(),
+                 'maxBrightness': self.parent.maxBrightnessLSystify.value(),
+                 'minRadius': self.parent.minRadiusLSystify.value(), 'maxRadius': self.parent.maxRadiusLSystify.value(),
+                 'minStepSize': self.parent.minStepSizeLSystify.value(),
+                 'maxStepSize': self.parent.maxStepSizeLSystify.value(),
+                 'strength': self.parent.strengthLSystify.value(), 'detail': self.parent.detailLSystify.value()}
         return model
 
     def model_to_ui(self, model):
@@ -99,7 +92,8 @@ class LSystifyTab(Tab):
         self.parent.strengthLSystify.setValue(float(model['strength']))
         self.parent.detailLSystify.setValue(float(model['detail']))
 
-    def add_dir(self, gs):
+    @staticmethod
+    def add_dir(gs):
         """
         semantic action used in the LSystem interpreter: adds direction vector to global state
         :param gs: globalstate object
@@ -191,7 +185,8 @@ class LSystifyTab(Tab):
             self.parent.minAngleLSystify.setValue(-60)
             self.parent.plusAngleLSystify.setValue(60)
 
-    def push_state(self, gs):
+    @staticmethod
+    def push_state(gs):
         """
         semantic action used in LSystem interpreter, to remember current state
         :param gs: global state
@@ -200,7 +195,8 @@ class LSystifyTab(Tab):
         gs["posstack"] = gs["posstack"].append(gs["x,y"])
         gs["dirstack"] = gs["dirstack"].append(gs["dir"])
 
-    def pop_state(self, gs):
+    @staticmethod
+    def pop_state(gs):
         """
         semantic action used in LSystem interpreter, to go back to previous state
         :param gs: global state
@@ -254,7 +250,7 @@ class LSystifyTab(Tab):
                                            image.width(),
                                            image.height())
         else:
-            assert(False)
+            assert False
 
         pos = self.reversed_pixel_order.pop()
         stepsize = 1
@@ -283,7 +279,8 @@ class LSystifyTab(Tab):
         group = methodhandler.finish()
         self.addNewGraphicsItems(group)
 
-    def parse_rules(self, rules):
+    @staticmethod
+    def parse_rules(rules):
         """
         parse rules from ui specification into LSystem rules
         :param rules:
@@ -305,7 +302,8 @@ class LSystifyTab(Tab):
                 pass
         return result
 
-    def parse_constants(self, constants):
+    @staticmethod
+    def parse_constants(constants):
         """
         Parse constants from Ui into LSystem constants
         :param constants:
@@ -443,7 +441,7 @@ class LSystifyTab(Tab):
         finalxy = []
         xs = []
         ys = []
-        direction = np.array([[0,],[1,]])
+        direction = np.array([[0, ], [1, ]])
         for idx, point in enumerate(self.lsysteminterpreter.globalstate["pts"]):
             x = point[0][0][0]
             y = point[0][1][0]

@@ -6,10 +6,12 @@ from gcodesendertab.plotterserver import PlotterServer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from tab_constants import GCODESENDERTAB
 
+
 class GcodeSenderTab(Tab):
     """
     tab to implement a gcode sender
     """
+
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.homeFolder = expanduser("~")
@@ -47,10 +49,9 @@ class GcodeSenderTab(Tab):
         return GCODESENDERTAB
 
     def ui_to_model(self):
-        model = {}
-        model['baudrate'] = self.parent.baudRateGcodeSender.currentText()
-        model['initFinished'] = self.parent.initFinishedGcodeSender.text()
-        model['cmdFinished'] = self.parent.cmdFinishedGcodeSender.text()
+        model = {'baudrate': self.parent.baudRateGcodeSender.currentText(),
+                 'initFinished': self.parent.initFinishedGcodeSender.text(),
+                 'cmdFinished': self.parent.cmdFinishedGcodeSender.text()}
         return model
 
     def model_to_ui(self, model):
@@ -81,7 +82,7 @@ class GcodeSenderTab(Tab):
         """
         if not msg.endswith(linesep):
             msg += linesep
-        #print(msg)
+        # print(msg)
         self.parent.serialMonitorGcodeSender.insertPlainText(msg)
         self.parent.serialMonitorGcodeSender.ensureCursorVisible()
 
@@ -199,7 +200,8 @@ class GcodeSenderTab(Tab):
         if newport and newport != "Not connected":
             startstring = self.parent.initFinishedGcodeSender.text().strip()
             baudrate = int(self.parent.baudRateGcodeSender.currentText())
-            self.Log("[UI] Establishing machine connection. Please wait until finished. UI will be unresponsive during init.")
+            self.Log(
+                "[UI] Establishing machine connection. Please wait until finished. UI will be unresponsive during init.")
             self.EnableDisableSendControls(False)
             self.parent.application.processEvents()
             self.server.connect(newport, baudrate, self.item_to_device, startstring)
@@ -223,50 +225,54 @@ class GcodeSenderTab(Tab):
         """
         cmd = self.parent.sendTaskGcodeSender.itemText(cmdidx)
         task_to_code = {
-            'No task selected' : '',
-            'Pen up' : 'G00 {pu} F{ps}'.format(pu=self.parent.penUpCmdGcode.text(), ps=self.parent.penDownSpeedGcode.text()),
-            'Pen down': 'G00 {pd} F{ps}'.format(pd=self.parent.penDownCmdGcode.text(), ps=self.parent.penDownSpeedGcode.text()),
-            'Go to 0,0 (fast)' : "G00 X0 Y0",
-            'Home (slow and accurate)' : "G00 X0 Y0|G28 X Y",
-            'Move along page outline with pen up' : "G00 {pu} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
+            'No task selected': '',
+            'Pen up': 'G00 {pu} F{ps}'.format(pu=self.parent.penUpCmdGcode.text(),
+                                              ps=self.parent.penDownSpeedGcode.text()),
+            'Pen down': 'G00 {pd} F{ps}'.format(pd=self.parent.penDownCmdGcode.text(),
+                                                ps=self.parent.penDownSpeedGcode.text()),
+            'Go to 0,0 (fast)': "G00 X0 Y0",
+            'Home (slow and accurate)': "G00 X0 Y0|G28 X Y",
+            'Move along page outline with pen up': "G00 {pu} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
-                pw=self.parent.pageWidthGcode.text().replace("M","").replace("m",""),
+                pw=self.parent.pageWidthGcode.text().replace("M", "").replace("m", ""),
                 ds=self.parent.drawingSpeedGcode.text(),
-                ph=self.parent.pageHeightGcode.text().replace("M","").replace("m","")
+                ph=self.parent.pageHeightGcode.text().replace("M", "").replace("m", "")
             ),
-            'Draw page outline (set up in Gcode generation tab)' : "G00 {pd} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
+            'Draw page outline (set up in Gcode generation tab)': "G00 {pd} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
                 pd=self.parent.penDownCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
-                pw=self.parent.pageWidthGcode.text().replace("M","").replace("m",""),
+                pw=self.parent.pageWidthGcode.text().replace("M", "").replace("m", ""),
                 ds=self.parent.drawingSpeedGcode.text(),
-                ph=self.parent.pageHeightGcode.text().replace("M","").replace("m","")
+                ph=self.parent.pageHeightGcode.text().replace("M", "").replace("m", "")
             ),
-            'Draw page margins (set up in Gcode generation tab)' : "G00 {pu} F{ps}|G00 X{lx} Y{by}|G00 {pd} F{ps}|G01 X{rx} Y{by} F{ds}|G01 X{rx} Y{ty}|G01 X{lx} Y{ty}|G01 X{lx} Y{by}".format(
+            'Draw page margins (set up in Gcode generation tab)': "G00 {pu} F{ps}|G00 X{lx} Y{by}|G00 {pd} F{ps}|G01 X{rx} Y{by} F{ds}|G01 X{rx} Y{ty}|G01 X{lx} Y{ty}|G01 X{lx} Y{by}".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
                 pd=self.parent.penDownCmdGcode.text(),
                 ds=self.parent.drawingSpeedGcode.text(),
                 lx=self.parent.xMarginGcode.value(),
                 by=self.parent.yMarginGcode.value(),
-                rx=float(self.parent.pageWidthGcode.text().replace("M","").replace("m",""))-self.parent.xMarginGcode.value(),
-                ty=float(self.parent.pageHeightGcode.text().replace("M","").replace("m",""))-self.parent.yMarginGcode.value()
+                rx=float(self.parent.pageWidthGcode.text().replace("M", "").replace("m",
+                                                                                    "")) - self.parent.xMarginGcode.value(),
+                ty=float(self.parent.pageHeightGcode.text().replace("M", "").replace("m",
+                                                                                     "")) - self.parent.yMarginGcode.value()
             ),
-            'Mark page corners (set up in Gcode generation tab)' : "G00 {pu} F{ps}|G00 X0 Y10           |G00 {pd} F{ps}|G01 X0 Y0 F{ds}      |G01 X10 Y0|"
-                                                                   "G00 {pu} F{ps}|G00 X{pwminten} Y0   |G00 {pd} F{ps}|G01 X{pw} Y0 F{ds}   |G01 X{pw} Y10|"
-                                                                   "G00 {pu} F{ps}|G00 X{pw} Y{phminten}|G00 {pd} F{ps}|G01 X{pw} Y{ph} F{ds}|G01 X{pwminten} Y{ph}|"
-                                                                   "G00 {pu} F{ps}|G00 X10 Y{ph}        |G00 {pd} F{ps}|G01 X0 Y{ph} F{ds}   |G01 X0 Y{phminten}|"
-                                                                   "G00 {pu} F{ps}|G00 X0 Y0".format(
+            'Mark page corners (set up in Gcode generation tab)': "G00 {pu} F{ps}|G00 X0 Y10           |G00 {pd} F{ps}|G01 X0 Y0 F{ds}      |G01 X10 Y0|"
+                                                                  "G00 {pu} F{ps}|G00 X{pwminten} Y0   |G00 {pd} F{ps}|G01 X{pw} Y0 F{ds}   |G01 X{pw} Y10|"
+                                                                  "G00 {pu} F{ps}|G00 X{pw} Y{phminten}|G00 {pd} F{ps}|G01 X{pw} Y{ph} F{ds}|G01 X{pwminten} Y{ph}|"
+                                                                  "G00 {pu} F{ps}|G00 X10 Y{ph}        |G00 {pd} F{ps}|G01 X0 Y{ph} F{ds}   |G01 X0 Y{phminten}|"
+                                                                  "G00 {pu} F{ps}|G00 X0 Y0".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 pd=self.parent.penDownCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
-                pw=self.parent.pageWidthGcode.text().replace("M","").replace("m",""),
-                pwminten=float(self.parent.pageWidthGcode.text().replace("M","").replace("m",""))-10,
+                pw=self.parent.pageWidthGcode.text().replace("M", "").replace("m", ""),
+                pwminten=float(self.parent.pageWidthGcode.text().replace("M", "").replace("m", "")) - 10,
                 ph=self.parent.pageHeightGcode.text().replace("M", "").replace("m", ""),
                 phminten=float(self.parent.pageHeightGcode.text().replace("M", "").replace("m", "")) - 10,
                 ds=self.parent.drawingSpeedGcode.text(),
             ),
-            'Draw empty music paper (hah! didn\'t see that one coming did you!?)' : ""
+            'Draw empty music paper (hah! didn\'t see that one coming did you!?)': ""
         }
         if cmd in task_to_code:
             code = task_to_code[cmd].split("|")
@@ -279,8 +285,8 @@ class GcodeSenderTab(Tab):
         :return:
         """
         loadpath = QFileDialog.getOpenFileName(self.parent.centralwidget, "Load .cnc file",
-                                              self.homeFolder,
-                                              "CNC files (*.cnc)")
+                                               self.homeFolder,
+                                               "CNC files (*.cnc)")
         if not loadpath[0]:
             return
 
@@ -314,9 +320,11 @@ class GcodeSenderTab(Tab):
         ret = QMessageBox.Cancel
         if margin_errors:
             msg_box = QMessageBox()
-            msg_box.setText("Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(" and ".join(margin_errors)))
+            msg_box.setText(
+                "Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(
+                    " and ".join(margin_errors)))
             msg_box.setInformativeText("Do you want to abort plotting?")
-            msg_box.setStandardButtons(QMessageBox.Ok |QMessageBox.Cancel)
+            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msg_box.setDefaultButton(QMessageBox.Ok)
             ret = msg_box.exec()
 
@@ -339,7 +347,9 @@ class GcodeSenderTab(Tab):
         ret = QMessageBox.Cancel
         if margin_errors:
             msg_box = QMessageBox()
-            msg_box.setText("Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(" and ".join(margin_errors)))
+            msg_box.setText(
+                "Warning! With current scaling, bitmap doesn't fit between the defined margins ({0}). Abort?".format(
+                    " and ".join(margin_errors)))
             msg_box.setInformativeText("Do you want to abort plotting?")
             msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msg_box.setDefaultButton(QMessageBox.Ok)
@@ -349,7 +359,7 @@ class GcodeSenderTab(Tab):
             self.Log("[UI] Please wait while code is being generated.")
             self.parent.application.processEvents()
             list_of_gen = self.parent.get_sketch_by_layer()
-            for idx,gen in enumerate(list_of_gen):
+            for idx, gen in enumerate(list_of_gen):
                 percentage_lines = 0
                 self.submit_line("%%% Layer change", percentage_lines)
                 for line in gen.code.splitlines():

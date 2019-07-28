@@ -11,6 +11,7 @@ from threading import Thread
 SETTLING_TIME = 2.0
 TIMEOUT = 10
 
+
 class PlotterServer(QObject):
     """
     class to model a plotter server which allows to keep ui responsive while system is plotting
@@ -54,7 +55,7 @@ class PlotterServer(QObject):
         :return:
         """
         if not self.started:
-            self.killed =  False
+            self.killed = False
             self.canceled = False
             self.paused = False
             self.started = True
@@ -178,12 +179,14 @@ class PlotterServer(QObject):
             self.serial.baudrate = baudrate
             try:
                 self.serial.open()
-                sleep(SETTLING_TIME) # sleep a while before accessing the port
+                sleep(SETTLING_TIME)  # sleep a while before accessing the port
                 if self.serial.isOpen():
                     self.serial_is_open = True
                     self.on_open_port.emit()
                     self.enabledisable_send_controls.emit(True)
-                    self.log.emit("[Server] Serial port {0} opened successfully.{1}Waiting for initialization to complete.{1}".format(port, linesep))
+                    self.log.emit(
+                        "[Server] Serial port {0} opened successfully.{1}Waiting for initialization to complete.{1}".format(
+                            port, linesep))
                     started = False
                     while not started:
                         sleep(0.1)
@@ -191,11 +194,11 @@ class PlotterServer(QObject):
                         while self.serial.inWaiting() > 0:
                             readval += self.serial.read(1)
                         if readval:
-                            #print(readval)
+                            # print(readval)
                             reply = str(readval, "utf-8").splitlines()
                             for r in reply:
                                 self.log.emit("[Server] > {0}{1}".format(r, linesep))
-                                if init_finished_string  in r:
+                                if init_finished_string in r:
                                     started = True
                     self.sio = io.TextIOWrapper(io.BufferedRWPair(self.serial, self.serial, 1))
                     self.on_connected.emit(True)
