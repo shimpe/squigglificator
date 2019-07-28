@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QFileDialog, QGraphicsPixmapItem, QGraphicsItemGroup
 
 from gcodetab.gcodegenerator import GCodeGenerator
 from tab import Tab
+from tab_constants import GCODETAB
 
 PaperOptions = namedtuple("PaperOptions", "width, height, xmargin, ymargin")
 
@@ -32,6 +33,51 @@ class GcodeTab(Tab):
         self.parent.lockXYGcode.clicked.connect(self.OnLockXYScaleClicked)
         self.parent.eport2dGcode.clicked.connect(self.OnGenerateGCodeAllLayers)
         self.parent.eport2dGcodePerLayer.clicked.connect(self.OnGenerateGCodePerLayer)
+
+    def get_id(self):
+        return GCODETAB
+
+    def ui_to_model(self):
+        model = {}
+        model['pagePreset'] = self.parent.pagePresetGcode.currentText()
+        model['pageWidth'] = self.parent.pageWidthGcode.value()
+        model['pageHeight'] = self.parent.pageHeightGcode.value()
+        model['xMargin'] = self.parent.xMarginGcode.value()
+        model['yMargin'] = self.parent.yMarginGcode.value()
+        model['xScale'] = self.parent.xScaleGcode.value()
+        model['yScale'] = self.parent.yScaleGcode.value()
+        model['offsetPreset'] = self.parent.offsetPresetGcode.currentText()
+        model['xOffset'] = self.parent.xOffsetGcode.value()
+        model['yOffset'] = self.parent.yOffsetGcode.value()
+        model['penUp'] = self.parent.penUpCmdGcode.text()
+        model['penDown'] = self.parent.penDownCmdGcode.text()
+        model['drawingSpeed'] = self.parent.drawingSpeedGcode.value()
+        model['penDownSpeed'] = self.parent.penDownSpeedGcode.value()
+        model['samplingDistance'] = self.parent.samplingDistanceGcode.value()
+        model['approximationError'] = self.parent.maximumApproximationErrorGcode.value()
+        model['homeBegin'] = self.parent.homeGcode.checkState()
+        model['homeEdnd'] = self.parent.homeEndGcode.checkState()
+        return model
+
+    def model_to_ui(self, model):
+        self.parent.pagePresetGcode.setCurrentText(str(model['pagePreset']))
+        self.parent.pageWidthGcode.setValue(int(model['pageWidth']))
+        self.parent.pageHeightGcode.setValue(int(model['pageHeight']))
+        self.parent.xMarginGcode.setValue(int(model['xMargin']))
+        self.parent.yMarginGcode.setValue(int(model['yMargin']))
+        self.parent.xScaleGcode.setValue(float(model['xScale']))
+        self.parent.yScaleGcode.setValue(float(model['yScale']))
+        self.parent.offsetPresetGcode.setCurrentText(str(model['offsetPreset']))
+        self.parent.xOffsetGcode.setValue(float(model['xOffset']))
+        self.parent.yOffsetGcode.setValue(float(model['yOffset']))
+        self.parent.penUpCmdGcode.setText(str(model['penUp']))
+        self.parent.penDownCmdGcode.setText(str(model['penDown']))
+        self.parent.drawingSpeedGcode.setValue(int(model['drawingSpeed']))
+        self.parent.penDownSpeedGcode.setValue(int(model['penDownSpeed']))
+        self.parent.samplingDistanceGcode.setValue(float(model['samplingDistance']))
+        self.parent.maximumApproximationErrorGcode.setValue(float(model['approximationError']))
+        self.parent.homeGcode.setCheckState(int(model['homeBegin']))
+        self.parent.homeEndGcode.setCheckState(int(model['homeEdnd']))
 
     def after_load_bitmap(self):
         """

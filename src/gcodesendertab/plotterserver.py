@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 from serial.serialutil import SerialException
 from serial import serial_for_url
-from constants import LAYER_CHANGE_CMD, KILL_SERVER
+from plotterserver_constants import LAYER_CHANGE_CMD, KILL_SERVER
 from time import sleep
 from os import linesep
 import io
@@ -66,7 +66,7 @@ class PlotterServer(QObject):
     def submit(self, cmd):
         """
         submit command to plotter server thread
-        :param cmd: a string of gcode or a server command; supported server commands are defined in constants.py
+        :param cmd: a string of gcode or a server command; supported server commands are defined in plotterserver_constants.py
         :return:
         """
         self.queue.put(cmd)

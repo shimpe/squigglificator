@@ -11,6 +11,7 @@ from lsystifytab.lsystem import LSystem
 from lsystifytab.lsysteminterpreter import LSystemInterpreter
 from lsystifytab.squigglemethod import SquiggleMethod
 from tab import Tab
+from tab_constants import LSYSTIFYTAB
 
 
 def rotmatrix(theta):
@@ -40,6 +41,63 @@ class LSystifyTab(Tab):
         self.parent.presetLSystify.currentTextChanged.connect(self.OnPreset)
         self.OnMethod("Circles")
         self.OnPreset("Hilbert")
+
+    def get_id(self):
+        return LSYSTIFYTAB
+
+    def ui_to_model(self):
+        model = {}
+        model['preset'] = self.parent.presetLSystify.currentText()
+        model['iterations'] = self.parent.iterationsLSystify.value()
+        model['axiom'] = self.parent.axiomLSystify.text()
+        model['rules'] = self.parent.rulesLSystify.text()
+        model['constants'] = self.parent.constantsLSystify.text()
+        model['invertColors'] = self.parent.invertColorsLSystify.checkState()
+        model['lineWidth'] = self.parent.lineWidthLSystify.value()
+        model['clip'] = self.parent.clipToBitmapLSystify.checkState()
+        model['initialAngle'] = self.parent.initialAngleLSystify.value()
+        model['plusAngle'] = self.parent.plusAngleLSystify.value()
+        model['minAngle'] = self.parent.minAngleLSystify.value()
+        model['xScale'] = self.parent.xScaleLSystify.value()
+        model['yScale'] = self.parent.yScaleLSystify.value()
+        model['xOffset'] = self.parent.xOffsetLSystify.value()
+        model['yOffset'] = self.parent.yOffsetLSystify.value()
+        model['method'] = self.parent.methodLSystify.currentText()
+        model['minBrightness'] = self.parent.minBrightnessLSystify.value()
+        model['maxBrightness'] = self.parent.maxBrightnessLSystify.value()
+        model['minRadius'] = self.parent.minRadiusLSystify.value()
+        model['maxRadius'] = self.parent.maxRadiusLSystify.value()
+        model['minStepSize'] = self.parent.minStepSizeLSystify.value()
+        model['maxStepSize'] = self.parent.maxStepSizeLSystify.value()
+        model['strength'] = self.parent.strengthLSystify.value()
+        model['detail'] = self.parent.detailLSystify.value()
+        return model
+
+    def model_to_ui(self, model):
+        self.parent.presetLSystify.setCurrentText(str(model['preset']))
+        self.parent.iterationsLSystify.setValue(int(model['iterations']))
+        self.parent.axiomLSystify.setText(str(model['axiom']))
+        self.parent.rulesLSystify.setText(str(model['rules']))
+        self.parent.constantsLSystify.setText(str(model['constants']))
+        self.parent.invertColorsLSystify.setCheckState(int(model['invertColors']))
+        self.parent.lineWidthLSystify.setValue(int(model['lineWidth']))
+        self.parent.clipToBitmapLSystify.setCheckState(int(model['clip']))
+        self.parent.initialAngleLSystify.setValue(float(model['initialAngle']))
+        self.parent.plusAngleLSystify.setValue(float(model['plusAngle']))
+        self.parent.minAngleLSystify.setValue(float(model['minAngle']))
+        self.parent.xScaleLSystify.setValue(float(model['xScale']))
+        self.parent.yScaleLSystify.setValue(float(model['yScale']))
+        self.parent.xOffsetLSystify.setValue(float(model['xOffset']))
+        self.parent.yOffsetLSystify.setValue(float(model['yOffset']))
+        self.parent.methodLSystify.setCurrentText(str(model['method']))
+        self.parent.minBrightnessLSystify.setValue(int(model['minBrightness']))
+        self.parent.maxBrightnessLSystify.setValue(int(model['maxBrightness']))
+        self.parent.minRadiusLSystify.setValue(int(model['minRadius']))
+        self.parent.maxRadiusLSystify.setValue(int(model['maxRadius']))
+        self.parent.minStepSizeLSystify.setValue(int(model['minStepSize']))
+        self.parent.maxStepSizeLSystify.setValue(int(model['maxStepSize']))
+        self.parent.strengthLSystify.setValue(float(model['strength']))
+        self.parent.detailLSystify.setValue(float(model['detail']))
 
     def add_dir(self, gs):
         """

@@ -8,7 +8,7 @@ from scipy import spatial
 
 from mapping import Mapping
 from tab import Tab
-
+from tab_constants import BUBBLIFYTAB
 
 class BubblifyTab(Tab):
     """
@@ -40,6 +40,31 @@ class BubblifyTab(Tab):
         self.parent.minProbabilityBubblify.setValue(1)
         self.parent.maxProbabilityBubblify.value(20)
         self.parent.radiusToleranceBubblify.value(0.4)
+
+    def get_id(self):
+        return BUBBLIFYTAB
+
+    def ui_to_model(self):
+        model = {}
+        model['minRadius'] = self.parent.minRadiusBubblify.value()
+        model['maxRadius'] = self.parent.maxRadiusBubblify.value()
+        model['invertColors'] = self.parent.invertColors.checkState()
+        model['minProbability'] = self.parent.minProbabilityBubblify.value()
+        model['maxProbability'] = self.parent.maxProbabilityBubblify.value()
+        model['radiusTolerance'] = self.parent.radiusToleranceBubblify.value()
+        model['minBrightness'] = self.parent.minBrightnessBubblify.value()
+        model['maxBrightness'] = self.parent.maxBrightnessBubblify.value()
+        return model
+
+    def model_to_ui(self, model):
+        self.parent.minRadiusBubblify.setValue(int(model['minRadius']))
+        self.parent.maxRadiusBubblify.setValue(int(model['maxRadius']))
+        self.parent.invertColors.setCheckState(int(model['invertColors']))
+        self.parent.minProbabilityBubblify.setValue(float(model['minProbability']))
+        self.parent.maxProbabilityBubblify.setValue(float(model['maxProbability']))
+        self.parent.radiusToleranceBubblify.setValue(float(model['radiusTolerance']))
+        self.parent.minBrightnessBubblify.setValue(int(model['minBrightness']))
+        self.parent.maxBrightnessBubblify.setValue(int(model['maxBrightness']))
 
     def process(self):
         """

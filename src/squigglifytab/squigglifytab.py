@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 from mapping import Mapping
 from tab import Tab
 from utils import frange
+from tab_constants import SQUIGGLIFYTAB
 
 
 class SquigglifyTab(Tab):
@@ -59,6 +60,44 @@ class SquigglifyTab(Tab):
         self.parent.layersModel.itemFromIndex(layerId).setCheckState(Qt.Checked)
         self.parent.minStepSize.setValue(1)
         self.parent.maxStepSize.setValue(10)
+
+    def get_id(self):
+        return SQUIGGLIFYTAB
+
+    def ui_to_model(self):
+        """
+        summarize ui controls in a model (dict of key->value)
+        :return: model
+        """
+        model = {}
+        model['noOfLines'] = self.parent.noOfLines.value()
+        model['invertColors'] = self.parent.invertColors.checkState()
+        model['verticalSquiggles'] = self.parent.verticalSquiggles.checkState()
+        model['strength'] = self.parent.strength.value()
+        model['detail'] = self.parent.detail.value()
+        model['lineWidth'] = self.parent.lineWidth.value()
+        model['minBrightness'] = self.parent.minBrightness.value()
+        model['maxBrightness'] = self.parent.maxBrightness.value()
+        model['minStepSize'] = self.parent.minStepSize.value()
+        model['maxStepSize'] = self.parent.maxStepSize.value()
+        return model
+
+    def model_to_ui(self, model):
+        """
+        set model values into ui controls
+        :param model: model
+        :return:
+        """
+        self.parent.noOfLines.setValue(int(model['noOfLines']))
+        self.parent.invertColors.setCheckState(int(model['invertColors']))
+        self.parent.verticalSquiggles.setCheckState(model['verticalSquiggles'])
+        self.parent.strength.setValue(float(model['strength']))
+        self.parent.detail.setValue(float(model['detail']))
+        self.parent.lineWidth.setValue(int(model['lineWidth']))
+        self.parent.minBrightness.setValue(int(model['minBrightness']))
+        self.parent.maxBrightness.setValue(int(model['maxBrightness']))
+        self.parent.minStepSize.setValue(int(model['minStepSize']))
+        self.parent.maxStepSize.setValue(int(model['maxStepSize']))
 
     def makeSquiggles(self, image):
         """

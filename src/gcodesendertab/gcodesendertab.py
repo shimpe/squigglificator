@@ -4,10 +4,7 @@ from serial.tools.list_ports import comports
 from os import linesep
 from gcodesendertab.plotterserver import PlotterServer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from time import sleep
-
-SETTLING_TIME = 2.0
-TIMEOUT = 10
+from tab_constants import GCODESENDERTAB
 
 class GcodeSenderTab(Tab):
     """
@@ -45,6 +42,21 @@ class GcodeSenderTab(Tab):
         self.server.on_cancel.connect(self.OnCancelServer)
         self.server.on_killed.connect(self.OnKilledServer)
         self.server.on_queuesize_changed.connect(self.OnQueueSizeChanged)
+
+    def get_id(self):
+        return GCODESENDERTAB
+
+    def ui_to_model(self):
+        model = {}
+        model['baudrate'] = self.parent.baudRateGcodeSender.currentText()
+        model['initFinished'] = self.parent.initFinishedGcodeSender.text()
+        model['cmdFinished'] = self.parent.cmdFinishedGcodeSender.text()
+        return model
+
+    def model_to_ui(self, model):
+        self.parent.baudRateGcodeSender.setCurrentText(str(model['baudrate']))
+        self.parent.initFinishedGcodeSender.setText(str(model['initFinished']))
+        self.parent.cmdFinishedGcodeSender.setText(str(model['cmdFinished']))
 
     def on_quit(self):
         """

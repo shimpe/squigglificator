@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QPersistentModelIndex
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
+from tab_constants import UNDEFINED
 
 
 class Tab(object):
@@ -32,9 +33,14 @@ class Tab(object):
         """
         return True
 
+    def get_id(self):
+        return UNDEFINED
+
     def ui_to_model(self):
         """
         each tab is to return a dict of param_name to param_value
+        this can be used to save parameter values per layer when switching active layer, e.g. to save in a model file later on
+        or to restore last used parameter values when switching active layer
         :return: dictionary
         """
         return {}
@@ -42,6 +48,7 @@ class Tab(object):
     def model_to_ui(self, dictionary):
         """
         each tab needs to be able to take values from a dictionary and set it into its controls
+        this can be used to remember/restore parameter values per layer or from a model file
         :param dictionary: of param_name to param_value
         :return: nothing
         """
