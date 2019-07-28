@@ -1,8 +1,8 @@
 import numpy as np
-from circle import Circle
 from PyQt5.QtGui import QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsItemGroup, QGraphicsPathItem
 
+from circle import Circle
 from mapping import Mapping
 
 
@@ -10,6 +10,7 @@ class SquiggleMethod(object):
     """
     class to represent how to convert LSystem overlayed on bitmap to squiggles
     """
+
     def __init__(self, minBrightness, maxBrightness, strength, detail, minStepSize, maxStepSize, clipToBitmap,
                  strokeWidth, imageWidth, imageHeight):
         self.group = QGraphicsItemGroup()
