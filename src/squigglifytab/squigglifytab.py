@@ -15,6 +15,10 @@ class SquigglifyTab(Tab):
         self.localBitmap = None
 
     def setupSlots(self):
+        """
+        make the buttons do something
+        :return:
+        """
         self.parent.squigglify.clicked.connect(self.process)
         self.parent.setDefaults.clicked.connect(self.SetDefaults)
         # self.parent.noOfLines.valueChanged.connect(self.Squigglify)
@@ -29,12 +33,20 @@ class SquigglifyTab(Tab):
         # self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
 
     def process(self):
+        """
+        called to calculate the squiggles from a bitmap
+        :return:
+        """
         if not self.checkBitmapLoaded():
             return
         self.localBitmap = self.parent.bitmap.copy()
         self.makeSquiggles(self.toBlackAndWhite(self.localBitmap))
 
     def SetDefaults(self):
+        """
+        called when user clicks set defaults button
+        :return:
+        """
         self.parent.noOfLines.setValue(200)
         self.parent.invertColors.setCheckState(Qt.Unchecked)
         self.parent.verticalSquiggles.setCheckState(Qt.Unchecked)
@@ -49,6 +61,11 @@ class SquigglifyTab(Tab):
         self.parent.maxStepSize.setValue(10)
 
     def makeSquiggles(self, image):
+        """
+        actual calculations
+        :param image: bitmap to squigglify
+        :return:
+        """
         noOfLines = self.parent.noOfLines.value()
         height = image.height()
         width = image.width()

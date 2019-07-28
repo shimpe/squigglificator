@@ -12,6 +12,9 @@ SETTLING_TIME = 2.0
 TIMEOUT = 10
 
 class PlotterServer(QObject):
+    """
+    class to model a plotter server which allows to keep ui responsive while system is plotting
+    """
     enabledisable_send_controls = pyqtSignal(bool)
     log = pyqtSignal(str)
     on_pause = pyqtSignal()
@@ -36,12 +39,20 @@ class PlotterServer(QObject):
         self.killed = False
 
     def kill(self):
+        """
+        kill plotter server
+        :return:
+        """
         if self.serial and self.serial.is_open:
             self.submit(KILL_SERVER)
         self.close()
         self.killed = True
 
     def start(self):
+        """
+        start plotter server
+        :return:
+        """
         if not self.started:
             self.killed =  False
             self.canceled = False
@@ -53,15 +64,29 @@ class PlotterServer(QObject):
             self.log.emit("[Server] Server up and running!")
 
     def submit(self, cmd):
+        """
+        submit command to plotter server thread
+        :param cmd: a string of gcode or a server command; supported server commands are defined in constants.py
+        :return:
+        """
         self.queue.put(cmd)
         self.on_queuesize_changed.emit(self.queue.qsize())
 
     def close(self):
+        """
+        close serial connection
+        :return:
+        """
         if self.serial and self.serial.is_open:
             self.serial.close()
             self.on_close_port.emit()
 
     def process(self, queue):
+        """
+        the plotter server command loop running in separate thread and processing commands
+        :param queue:
+        :return:
+        """
         while not self.killed:
             while not self.canceled:
                 if self.serial:
@@ -93,6 +118,11 @@ class PlotterServer(QObject):
         self.on_killed.emit()
 
     def cleanup_remaining_queue_entries(self, queue):
+        """
+        remove remaining items from command queue, useful for cancellation or when quitting
+        :param queue:
+        :return:
+        """
         while not queue.empty():
             try:
                 queue.get(False)
@@ -102,18 +132,38 @@ class PlotterServer(QObject):
             self.on_queuesize_changed.emit(self.queue.qsize())
 
     def cancel(self):
+        """
+        ask server to cancel current plot job
+        :return:
+        """
         self.canceled = True
         self.on_cancel.emit()
 
     def pause(self):
+        """
+        ask server to pause current plot job
+        :return:
+        """
         self.paused = True
         self.on_pause.emit()
 
     def resume(self):
+        """
+        ask server to resume current plot job
+        :return:
+        """
         self.paused = False
         self.on_resume.emit()
 
     def connect(self, port, baudrate, item_to_device, init_finished_string):
+        """
+        connect to serial port to talk to machine
+        :param port: descriptive name of the serial port
+        :param baudrate:
+        :param item_to_device: dictionary from descriptive name of serial devices to OS name of serial devices
+        :param init_finished_string: string to wait for to indicate machine is initialized
+        :return:
+        """
         if port == "":
             return
         if port == "Not connected":
@@ -161,6 +211,12 @@ class PlotterServer(QObject):
             print("[Server] port = '{0}' not present in {1}".format(port, item_to_device.keys()))
 
     def write_to_serial(self, cmd, okstring):
+        """
+        write a command to the serial port
+        :param cmd:
+        :param okstring: string to expect to be returned when command is processed
+        :return:
+        """
         original_cmd = cmd[:]
         cmd = cmd.split("(")[0]  # cut off comments
         cmd = cmd.split(";")[0]  # cut off comments

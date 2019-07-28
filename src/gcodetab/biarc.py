@@ -5,6 +5,9 @@ from gcodetab.line import Line
 
 
 class Biarc(object):
+    """
+    class to represent a biarc, i.e. two circular arcs that are smootly connected
+    """
     def __init__(self, p1, t1, p2, t2, t):
         """
 
@@ -60,6 +63,11 @@ class Biarc(object):
         self.a2 = Arc(c2, r2, start_angle2, sweep_angle2, self.t, self.p2)
 
     def point_at(self, t):
+        """
+        evaluate x,y on biarc at t
+        :param t: 0 <= t <= 1
+        :return: 2x1 np.array containing x,y
+        """
         s = self.a1.length() / (self.a1.length() + self.a2.length())
         if t <= s:
             return self.a1.point_at(t / s)
@@ -67,4 +75,8 @@ class Biarc(object):
             return self.a2.point_at((t - s) / (1 - s))
 
     def length(self):
+        """
+        total length of biarc
+        :return: float
+        """
         return self.a1.length() + self.a2.length()

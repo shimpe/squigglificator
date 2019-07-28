@@ -7,6 +7,9 @@ from mapping import Mapping
 
 
 class SquiggleMethod(object):
+    """
+    class to represent how to convert LSystem overlayed on bitmap to squiggles
+    """
     def __init__(self, minBrightness, maxBrightness, strength, detail, minStepSize, maxStepSize, clipToBitmap,
                  strokeWidth, imageWidth, imageHeight):
         self.group = QGraphicsItemGroup()
@@ -26,6 +29,19 @@ class SquiggleMethod(object):
         self.previous_stepsize = 1
 
     def step(self, x, y, direction, brightness):
+        """
+        step is called many times while iterating over the loaded bitmap
+        in each step we calculate a squiggle based on position x,y with given brightness
+        in the bitmap. direction is a direction vector indicating what direction we are
+        moving in.
+
+        calculate a new squiggle in the circle generation process
+        :param x: x pos in bitmap that calculation should be based on
+        :param y: y pos in bitmap that calculation should be based on
+        :param direction: in what direction are we moving?
+        :param brightness: gray value in the bitmap at x,y
+        :return: potentially modified step size
+        """
         stepSize = Mapping.linexp(brightness, 0, 255, self.minStepSize, self.maxStepSize)
         stepSize = Mapping.linlin(stepSize, 1, 10, 1, 10 / self.detail)
         self.previous_stepsize = stepSize
@@ -51,6 +67,16 @@ class SquiggleMethod(object):
         return max(int(stepSize), 1)
 
     def skip(self, x, y, direction, brightness):
+        """
+        similar to step, but explicitly asking to skip generation of a squiggle (e.g. because brightness constraints are not met)
+        this allows the method to update its internal state to keep track of what is happening
+
+        :param x: x pos in bitmap that the calculation should be based on
+        :param y: x pos in bitmap that the calculation should be based on
+        :param direction: direction we were moving in
+        :param brightness: gray value of x,y in bitmap
+        :return: potentially modified step size
+        """
         if self.prevPos is None:
             self.path = QPainterPath()
             self.path.moveTo(x, y)
@@ -60,6 +86,10 @@ class SquiggleMethod(object):
         return int(self.previous_stepsize)
 
     def finish(self):
+        """
+        return the wrapped up result of the calculations
+        :return: qgraphicsitemgroup
+        """
         item = QGraphicsPathItem(self.path)
         pen = QPen()
         pen.setWidth(self.strokeWidth)

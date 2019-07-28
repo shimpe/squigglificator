@@ -14,6 +14,9 @@ from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsPi
 FORCE_PRINT = True
 
 class GCodeGenerator(object):
+    """
+    class to generate GCode from QGraphicsItems
+    """
     def __init__(self, pageheight,
                  xscale, yscale,
                  xoffset, yoffset,
@@ -41,6 +44,11 @@ class GCodeGenerator(object):
         self.add_header()
 
     def process_item(self, item):
+        """
+        convert qgraphicsitem into gcode
+        :param item: qgraphicsitem
+        :return:
+        """
         if item.isVisible():
             if item.__class__ == QGraphicsEllipseItem:
                 self.ellipse(item)
@@ -52,14 +60,29 @@ class GCodeGenerator(object):
                 print("Unknown QGraphicsItem type?! Please extend GCodeGenerator.process_item for class {0}".format(item.__class__))
 
     def add_comment(self, comment, force_print=False):
+        """
+        add comment in gcode
+        :param comment: string
+        :param force_print: force printing the command to the console (mostly for debugging)
+        :return:
+        """
         if force_print:
             print(comment)
         self.code += "({0}){1}".format(comment, os.linesep)
 
     def add_statistics(self):
+        """
+        add comment in gcode with the collected statistics during code generation
+        :return:
+        """
         self.code = self.statistics.summarize() + self.code
 
     def corr_y(self, y):
+        """
+        apply scaling (user defined) and flip y axis (qt coordinate system is left-handed)
+        :param y: qt y value
+        :return: gcode y value
+        """
         # yoffset calculation already took yscale into account; don't apply twice
         value = (self.ph - (self.yscale * y + self.yo))
         if value < 0:
@@ -67,6 +90,11 @@ class GCodeGenerator(object):
         return value
 
     def corr_x(self, x):
+        """
+        apply scaling
+        :param x:  qt x value
+        :return: gcode x value
+        """
         # xoffset calculation already took yscale into account; don't apply twice
         value = self.xscale * x + self.xo
         if value < 0:
@@ -74,9 +102,18 @@ class GCodeGenerator(object):
         return value
 
     def corr_radius(self, r):
+        """
+        apply scaling
+        :param r: qt radius
+        :return: gcode radius
+        """
         return self.xscale * r
 
     def add_header(self):
+        """
+        add a header to the gcode, things like creator, date time, set up absolute mode, units in mm
+        :return:
+        """
         self.code += """
 ( File created using Squigglificator )
 ( https://github.com/shimpe/squigglificator )
@@ -96,6 +133,10 @@ G01 {1} F{2} (start from known state: pen up)
             self.pen_up()
 
     def footer(self):
+        """
+        finish the gcode
+        :return:
+        """
         self.pen_up()
         self.move_to_nocorrection(0, 0, "Go fast to 0,0 position")
         if self.home_at_end:
@@ -104,12 +145,20 @@ G01 {1} F{2} (start from known state: pen up)
         self.code += "%" + os.linesep
 
     def pen_up(self):
+        """
+        insert a pen up command in gcode (only if pen wasn't up already)
+        :return:
+        """
         if self.pen_state != "up":
             self.pen_state = "up"
             self.code += "G00 " + self.pen_up_cmd + " (pen up)" + os.linesep
             self.statistics.penup += 1
 
     def pen_down(self):
+        """
+        insert a pen down command in gcode (only if pen wasn't down already)
+        :return:
+        """
         if self.pen_state != "down":
             self.pen_state = "down"
             self.code += "G01 " + self.pen_down_cmd + " F{0:.3f}".format(
@@ -118,6 +167,13 @@ G01 {1} F{2} (start from known state: pen up)
             self.add_drawing_speed = True
 
     def move_to_nocorrection(self, x, y, comment=""):
+        """
+        insert a moveto command in gcode, don't apply x,y corrections (e.g. used just before homing or at end of drawing)
+        :param x: gcode x coordinate to move to
+        :param y: gcode y coordinate to move to
+        :param comment: optional additional comment to add
+        :return:
+        """
         fast = False
         if self.pen_state == "up":
             fast = True
@@ -142,8 +198,15 @@ G01 {1} F{2} (start from known state: pen up)
         else:
             self.statistics.movetoslow += 1
 
-
     def move_to(self, x, y, comment=""):
+        """
+        insert moveto command in gcode
+        if pen is up, speed is automatically set to fast; if pen is down, speed is set to drawing speed
+        :param x: qt x coordinate to move to
+        :param y: qt y coordinate to move to
+        :param comment: optional additional comment to insert into gcode
+        :return:
+        """
         fast = False
         if self.pen_state == "up":
             fast = True
@@ -169,6 +232,12 @@ G01 {1} F{2} (start from known state: pen up)
             self.statistics.movetoslow += 1
 
     def ellipse(self, ellipseitem, clockwise=True):
+        """
+        add complete ellipse to gcode (note: for now only circles supported, and ellipses are converted to circles with xradius)
+        :param ellipseitem: qgraphicsellipseitem
+        :param clockwise: do you want to draw clockwise or counterclockwise? default clockwise
+        :return:
+        """
         rect = ellipseitem.rect()
         center = rect.center()
         xradius = rect.width() / 2.0
@@ -205,6 +274,11 @@ G01 {1} F{2} (start from known state: pen up)
         self.statistics.circles += 1
 
     def path(self, pathitem):
+        """
+        add qgraphicspathitem to gcode
+        :param pathitem: qgraphicspathitem
+        :return:
+        """
         path = pathitem.path()
         if path.isEmpty():
             return
@@ -250,6 +324,12 @@ G01 {1} F{2} (start from known state: pen up)
         self.statistics.paths += 1
 
     def gen_arc(self, arc, comment):
+        """
+        helper method to convert circle arc to gcode
+        :param arc: circle arc
+        :param comment: additional comment to add in gcode
+        :return:
+        """
         self.add_comment(comment)
         center = arc.c
         cx = self.corr_x(center[0][0])
@@ -289,6 +369,12 @@ G01 {1} F{2} (start from known state: pen up)
         self.statistics.subpaths += 1
 
     def gen_curve(self, prev_position, accumulated_data_points):
+        """
+        method to add a bezier curve into gcode
+        :param prev_position: starting point
+        :param accumulated_data_points: list of control point1, control point2, point2
+        :return:
+        """
         if len(accumulated_data_points) != 3 and len(accumulated_data_points) != 2:
             print(
                 "Error! Skipping unsupported curve type with {0} control points.".format(len(accumulated_data_points)))

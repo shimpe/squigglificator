@@ -7,6 +7,11 @@ class MyGraphicsView(QGraphicsView):
         super(MyGraphicsView, self).__init__(parent)
 
     def wheelEvent(self, event):
+        """
+        handle mouse wheel event as a zooming operation
+        :param event:
+        :return:
+        """
         # Zoom Factor
         zoomInFactor = 1.25
         zoomOutFactor = 1 / zoomInFactor

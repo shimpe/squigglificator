@@ -4,16 +4,34 @@ from gcodetab.biarc import Biarc
 
 
 class BezierApproximator(object):
+    """
+    class to approximate a bezier curve with biarcs
+    (a biarc is a collection of 2 circular arcs that smoothly touch)
+    """
     def __init__(self):
         pass
 
     @staticmethod
     def is_real_inflexion_point_on_segment(pt):
+        """
+        check if real inflexion point happens for a t between 0 and 1 (i.e. it lies on the segment)
+        :param pt: inflexion point as a complex number
+        :return: boolean
+        """
         if pt is None:
             return False
         return 0 < pt.real < 1
 
     def almost_collinear(self, p1, p2, p3, tolerance):
+        """
+        check if three points are (almost) collinear
+        if so, the system can generate a line segment instead of a biarc
+        :param p1: first point
+        :param p2: second point
+        :param p3: third point
+        :param tolerance: how "almost" is almost
+        :return: boolean
+        """
         x1 = p1[0][0]
         y1 = p1[1][0]
         x2 = p2[0][0]
@@ -26,6 +44,13 @@ class BezierApproximator(object):
         return False
 
     def approx_cubic_bezier(self, bezier, sampling_step, tolerance):
+        """
+        recursively splitting bezier curve into smaller segments until they can be approximated by biarc or line segment
+        :param bezier: cubic bezier to be approximated
+        :param sampling_step: smallest step to check for errors between real bezier segment and approximation
+        :param tolerance: how much error we tolerate before concluding approximation is good enough
+        :return: list of biarcs/line segments
+        """
         # Place to store the result
         biarcs = []
         # The bezier curves to approximate

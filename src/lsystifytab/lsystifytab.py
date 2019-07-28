@@ -20,6 +20,9 @@ def rotmatrix(theta):
 
 
 class LSystifyTab(Tab):
+    """
+    tab to represent the lsystify wizard
+    """
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.localBitmap = None
@@ -27,6 +30,10 @@ class LSystifyTab(Tab):
         self.lsysteminterpreter = LSystemInterpreter()
 
     def setupSlots(self):
+        """
+        make the buttons do something
+        :return:
+        """
         self.parent.lsystify.clicked.connect(self.process)
         self.parent.drawLSystemLSystify.clicked.connect(self.visualize)
         self.parent.methodLSystify.currentTextChanged.connect(self.OnMethod)
@@ -35,21 +42,42 @@ class LSystifyTab(Tab):
         self.OnPreset("Hilbert")
 
     def add_dir(self, gs):
+        """
+        semantic action used in the LSystem interpreter: adds direction vector to global state
+        :param gs: globalstate object
+        :return: new global state
+        """
         gs["x,y"] = gs["x,y"] + gs["dir"]
         gs["pts"].append((gs["x,y"], gs["dir"]))
         return gs
 
     def rotate_cw(self, gs):
+        """
+        semantic action used in the LSystem interpreter: rotates direction vector clockwise over minAngle (=ui parameter)
+        :param gs: global state
+        :return: new global state
+        """
         R = rotmatrix(np.radians(self.minAngle))
         gs["dir"] = np.matmul(R, gs["dir"])
         return gs
 
     def rotate_ccw(self, gs):
+        """
+        semantic action used in the LSystem interpreter: rotates direction vector counterclockwise over plusAngle (=ui parameter)
+        :param gs: global state
+        :return: new global state
+        """
         R = rotmatrix(np.radians(self.plusAngle))
         gs["dir"] = np.matmul(R, gs["dir"])
         return gs
 
     def OnPreset(self, text):
+        """
+        triggered when user selects a preset
+        updates ui controls to show the preset
+        :param text: combo box text
+        :return:
+        """
         if text == "Hilbert":
             self.parent.iterationsLSystify.setValue(6)
             self.parent.axiomLSystify.setText("R")
@@ -106,16 +134,30 @@ class LSystifyTab(Tab):
             self.parent.plusAngleLSystify.setValue(60)
 
     def push_state(self, gs):
+        """
+        semantic action used in LSystem interpreter, to remember current state
+        :param gs: global state
+        :return: new global state
+        """
         gs["posstack"] = gs["posstack"].append(gs["x,y"])
         gs["dirstack"] = gs["dirstack"].append(gs["dir"])
 
     def pop_state(self, gs):
+        """
+        semantic action used in LSystem interpreter, to go back to previous state
+        :param gs: global state
+        :return: new global state
+        """
         if gs["posstack"]:
             gs["posstack"].pop()
         if gs["dirstack"]:
             gs["dirstack"].pop()
 
     def process(self):
+        """
+        calculates the lsystification of bitmap, i.e. the lsystem is used as iterator through the bitmap
+        :return:
+        """
         if not self.checkBitmapLoaded():
             return
         self.getdata()
@@ -128,6 +170,13 @@ class LSystifyTab(Tab):
         self.make(self.toBlackAndWhite(self.localBitmap))
 
     def make(self, image):
+        """
+        the actual calculations, done on successive pixel positions popped from in self.reversed_pixel_order
+        self.reversed_pixel_order was initialized with a call to discretize_lsystem()
+
+        :param image: bitmap on wich to operate
+        :return:
+        """
         self.removeOldGraphicsItems()
         if self.method == "Circles":
             methodhandler = CircleMethod(self.minBrightness, self.maxBrightness,
@@ -176,6 +225,11 @@ class LSystifyTab(Tab):
         self.addNewGraphicsItems(group)
 
     def parse_rules(self, rules):
+        """
+        parse rules from ui specification into LSystem rules
+        :param rules:
+        :return:
+        """
         result = {}
         # strip whitespace
         rules = re.sub(r'\s+', '', rules)
@@ -193,6 +247,11 @@ class LSystifyTab(Tab):
         return result
 
     def parse_constants(self, constants):
+        """
+        Parse constants from Ui into LSystem constants
+        :param constants:
+        :return:
+        """
         result = set()
         # strip whitespace
         constants = re.sub(r'\s+', '', constants)
@@ -203,6 +262,10 @@ class LSystifyTab(Tab):
         return result
 
     def getdata(self):
+        """
+        set up some data from ui controls (maybe this is a bit overkill? other tabs directly access self.parent...)
+        :return:
+        """
         rules = self.parent.rulesLSystify.text()
         self.rules = self.parse_rules(rules)
         self.axiom = self.parent.axiomLSystify.text()
@@ -232,6 +295,11 @@ class LSystifyTab(Tab):
         self.clipToBitmap = self.parent.clipToBitmapLSystify.checkState() == Qt.Checked
 
     def OnMethod(self, text):
+        """
+        triggered if method combo box is changed
+        :param text:
+        :return:
+        """
         if text == "Circles":
             self.parent.detailLSystify.setEnabled(False)
             self.parent.strengthLSystify.setEnabled(False)
@@ -244,6 +312,10 @@ class LSystifyTab(Tab):
             self.parent.maxRadiusLSystify.setEnabled(False)
 
     def run_lsystem(self):
+        """
+        interpret the lsystem defined by the user
+        :return:
+        """
         self.lsystem.set_axiom(self.axiom)
         self.lsystem.set_rules(self.rules)
         self.lsystem.set_constants(self.constants)
@@ -270,6 +342,10 @@ class LSystifyTab(Tab):
         self.lsysteminterpreter.run()
 
     def visualize(self):
+        """
+        called when user clicks draw lsystem. This visualizes the lsystem to allow setup
+        before the actual lsystification takes place
+        """
         self.getdata()
         self.run_lsystem()
 
@@ -300,6 +376,10 @@ class LSystifyTab(Tab):
         self.itemsPerLayer[layerId] = group
 
     def discretize_lsystem(self):
+        """
+        this method converts the lsystem (taking into account scaling factors) into concrete bitmap x,y positions to visit
+        :return:
+        """
         discretized = []
         finalxy = []
         xs = []

@@ -2,6 +2,10 @@ import numpy as np
 
 
 class Line(object):
+    """
+    class to represent a line
+    (and it's abused a bit to also represent a line segment :( )
+    """
     def __init__(self):
         self.p = None
         self.m = None
@@ -10,20 +14,22 @@ class Line(object):
 
     def from_points(self, p1, p2):
         """
-
+        initialize data members from two points
+        the two points are remembered as a poor man's line segment definition
         :param p1: start point
         :param p2: end point
         :return:
         """
 
         newline = self.from_point_slope(p1, self.slope(p1, p2))
-        newline.origp1 = p1
+        newline.origp1 = p1 # origp1 and origp2 are kept because Line is also abused to represent a line segment
         newline.origp2 = p2
         return newline
 
     def from_point_slope(self, p, m):
         """
-
+        initialize data members from a point and slope: origp2 is set to None since it's not known.
+        this method cannot be used to represent a line segment, only a complete line
         :param p: point
         :param m: slope
         :return:
@@ -35,6 +41,11 @@ class Line(object):
         return self
 
     def intersection(self, line):
+        """
+        calculate intersection of this line with another line
+        :param line: the other line
+        :return:
+        """
         if np.isnan(self.m):
             return self.vertical_intersection(line)
         elif np.isnan(line.m):
@@ -45,12 +56,23 @@ class Line(object):
             return np.array([[x, ], [y, ]])
 
     def vertical_intersection(self, line):
+        """
+        helper method to calculate intersection with vertical line
+        :param line: a vertical line
+        :return:
+        """
         x = self.p[0][0]
         y = line.m * (x - line.p[0][0]) + line.p[1][0]
         return np.array([[x, ], [y, ]])
 
     @staticmethod
     def create_perpendicular_at(p, p1):
+        """
+        create new line perpendicular to line defined by points p, p1
+        :param p:
+        :param p1:
+        :return:
+        """
         m = Line.slope(p, p1)
         if m == 0:
             return Line().from_point_slope(p, np.nan)
@@ -61,6 +83,12 @@ class Line(object):
 
     @staticmethod
     def slope(p1, p2):
+        """
+        calculate slope from two points on line
+        :param p1:
+        :param p2:
+        :return:
+        """
         if p2[0][0] == p1[0][0]:
             return np.nan
         else:

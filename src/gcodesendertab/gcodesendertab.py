@@ -10,6 +10,9 @@ SETTLING_TIME = 2.0
 TIMEOUT = 10
 
 class GcodeSenderTab(Tab):
+    """
+    tab to implement a gcode sender
+    """
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.homeFolder = expanduser("~")
@@ -18,6 +21,10 @@ class GcodeSenderTab(Tab):
         self.item_to_device = {}
 
     def setupSlots(self):
+        """
+        set up slots to make the buttons do something
+        :return:
+        """
         self.parent.refreshPortsGcodeSender.clicked.connect(self.OnRefreshPorts)
         self.parent.portGcodeSender.currentTextChanged.connect(self.OnSelectPort)
         self.parent.sendRawTextGcodeSender.returnPressed.connect(self.OnSendRawCommand)
@@ -40,12 +47,26 @@ class GcodeSenderTab(Tab):
         self.server.on_queuesize_changed.connect(self.OnQueueSizeChanged)
 
     def on_quit(self):
+        """
+        kill plotter server when it's time to quit
+        :return:
+        """
         self.server.kill()
 
     def OnQueueSizeChanged(self, newsize):
+        """
+        slot used to visualize signal emitted by plotter server
+        :param newsize:
+        :return:
+        """
         self.parent.queueSizeGcodeSender.setText("{0}".format(newsize))
 
     def Log(self, msg):
+        """
+        slot used to visualize signal emitted by plotter server
+        :param msg: string to log into the serial monitor
+        :return:
+        """
         if not msg.endswith(linesep):
             msg += linesep
         #print(msg)
@@ -53,39 +74,76 @@ class GcodeSenderTab(Tab):
         self.parent.serialMonitorGcodeSender.ensureCursorVisible()
 
     def OnKilledServer(self):
+        """
+        slot used to visualize signal emitted by plotter server
+        :return:
+        """
         self.Log("[Server] Plotter server killed.")
 
     def OnConnected(self, success):
+        """
+        slot used to visualize signal emitted by plotter server
+        :param success:
+        :return:
+        """
         if success:
             self.Log("[Server] Machine ready.")
         else:
             self.Log("[Server] Machine didn't initialize correctly.")
 
     def OnPauseCode(self):
+        """
+        handler for user pressing pause button in ui
+        :return:
+        """
         if self.parent.pauseGcodeSender.text() == "Pause":
             self.server.pause()
         else:
             self.server.resume()
 
     def RequestPause(self):
+        """
+        handler for plotter server requesting pressing pause button during plotting
+        :return:
+        """
         self.Log("[Server] Requesting layer change. Please resume when ready to start next layer.")
         self.server.pause()
 
     def OnPauseServer(self):
+        """
+        handler for signal emitted by server after having received pause request
+        :return:
+        """
         self.parent.pauseGcodeSender.setText("Resume")
         self.Log("[Server] Pause program execution. Operation in progress will still complete.")
 
     def OnResumeServer(self):
+        """
+        handler for signal emitted by server after having received resume request
+        :return:
+        """
         self.parent.pauseGcodeSender.setText("Pause")
         self.Log("[Server] Resume program execution.")
 
     def OnCancelCode(self):
+        """
+        handler for user pressing Cancel button in ui
+        :return:
+        """
         self.server.cancel()
 
     def OnCancelServer(self):
+        """
+        handler for signal emitted by server after having received cancel request
+        :return:
+        """
         self.Log("[Server] Cancel program execution. Operation in progress will still complete.")
 
     def OnRefreshPorts(self):
+        """
+        handler for user pressing refresh ports button in ui
+        :return:
+        """
         ports = comports()
 
         # remove old items
@@ -109,6 +167,11 @@ class GcodeSenderTab(Tab):
         self.parent.portGcodeSender.setCurrentText("Not connected")
 
     def EnableDisableSendControls(self, enable):
+        """
+        convenience method for enabling/disabling all gcode sending related controls at once
+        :param enable:
+        :return:
+        """
         self.parent.sendRawTextGcodeSender.setEnabled(enable)
         self.parent.sendSketchGcodeSender.setEnabled(enable)
         self.parent.sendByLayerGcodeSender.setEnabled(enable)
@@ -116,6 +179,11 @@ class GcodeSenderTab(Tab):
         self.parent.sendTaskGcodeSender.setEnabled(enable)
 
     def OnSelectPort(self, newport):
+        """
+        handler for user selecting a different usb/serial port in ui
+        :param newport:
+        :return:
+        """
         if newport and newport != "Not connected":
             startstring = self.parent.initFinishedGcodeSender.text().strip()
             baudrate = int(self.parent.baudRateGcodeSender.currentText())
@@ -128,10 +196,19 @@ class GcodeSenderTab(Tab):
             self.server.kill()
 
     def OnSendRawCommand(self):
+        """
+        handler for user sending a manual command to plotter server
+        :return:
+        """
         cmd = self.parent.sendRawTextGcodeSender.text().strip()
         self.server.submit(cmd)
 
     def OnSendTask(self, cmdidx):
+        """
+        handler for user sending a predefined task to plotter server via UI
+        :param cmdidx: index of selected task in combobox
+        :return:
+        """
         cmd = self.parent.sendTaskGcodeSender.itemText(cmdidx)
         task_to_code = {
             'No task selected' : '',
@@ -185,6 +262,10 @@ class GcodeSenderTab(Tab):
                 self.server.submit(c.strip())
 
     def OnSendFile(self):
+        """
+        handler for user clicking the send file button in the ui
+        :return:
+        """
         loadpath = QFileDialog.getOpenFileName(self.parent.centralwidget, "Load .cnc file",
                                               self.homeFolder,
                                               "CNC files (*.cnc)")
@@ -197,6 +278,12 @@ class GcodeSenderTab(Tab):
                 percentage_lines = self.submit_line(line, percentage_lines)
 
     def submit_line(self, line, percentage_lines):
+        """
+        send a line of code (or a server command) to the plotter server
+        :param line:
+        :param percentage_lines:
+        :return:
+        """
         # filter out the % lines (start/stop of file)
         if line.strip() == "%":
             percentage_lines += 1  # no need to submit to plotter server
@@ -207,6 +294,10 @@ class GcodeSenderTab(Tab):
         return percentage_lines
 
     def OnSendSketch(self):
+        """
+        handler for user clicking send sketch button in ui
+        :return:
+        """
         margin_errors = self.parent.check_drawing_fits()
         ret = QMessageBox.Cancel
         if margin_errors:
@@ -228,6 +319,10 @@ class GcodeSenderTab(Tab):
             self.Log("[UI] Aborting.")
 
     def OnSendByLayer(self):
+        """
+        handler for user clicking send by layer button in ui
+        :return:
+        """
         margin_errors = self.parent.check_drawing_fits()
         ret = QMessageBox.Cancel
         if margin_errors:

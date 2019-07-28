@@ -14,12 +14,18 @@ from gcodesendertab.gcodesendertab import GcodeSenderTab
 
 
 class MyMainWindow(Ui_MainWindow):
-
+    """
+    main window class
+    """
     def __init__(self, application):
         super().__init__()
         self.application = application
 
     def finishSetupUi(self):
+        """
+        initialize models, tabs
+        :return: nothing
+        """
         self.scene = QGraphicsScene()
         self.graphicsView.setScene(self.scene)
         self.bitmap = None
@@ -37,6 +43,10 @@ class MyMainWindow(Ui_MainWindow):
         self.tabhandlers = [ t(self, self.itemsPerLayer) for t in self.tabs]
 
     def setupSlots(self):
+        """
+        called to set up mainwindow and tab slots
+        :return:
+        """
         self.loadBitmap.clicked.connect(self.LoadBitmap)
         self.hideBitmap.clicked.connect(self.ToggleBitmap)
         self.actionZoom_In.triggered.connect(self.ActionZoom_In)
@@ -62,18 +72,34 @@ class MyMainWindow(Ui_MainWindow):
             t.setupSlots()
 
     def ShowToolbar(self):
+        """
+        action triggered when user requests to see buttons toolbar
+        :return:
+        """
         self.toolBar.setVisible(True)
 
     def ShowLayers(self):
+        """
+        action triggered when user requests to see layers toolbar
+        :return:
+        """
         self.layers.setVisible(True)
 
     def OnQuit(self):
+        """
+        action triggered when the application is about to quit -> give each tab a chance to clean up after itself
+        :return:
+        """
         for t in self.tabhandlers:
             t.on_quit()
         import sys
         sys.exit()
 
     def LoadBitmap(self):
+        """
+        action triggered when the user requests to load a bitmap
+        :return:
+        """
         if self.homeFolder is None:
             from os.path import expanduser
             self.homeFolder = expanduser("~")
@@ -99,25 +125,45 @@ class MyMainWindow(Ui_MainWindow):
             t.after_load_bitmap()
 
     def ActionZoom_In(self):
+        """
+        action triggered when user requests zooming in using mousewheel
+        :return:
+        """
         # Zoom Factor
         zoomInFactor = 1.25
         self.graphicsView.scale(zoomInFactor, zoomInFactor)
 
     def ActionZoom_Out(self):
+        """
+        action triggered when user requests zooming out using mousewheel
+        :return:
+        """
         # Zoom Factor
         zoomInFactor = 1 / 1.25
         self.graphicsView.scale(zoomInFactor, zoomInFactor)
 
     def ActionZoom_to(self):
+        """
+        action triggered when user requests zoom to fit
+        :return:
+        """
         self.graphicsView.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
 
     def AddLayer(self):
+        """
+        action triggered when user requests addition of a new layer
+        :return:
+        """
         item = QStandardItem("Layer {0}".format(self.layersModel.rowCount() + 1))
         item.setCheckable(True)
         item.setCheckState(Qt.Checked)
         self.layersModel.appendRow(item)
 
     def RemoveSelected(self):
+        """
+        action triggered when user requests removal of selected layer
+        :return:
+        """
         for i in self.layersList.selectedIndexes():
             index = QPersistentModelIndex(i)
             if index in self.itemsPerLayer:
@@ -129,6 +175,10 @@ class MyMainWindow(Ui_MainWindow):
             self.layersList.setCurrentIndex(self.layersModel.index(0, 0))
 
     def ToggleBitmap(self):
+        """
+        action triggered when user requests to hide/show bitmap
+        :return:
+        """
         if self.bitmapVisibility:
             if self.bitmapItem:
                 self.scene.removeItem(self.bitmapItem)
@@ -142,6 +192,10 @@ class MyMainWindow(Ui_MainWindow):
             self.bitmapVisibility = True
 
     def LayerChanged(self):
+        """
+        action triggered when user checks/unchecks a layer
+        :return:
+        """
         numRows = self.layersModel.rowCount()
         for row in range(numRows):
             item = self.layersModel.item(row)
@@ -154,6 +208,10 @@ class MyMainWindow(Ui_MainWindow):
                 self.itemsPerLayer[index].setVisible(False)
 
     def ExportSVG(self):
+        """
+        action triggered when user exports current graphics as svg
+        :return:
+        """
         newPath = QFileDialog.getSaveFileName(self.centralwidget, "Export .svg",
                                               self.homeFolder,
                                               "SVG files (*.svg)")
@@ -176,6 +234,10 @@ class MyMainWindow(Ui_MainWindow):
         painter.end()
 
     def ExportSVGPerLayer(self):
+        """
+        action triggered when user exports current graphics as one svg per layer
+        :return:
+        """
         newPath = QFileDialog.getSaveFileName(self.centralwidget, "Export .svg per layer",
                                               self.homeFolder,
                                               "SVG files (*.svg)")
@@ -221,13 +283,25 @@ class MyMainWindow(Ui_MainWindow):
                     item.setVisible(True)
 
     def get_sketch_code(self):
+        """
+        method used to be able to call code generation (implemented in gcodetab) from gcodesendertab
+        :return: an object containing gcode
+        """
         tabidx = self.tabs.index(GcodeTab)
         return self.tabhandlers[tabidx].get_sketch_code()
 
     def get_sketch_by_layer(self):
+        """
+        method used to be able to call code generation (implemented in gcodetab) from gcodesendertab
+        :return: a list of objects containing gcode
+        """
         tabidx = self.tabs.index(GcodeTab)
         return self.tabhandlers[tabidx].get_sketch_by_layer()
 
     def check_drawing_fits(self):
+        """
+        method used to check that drawing fits within margins (implemented in gcodetab) from gcodesendertab
+        :return: boolean
+        """
         tabidx = self.tabs.index(GcodeTab)
         return self.tabhandlers[tabidx].check_drawing_fits()

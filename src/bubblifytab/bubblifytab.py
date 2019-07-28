@@ -11,16 +11,27 @@ from tab import Tab
 
 
 class BubblifyTab(Tab):
+    """
+    this tab implements the "Bubblify" wizard
+    """
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.localBitmap = None
 
     def setupSlots(self):
+        """
+        define slots for buttons
+        :return:
+        """
         self.parent.progressBarBubblify.setVisible(False)
         self.parent.bubblify.clicked.connect(self.process)
         self.parent.setDefaultsBubblify.clicked.connect(self.SetDefaults)
 
     def SetDefaults(self):
+        """
+        triggered when set defaults button is clicked
+        :return:
+        """
         self.parent.minBrightnessBubblify.setValue(0)
         self.parent.maxBrightnessBubblify.setValue(255)
         self.parent.minRadiusBubblify.setValue(1)
@@ -31,12 +42,21 @@ class BubblifyTab(Tab):
         self.parent.radiusToleranceBubblify.value(0.4)
 
     def process(self):
+        """
+        performs the bubblification
+        :return:
+        """
         if not self.checkBitmapLoaded():
             return
         self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
         self.makeBubbles(self.localBitmap)
 
     def makeBubbles(self, image):
+        """
+        helper method for bubblification (contains the actual calculations)
+        :param image:
+        :return:
+        """
         self.parent.progressBarBubblify.setVisible(True)
         self.parent.application.processEvents()
 

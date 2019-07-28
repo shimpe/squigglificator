@@ -11,11 +11,18 @@ PaperOptions = namedtuple("PaperOptions", "width, height, xmargin, ymargin")
 
 
 class GcodeTab(Tab):
+    """
+    gcode generation tab
+    """
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
         self.homeFolder = expanduser("~")
 
     def setupSlots(self):
+        """
+        set up slots for different buttons and combo boxes
+        :return:
+        """
         self.parent.pagePresetGcode.currentTextChanged.connect(self.OnPagePreset)
         self.OnPagePreset("A4 portrait (210mm x 270mm)")
         self.parent.offsetPresetGcode.currentTextChanged.connect(self.OnOffsetPresetGcode)
@@ -27,10 +34,20 @@ class GcodeTab(Tab):
         self.parent.eport2dGcodePerLayer.clicked.connect(self.OnGenerateGCodePerLayer)
 
     def after_load_bitmap(self):
+        """
+        triggered by mainwindow after user loaded a bitmap
+        :return:
+        """
         self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
         self.update_size_label()
 
     def OnXScaleChanged(self, value, skip_update_dependent=False):
+        """
+        triggered if xscale changed: used to update margin check message
+        :param value:
+        :param skip_update_dependent: cludge to avoid signal/slot infinite loop
+        :return:
+        """
         if not skip_update_dependent and self.parent.lockXYGcode.isChecked():
             self.parent.xScaleGcode.blockSignals(True)
             self.parent.yScaleGcode.blockSignals(True)
@@ -41,6 +58,12 @@ class GcodeTab(Tab):
         self.update_size_label()
 
     def OnYScaleChanged(self, value, skip_update_dependent=False):
+        """
+        triggered if yscale changed: used to update margin check message
+        :param value:
+        :param skip_update_dependent: cludge to avoid signal/slot infinite loop
+        :return:
+        """
         if not skip_update_dependent and self.parent.lockXYGcode.isChecked():
             self.parent.xScaleGcode.blockSignals(True)
             self.parent.yScaleGcode.blockSignals(True)
@@ -51,11 +74,21 @@ class GcodeTab(Tab):
         self.update_size_label()
 
     def OnLockXYScaleClicked(self, checked):
+        """
+        triggered if user checks/unchecks lock xy scale button: used to maintain consistency between x/y scale
+        :param checked:
+        :return:
+        """
         print("checked: ", checked)
         if checked:
             self.OnYScaleChanged(self.parent.xScaleGcode.value(), True)
 
     def OnPagePreset(self, text):
+        """
+        triggered when user defines page size
+        :param text: selected page preset combobox text
+        :return:
+        """
         options = {
             "A4 portrait (210mm x 270mm)": PaperOptions(width=210, height=270, xmargin=20, ymargin=20),
             "A4 landscape (270mm x 210mm)": PaperOptions(width=270, height=210, xmargin=20, ymargin=20),
@@ -69,6 +102,11 @@ class GcodeTab(Tab):
         self.parent.yMarginGcode.setValue(options[text].ymargin)
 
     def OnOffsetPresetGcode(self, text):
+        """
+        triggered to recalculate offsets to correctly position drawing on page
+        :param text: selected offset preset combobox text
+        :return:
+        """
         bmheight, bmwidth, warnings = self.update_size_label()
         pw = self.parent.pageWidthGcode.value()
         ph = self.parent.pageHeightGcode.value()
@@ -109,6 +147,11 @@ class GcodeTab(Tab):
             self.parent.yOffsetGcode.setValue(ym)
 
     def update_size_label(self):
+        """
+        method to check if drawing fits between margins
+        for now only bitmap dimensions are checked
+        :return: scaled bitmap with, scaled bitmap height, list of warnings
+        """
         if self.parent.bitmap:
             rawwidth = self.parent.bitmap.width()
             rawheight = self.parent.bitmap.height()
@@ -138,6 +181,10 @@ class GcodeTab(Tab):
         return bmheight, bmwidth, warnings
 
     def OnGenerateGCodeAllLayers(self):
+        """
+        triggered if user clicks generate 2d gcode all layers button in ui
+        :return:
+        """
         newPath = QFileDialog.getSaveFileName(self.parent.centralwidget, "Export .cnc all layers",
                                               self.homeFolder,
                                               "CNC files (*.cnc)")
@@ -152,6 +199,10 @@ class GcodeTab(Tab):
             f.write(gen.code)
 
     def OnGenerateGCodePerLayer(self):
+        """
+        triggered if user clicks generate 2d gcode per layer layers button in ui
+        :return:
+        """
         newPath = QFileDialog.getSaveFileName(self.parent.centralwidget, "Export .cnc per layer",
                                               self.homeFolder,
                                               "CNC files (*.cnc)")
@@ -186,6 +237,10 @@ class GcodeTab(Tab):
                     item.setVisible(True)
 
     def generate_code(self):
+        """
+        method that runs over items in the graphics scene and generates gcode from it
+        :return:
+        """
         gen = GCodeGenerator(self.parent.pageHeightGcode.value(),
                              self.parent.xScaleGcode.value(),
                              self.parent.yScaleGcode.value(),
@@ -207,10 +262,18 @@ class GcodeTab(Tab):
         return gen
 
     def get_sketch_code(self):
+        """
+        method called from different tab to get gcode for all layers
+        :return:
+        """
         self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
         return self.generate_code()
 
     def get_sketch_by_layer(self):
+        """
+        method called from different tab to get a list of gcode per layer
+        :return:
+        """
         # make stuff invisible to avoid sending it to gcode
         list_of_gen = []
         for idx, layer in enumerate(self.itemsPerLayer):
@@ -235,5 +298,9 @@ class GcodeTab(Tab):
         return list_of_gen
 
     def check_drawing_fits(self):
+        """
+        method called from different tab to check if drawing fits between margins
+        :return:
+        """
         bmwidth, bmheight, warnings = self.update_size_label()
         return warnings

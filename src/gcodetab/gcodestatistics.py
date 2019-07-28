@@ -1,4 +1,7 @@
 class GcodeStatistics(object):
+    """
+    class to track and display some statistics about code generation
+    """
     def __init__(self):
         self.circles = 0
         self.paths = 0
