@@ -75,6 +75,12 @@ class MyMainWindow(Ui_MainWindow):
         self.exportSvgPerLayer.clicked.connect(self.ExportSVGPerLayer)
         for t in self.tabhandlers:
             t.setupSlots()
+            t.last_used_method.connect(self.UpdateLastUsedMethod)
+
+    def UpdateLastUsedMethod(self, persistentmodelindex, method):
+        if persistentmodelindex not in self.layersExtraProperties:
+            self.layersExtraProperties[persistentmodelindex] = {}
+        self.layersExtraProperties[persistentmodelindex]['method'] = method
 
     def ShowToolbar(self):
         """
@@ -207,25 +213,42 @@ class MyMainWindow(Ui_MainWindow):
         self.previousActiveLayer = new_layer
 
         # remember parameter settings from previous layer when switching to new layer
-        self.layersExtraProperties[previous_layer] = {}
-        self.layersExtraProperties["GENERAL"] = {}
+
+        # create missing entries in the model
+
+        if previous_layer not in self.layersExtraProperties:
+            self.layersExtraProperties[previous_layer] = {}
+        if "GENERAL" not in self.layersExtraProperties:
+            self.layersExtraProperties["GENERAL"] = {}
+
+        # store layer dependent parameters
         for t in TABS_WITH_PER_LAYER_PARAMS:
             tabidx = self.tabs.index(t)
             self.layersExtraProperties[previous_layer][tabidx] = self.tabhandlers[tabidx].ui_to_model()
+
+        # store overall parameters
         for t in TABS_OVER_ALL_LAYERS:
             tabidx = self.tabs.index(t)
             self.layersExtraProperties["GENERAL"][tabidx] = self.tabhandlers[tabidx].ui_to_model()
 
         # show parameter settings on newly selected layer if they were stored in a previous visit already
         if new_layer in self.layersExtraProperties:
+            # restore layer dependent parameters
             for t in TABS_WITH_PER_LAYER_PARAMS:
                 tabidx = self.tabs.index(t)
                 if tabidx in self.layersExtraProperties[new_layer]:
                     self.tabhandlers[tabidx].model_to_ui(self.layersExtraProperties[new_layer][tabidx])
+
+            # restore overall parameters
             for t in TABS_OVER_ALL_LAYERS:
                 tabidx = self.tabs.index(t)
                 if tabidx in self.layersExtraProperties[new_layer]:
                     self.tabhandlers[tabidx].model_to_ui(self.layersExtraProperties["GENERAL"][tabidx])
+
+            # also make last used method the active tab
+            if 'method' in self.layersExtraProperties[new_layer]:
+                last_used_method = self.layersExtraProperties[new_layer]['method']
+                self.squigglifySetup.setCurrentIndex(last_used_method)
 
     def LayerChanged(self):
         """

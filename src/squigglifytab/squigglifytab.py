@@ -1,6 +1,6 @@
 from math import fabs
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPersistentModelIndex
 from PyQt5.QtGui import qGray, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 
@@ -42,6 +42,7 @@ class SquigglifyTab(Tab):
             return
         self.localBitmap = self.parent.bitmap.copy()
         self.makeSquiggles(self.toBlackAndWhite(self.localBitmap))
+        self.last_used_method.emit(QPersistentModelIndex(self.parent.layersList.currentIndex()), self.get_id())
 
     def SetDefaults(self):
         """

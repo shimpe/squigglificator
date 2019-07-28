@@ -1,14 +1,17 @@
-from PyQt5.QtCore import QPersistentModelIndex
+from PyQt5.QtCore import QPersistentModelIndex, QObject, pyqtSignal
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
 from tab_constants import UNDEFINED
 
 
-class Tab(object):
+class Tab(QObject):
     """
     base class for tabs
     """
+    last_used_method = pyqtSignal(QPersistentModelIndex, int)
+
     def __init__(self, parent=None, itemsPerLayer=None):
+        super().__init__()
         self.parent = parent
         self.itemsPerLayer = itemsPerLayer
 

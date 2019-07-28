@@ -226,6 +226,7 @@ class LSystifyTab(Tab):
         self.reversed_pixel_order = pixel_order
         self.localBitmap = self.parent.bitmap.copy()
         self.make(self.toBlackAndWhite(self.localBitmap))
+        self.last_used_method.emit(QPersistentModelIndex(self.parent.layersList.currentIndex()), self.get_id())
 
     def make(self, image):
         """

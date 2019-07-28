@@ -1,7 +1,7 @@
 from random import random
 
 import numpy as np
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPersistentModelIndex
 from PyQt5.QtGui import qGray, QPen
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItemGroup
 from scipy import spatial
@@ -75,6 +75,7 @@ class BubblifyTab(Tab):
             return
         self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
         self.makeBubbles(self.localBitmap)
+        self.last_used_method.emit(QPersistentModelIndex(self.parent.layersList.currentIndex()), self.get_id())
 
     def makeBubbles(self, image):
         """
