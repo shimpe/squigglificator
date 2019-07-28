@@ -51,6 +51,8 @@ class MyMainWindow(Ui_MainWindow):
         self.actionShow_layers.triggered.connect(self.ShowLayers)
         self.actionExport_SVG_one_file_per_layer.triggered.connect(self.ExportSVGPerLayer)
 
+        self.application.aboutToQuit.connect(self.OnQuit)
+
         self.addLayer.clicked.connect(self.AddLayer)
         self.removeLayer.clicked.connect(self.RemoveSelected)
         self.layersModel.itemChanged.connect(self.LayerChanged)

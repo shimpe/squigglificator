@@ -41,7 +41,6 @@ class GcodeSenderTab(Tab):
 
     def on_quit(self):
         self.server.kill()
-        sleep(1)
 
     def OnQueueSizeChanged(self, newsize):
         self.parent.queueSizeGcodeSender.setText("{0}".format(newsize))
