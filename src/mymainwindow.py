@@ -1,4 +1,5 @@
 import os
+from os.path import expanduser
 
 from PyQt5.QtCore import Qt, QPersistentModelIndex, QRect
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem, QPainter
@@ -6,11 +7,11 @@ from PyQt5.QtSvg import QSvgGenerator
 from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QGraphicsPixmapItem, QGraphicsItemGroup
 
 from bubblifytab.bubblifytab import BubblifyTab
+from gcodesendertab.gcodesendertab import GcodeSenderTab
+from gcodetab.gcodetab import GcodeTab
 from img2svg import Ui_MainWindow
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
-from gcodetab.gcodetab import GcodeTab
-from gcodesendertab.gcodesendertab import GcodeSenderTab
 
 TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab]
 TABS_OVER_ALL_LAYERS = [GcodeTab, GcodeSenderTab]
@@ -24,6 +25,7 @@ class MyMainWindow(Ui_MainWindow):
     def __init__(self, application):
         super().__init__()
         self.application = application
+        self.homeFolder = expanduser("~")
 
     def finishSetupUi(self):
         """
@@ -79,6 +81,21 @@ class MyMainWindow(Ui_MainWindow):
             t.setupSlots()
             t.last_used_method.connect(self.UpdateLastUsedMethod)
 
+        self.saveSketch.clicked.connect(self.SaveSketch)
+        self.loadSketch.clicked.connect(self.LoadSketch)
+
+    def LoadSketch(self):
+        fname = QFileDialog.getOpenFileName(self.centralwidget, 'Open sketch',
+                                            self.homeFolder, "Sketch files (*.sq)")[0]
+        if fname:
+            print("Load ", fname)
+
+    def SaveSketch(self):
+        fname = QFileDialog.getSaveFileName(self.centralwidget, 'Save sketch',
+                                            self.homeFolder, "Sketch files (*.sq)")[0]
+        if fname:
+            print("Save ", fname)
+
     def UpdateLastUsedMethod(self, persistentmodelindex, method):
         if persistentmodelindex not in self.layersExtraProperties:
             self.layersExtraProperties[persistentmodelindex] = {}
@@ -113,10 +130,6 @@ class MyMainWindow(Ui_MainWindow):
         action triggered when the user requests to load a bitmap
         :return:
         """
-        if self.homeFolder is None:
-            from os.path import expanduser
-            self.homeFolder = expanduser("~")
-
         fname = QFileDialog.getOpenFileName(self.centralwidget, 'Open file',
                                             self.homeFolder, "Image files (*.jpg *.jpeg *.gif *.png *.bmp)")[0]
         if fname:
