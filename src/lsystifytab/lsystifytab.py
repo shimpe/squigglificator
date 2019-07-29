@@ -47,23 +47,25 @@ class LSystifyTab(Tab):
         return LSYSTIFYTAB
 
     def ui_to_model(self):
-        model = {'preset': self.parent.presetLSystify.currentText(),
-                 'iterations': self.parent.iterationsLSystify.value(), 'axiom': self.parent.axiomLSystify.text(),
-                 'rules': self.parent.rulesLSystify.text(), 'constants': self.parent.constantsLSystify.text(),
-                 'invertColors': self.parent.invertColorsLSystify.checkState(),
-                 'lineWidth': self.parent.lineWidthLSystify.value(),
-                 'clip': self.parent.clipToBitmapLSystify.checkState(),
-                 'initialAngle': self.parent.initialAngleLSystify.value(),
-                 'plusAngle': self.parent.plusAngleLSystify.value(), 'minAngle': self.parent.minAngleLSystify.value(),
-                 'xScale': self.parent.xScaleLSystify.value(), 'yScale': self.parent.yScaleLSystify.value(),
-                 'xOffset': self.parent.xOffsetLSystify.value(), 'yOffset': self.parent.yOffsetLSystify.value(),
-                 'method': self.parent.methodLSystify.currentText(),
+        model = {'preset'       : self.parent.presetLSystify.currentText(),
+                 'iterations'   : self.parent.iterationsLSystify.value(), 'axiom': self.parent.axiomLSystify.text(),
+                 'rules'        : self.parent.rulesLSystify.text(), 'constants': self.parent.constantsLSystify.text(),
+                 'invertColors' : int(self.parent.invertColorsLSystify.checkState()),
+                 'lineWidth'    : self.parent.lineWidthLSystify.value(),
+                 'clip'         : int(self.parent.clipToBitmapLSystify.checkState()),
+                 'initialAngle' : self.parent.initialAngleLSystify.value(),
+                 'plusAngle'    : self.parent.plusAngleLSystify.value(),
+                 'minAngle'     : self.parent.minAngleLSystify.value(),
+                 'xScale'       : self.parent.xScaleLSystify.value(), 'yScale': self.parent.yScaleLSystify.value(),
+                 'xOffset'      : self.parent.xOffsetLSystify.value(), 'yOffset': self.parent.yOffsetLSystify.value(),
+                 'method'       : self.parent.methodLSystify.currentText(),
                  'minBrightness': self.parent.minBrightnessLSystify.value(),
                  'maxBrightness': self.parent.maxBrightnessLSystify.value(),
-                 'minRadius': self.parent.minRadiusLSystify.value(), 'maxRadius': self.parent.maxRadiusLSystify.value(),
-                 'minStepSize': self.parent.minStepSizeLSystify.value(),
-                 'maxStepSize': self.parent.maxStepSizeLSystify.value(),
-                 'strength': self.parent.strengthLSystify.value(), 'detail': self.parent.detailLSystify.value()}
+                 'minRadius'    : self.parent.minRadiusLSystify.value(),
+                 'maxRadius'    : self.parent.maxRadiusLSystify.value(),
+                 'minStepSize'  : self.parent.minStepSizeLSystify.value(),
+                 'maxStepSize'  : self.parent.maxStepSizeLSystify.value(),
+                 'strength'     : self.parent.strengthLSystify.value(), 'detail': self.parent.detailLSystify.value()}
         return model
 
     def model_to_ui(self, model):
@@ -379,9 +381,9 @@ class LSystifyTab(Tab):
         self.lsystem.set_iterations(self.iterations)
         self.lsysteminterpreter.set_lsystem(self.lsystem)
         self.lsysteminterpreter.set_globalstate({
-            "pts": [(self.init_pos, self.init_dir)],
-            "x,y": self.init_pos,
-            "dir": self.init_dir,
+            "pts"     : [(self.init_pos, self.init_dir)],
+            "x,y"     : self.init_pos,
+            "dir"     : self.init_dir,
             "posstack": [],
             "dirstack": [],
         })

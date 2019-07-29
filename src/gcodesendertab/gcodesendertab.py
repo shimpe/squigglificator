@@ -1,9 +1,11 @@
-from tab import Tab
-from os.path import expanduser
-from serial.tools.list_ports import comports
 from os import linesep
-from gcodesendertab.plotterserver import PlotterServer
+from os.path import expanduser
+
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from serial.tools.list_ports import comports
+
+from gcodesendertab.plotterserver import PlotterServer
+from tab import Tab
 from tab_constants import GCODESENDERTAB
 
 
@@ -49,9 +51,9 @@ class GcodeSenderTab(Tab):
         return GCODESENDERTAB
 
     def ui_to_model(self):
-        model = {'baudrate': self.parent.baudRateGcodeSender.currentText(),
+        model = {'baudrate'    : self.parent.baudRateGcodeSender.currentText(),
                  'initFinished': self.parent.initFinishedGcodeSender.text(),
-                 'cmdFinished': self.parent.cmdFinishedGcodeSender.text()}
+                 'cmdFinished' : self.parent.cmdFinishedGcodeSender.text()}
         return model
 
     def model_to_ui(self, model):
@@ -225,28 +227,30 @@ class GcodeSenderTab(Tab):
         """
         cmd = self.parent.sendTaskGcodeSender.itemText(cmdidx)
         task_to_code = {
-            'No task selected': '',
-            'Pen up': 'G00 {pu} F{ps}'.format(pu=self.parent.penUpCmdGcode.text(),
-                                              ps=self.parent.penDownSpeedGcode.text()),
-            'Pen down': 'G00 {pd} F{ps}'.format(pd=self.parent.penDownCmdGcode.text(),
-                                                ps=self.parent.penDownSpeedGcode.text()),
-            'Go to 0,0 (fast)': "G00 X0 Y0",
-            'Home (slow and accurate)': "G00 X0 Y0|G28 X Y",
-            'Move along page outline with pen up': "G00 {pu} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
+            'No task selected'                                                   : '',
+            'Pen up'                                                             : 'G00 {pu} F{ps}'.format(
+                pu=self.parent.penUpCmdGcode.text(),
+                ps=self.parent.penDownSpeedGcode.text()),
+            'Pen down'                                                           : 'G00 {pd} F{ps}'.format(
+                pd=self.parent.penDownCmdGcode.text(),
+                ps=self.parent.penDownSpeedGcode.text()),
+            'Go to 0,0 (fast)'                                                   : "G00 X0 Y0",
+            'Home (slow and accurate)'                                           : "G00 X0 Y0|G28 X Y",
+            'Move along page outline with pen up'                                : "G00 {pu} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
                 pw=self.parent.pageWidthGcode.text().replace("M", "").replace("m", ""),
                 ds=self.parent.drawingSpeedGcode.text(),
                 ph=self.parent.pageHeightGcode.text().replace("M", "").replace("m", "")
             ),
-            'Draw page outline (set up in Gcode generation tab)': "G00 {pd} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
+            'Draw page outline (set up in Gcode generation tab)'                 : "G00 {pd} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
                 pd=self.parent.penDownCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
                 pw=self.parent.pageWidthGcode.text().replace("M", "").replace("m", ""),
                 ds=self.parent.drawingSpeedGcode.text(),
                 ph=self.parent.pageHeightGcode.text().replace("M", "").replace("m", "")
             ),
-            'Draw page margins (set up in Gcode generation tab)': "G00 {pu} F{ps}|G00 X{lx} Y{by}|G00 {pd} F{ps}|G01 X{rx} Y{by} F{ds}|G01 X{rx} Y{ty}|G01 X{lx} Y{ty}|G01 X{lx} Y{by}".format(
+            'Draw page margins (set up in Gcode generation tab)'                 : "G00 {pu} F{ps}|G00 X{lx} Y{by}|G00 {pd} F{ps}|G01 X{rx} Y{by} F{ds}|G01 X{rx} Y{ty}|G01 X{lx} Y{ty}|G01 X{lx} Y{by}".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
                 pd=self.parent.penDownCmdGcode.text(),
@@ -258,11 +262,11 @@ class GcodeSenderTab(Tab):
                 ty=float(self.parent.pageHeightGcode.text().replace("M", "").replace("m",
                                                                                      "")) - self.parent.yMarginGcode.value()
             ),
-            'Mark page corners (set up in Gcode generation tab)': "G00 {pu} F{ps}|G00 X0 Y10           |G00 {pd} F{ps}|G01 X0 Y0 F{ds}      |G01 X10 Y0|"
-                                                                  "G00 {pu} F{ps}|G00 X{pwminten} Y0   |G00 {pd} F{ps}|G01 X{pw} Y0 F{ds}   |G01 X{pw} Y10|"
-                                                                  "G00 {pu} F{ps}|G00 X{pw} Y{phminten}|G00 {pd} F{ps}|G01 X{pw} Y{ph} F{ds}|G01 X{pwminten} Y{ph}|"
-                                                                  "G00 {pu} F{ps}|G00 X10 Y{ph}        |G00 {pd} F{ps}|G01 X0 Y{ph} F{ds}   |G01 X0 Y{phminten}|"
-                                                                  "G00 {pu} F{ps}|G00 X0 Y0".format(
+            'Mark page corners (set up in Gcode generation tab)'                 : "G00 {pu} F{ps}|G00 X0 Y10           |G00 {pd} F{ps}|G01 X0 Y0 F{ds}      |G01 X10 Y0|"
+                                                                                   "G00 {pu} F{ps}|G00 X{pwminten} Y0   |G00 {pd} F{ps}|G01 X{pw} Y0 F{ds}   |G01 X{pw} Y10|"
+                                                                                   "G00 {pu} F{ps}|G00 X{pw} Y{phminten}|G00 {pd} F{ps}|G01 X{pw} Y{ph} F{ds}|G01 X{pwminten} Y{ph}|"
+                                                                                   "G00 {pu} F{ps}|G00 X10 Y{ph}        |G00 {pd} F{ps}|G01 X0 Y{ph} F{ds}   |G01 X0 Y{phminten}|"
+                                                                                   "G00 {pu} F{ps}|G00 X0 Y0".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 pd=self.parent.penDownCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
@@ -356,7 +360,10 @@ class GcodeSenderTab(Tab):
             ret = msg_box.exec()
 
         if ret == QMessageBox.Cancel:
-            self.Log("[UI] Please wait while code is being generated.")
+            msg_box = QMessageBox.information(
+                "Before start of every new layer, the system will go into pause. Simply click resume to start drawing the next layer.")
+            self.Log(
+                "[UI] Please wait while code is being generated. UI will be unresponsive while code is being generated.")
             self.parent.application.processEvents()
             list_of_gen = self.parent.get_sketch_by_layer()
             for idx, gen in enumerate(list_of_gen):

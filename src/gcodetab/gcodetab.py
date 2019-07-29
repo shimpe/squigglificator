@@ -39,19 +39,21 @@ class GcodeTab(Tab):
         return GCODETAB
 
     def ui_to_model(self):
-        model = {'pagePreset': self.parent.pagePresetGcode.currentText(),
-                 'pageWidth': self.parent.pageWidthGcode.value(), 'pageHeight': self.parent.pageHeightGcode.value(),
-                 'xMargin': self.parent.xMarginGcode.value(), 'yMargin': self.parent.yMarginGcode.value(),
-                 'xScale': self.parent.xScaleGcode.value(), 'yScale': self.parent.yScaleGcode.value(),
-                 'lockXY': self.parent.lockXYGcode.isChecked(),
-                 'offsetPreset': self.parent.offsetPresetGcode.currentText(),
-                 'xOffset': self.parent.xOffsetGcode.value(), 'yOffset': self.parent.yOffsetGcode.value(),
-                 'penUp': self.parent.penUpCmdGcode.text(), 'penDown': self.parent.penDownCmdGcode.text(),
-                 'drawingSpeed': self.parent.drawingSpeedGcode.value(),
-                 'penDownSpeed': self.parent.penDownSpeedGcode.value(),
-                 'samplingDistance': self.parent.samplingDistanceGcode.value(),
+        model = {'pagePreset'        : self.parent.pagePresetGcode.currentText(),
+                 'pageWidth'         : self.parent.pageWidthGcode.value(),
+                 'pageHeight'        : self.parent.pageHeightGcode.value(),
+                 'xMargin'           : self.parent.xMarginGcode.value(), 'yMargin': self.parent.yMarginGcode.value(),
+                 'xScale'            : self.parent.xScaleGcode.value(), 'yScale': self.parent.yScaleGcode.value(),
+                 'lockXY'            : self.parent.lockXYGcode.isChecked(),
+                 'offsetPreset'      : self.parent.offsetPresetGcode.currentText(),
+                 'xOffset'           : self.parent.xOffsetGcode.value(), 'yOffset': self.parent.yOffsetGcode.value(),
+                 'penUp'             : self.parent.penUpCmdGcode.text(), 'penDown': self.parent.penDownCmdGcode.text(),
+                 'drawingSpeed'      : self.parent.drawingSpeedGcode.value(),
+                 'penDownSpeed'      : self.parent.penDownSpeedGcode.value(),
+                 'samplingDistance'  : self.parent.samplingDistanceGcode.value(),
                  'approximationError': self.parent.maximumApproximationErrorGcode.value(),
-                 'homeBegin': self.parent.homeGcode.checkState(), 'homeEdnd': self.parent.homeEndGcode.checkState()}
+                 'homeBegin'         : int(self.parent.homeGcode.checkState()),
+                 'homeEdnd'          : int(self.parent.homeEndGcode.checkState())}
         return model
 
     def model_to_ui(self, model):
@@ -132,11 +134,11 @@ class GcodeTab(Tab):
         :return:
         """
         options = {
-            "A4 portrait (210mm x 270mm)": PaperOptions(width=210, height=270, xmargin=20, ymargin=20),
-            "A4 landscape (270mm x 210mm)": PaperOptions(width=270, height=210, xmargin=20, ymargin=20),
-            "Letter portrait (216mm x 279mm)": PaperOptions(width=216, height=279, xmargin=20, ymargin=20),
+            "A4 portrait (210mm x 270mm)"     : PaperOptions(width=210, height=270, xmargin=20, ymargin=20),
+            "A4 landscape (270mm x 210mm)"    : PaperOptions(width=270, height=210, xmargin=20, ymargin=20),
+            "Letter portrait (216mm x 279mm)" : PaperOptions(width=216, height=279, xmargin=20, ymargin=20),
             "Letter landscape (279mm x 216mm)": PaperOptions(width=270, height=216, xmargin=20, ymargin=20),
-            "Custom": PaperOptions(width=300, height=300, xmargin=0, ymargin=0)
+            "Custom"                          : PaperOptions(width=300, height=300, xmargin=0, ymargin=0)
         }
         self.parent.pageWidthGcode.setValue(options[text].width)
         self.parent.pageHeightGcode.setValue(options[text].height)

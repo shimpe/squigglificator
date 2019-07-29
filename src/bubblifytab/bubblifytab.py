@@ -47,14 +47,14 @@ class BubblifyTab(Tab):
         return BUBBLIFYTAB
 
     def ui_to_model(self):
-        model = {'minRadius': self.parent.minRadiusBubblify.value(),
-                 'maxRadius': self.parent.maxRadiusBubblify.value(),
-                 'invertColors': self.parent.invertColors.checkState(),
-                 'minProbability': self.parent.minProbabilityBubblify.value(),
-                 'maxProbability': self.parent.maxProbabilityBubblify.value(),
+        model = {'minRadius'      : self.parent.minRadiusBubblify.value(),
+                 'maxRadius'      : self.parent.maxRadiusBubblify.value(),
+                 'invertColors'   : int(self.parent.invertColors.checkState()),
+                 'minProbability' : self.parent.minProbabilityBubblify.value(),
+                 'maxProbability' : self.parent.maxProbabilityBubblify.value(),
                  'radiusTolerance': self.parent.radiusToleranceBubblify.value(),
-                 'minBrightness': self.parent.minBrightnessBubblify.value(),
-                 'maxBrightness': self.parent.maxBrightnessBubblify.value()}
+                 'minBrightness'  : self.parent.minBrightnessBubblify.value(),
+                 'maxBrightness'  : self.parent.maxBrightnessBubblify.value()}
         return model
 
     def model_to_ui(self, model):

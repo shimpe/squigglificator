@@ -47,8 +47,11 @@
          <height>400</height>
         </size>
        </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2767,6 +2770,20 @@ when command is finished</string>
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="loadSketch">
+       <property name="text">
+        <string>Load Sketch</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveSketch">
+       <property name="text">
+        <string>Save Sketch</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="exportSvg">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2898,6 +2915,34 @@ when command is finished</string>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>loadBitmap</tabstop>
+  <tabstop>hideBitmap</tabstop>
+  <tabstop>loadSketch</tabstop>
+  <tabstop>saveSketch</tabstop>
+  <tabstop>exportSvg</tabstop>
+  <tabstop>exportSvgPerLayer</tabstop>
+  <tabstop>noOfLines</tabstop>
+  <tabstop>strength</tabstop>
+  <tabstop>minBrightness</tabstop>
+  <tabstop>invertColors</tabstop>
+  <tabstop>detail</tabstop>
+  <tabstop>maxBrightness</tabstop>
+  <tabstop>verticalSquiggles</tabstop>
+  <tabstop>lineWidth</tabstop>
+  <tabstop>minStepSize</tabstop>
+  <tabstop>setDefaults</tabstop>
+  <tabstop>maxStepSize</tabstop>
+  <tabstop>squigglify</tabstop>
+  <tabstop>minRadiusBubblify</tabstop>
+  <tabstop>minProbabilityBubblify</tabstop>
+  <tabstop>minBrightnessBubblify</tabstop>
+  <tabstop>maxRadiusBubblify</tabstop>
+  <tabstop>maxProbabilityBubblify</tabstop>
+  <tabstop>maxBrightnessBubblify</tabstop>
+  <tabstop>invertColorsBubblify</tabstop>
+  <tabstop>radiusToleranceBubblify</tabstop>
+  <tabstop>setDefaultsBubblify</tabstop>
+  <tabstop>bubblify</tabstop>
   <tabstop>presetLSystify</tabstop>
   <tabstop>iterationsLSystify</tabstop>
   <tabstop>axiomLSystify</tabstop>
@@ -2913,47 +2958,16 @@ when command is finished</string>
   <tabstop>yScaleLSystify</tabstop>
   <tabstop>yOffsetLSystify</tabstop>
   <tabstop>methodLSystify</tabstop>
+  <tabstop>minBrightnessLSystify</tabstop>
+  <tabstop>minRadiusLSystify</tabstop>
+  <tabstop>maxBrightnessLSystify</tabstop>
+  <tabstop>maxRadiusLSystify</tabstop>
+  <tabstop>minStepSizeLSystify</tabstop>
+  <tabstop>strengthLSystify</tabstop>
+  <tabstop>maxStepSizeLSystify</tabstop>
+  <tabstop>detailLSystify</tabstop>
   <tabstop>drawLSystemLSystify</tabstop>
   <tabstop>lsystify</tabstop>
-  <tabstop>addLayer</tabstop>
-  <tabstop>removeLayer</tabstop>
-  <tabstop>maxStepSize</tabstop>
-  <tabstop>bubblify</tabstop>
-  <tabstop>setDefaultsBubblify</tabstop>
-  <tabstop>maxBrightnessBubblify</tabstop>
-  <tabstop>minBrightnessBubblify</tabstop>
-  <tabstop>minRadiusBubblify</tabstop>
-  <tabstop>maxRadiusBubblify</tabstop>
-  <tabstop>invertColorsBubblify</tabstop>
-  <tabstop>minProbabilityBubblify</tabstop>
-  <tabstop>maxProbabilityBubblify</tabstop>
-  <tabstop>radiusToleranceBubblify</tabstop>
-  <tabstop>minStepSize</tabstop>
-  <tabstop>invertColors</tabstop>
-  <tabstop>graphicsView</tabstop>
-  <tabstop>exportSvgPerLayer</tabstop>
-  <tabstop>exportSvg</tabstop>
-  <tabstop>squigglifySetup</tabstop>
-  <tabstop>noOfLines</tabstop>
-  <tabstop>detail</tabstop>
-  <tabstop>lineWidth</tabstop>
-  <tabstop>minBrightness</tabstop>
-  <tabstop>setDefaults</tabstop>
-  <tabstop>hideBitmap</tabstop>
-  <tabstop>verticalSquiggles</tabstop>
-  <tabstop>loadBitmap</tabstop>
-  <tabstop>strength</tabstop>
-  <tabstop>maxBrightness</tabstop>
-  <tabstop>squigglify</tabstop>
-  <tabstop>layersList</tabstop>
-  <tabstop>minBrightnessLSystify</tabstop>
-  <tabstop>maxBrightnessLSystify</tabstop>
-  <tabstop>minStepSizeLSystify</tabstop>
-  <tabstop>maxStepSizeLSystify</tabstop>
-  <tabstop>minRadiusLSystify</tabstop>
-  <tabstop>maxRadiusLSystify</tabstop>
-  <tabstop>detailLSystify</tabstop>
-  <tabstop>strengthLSystify</tabstop>
   <tabstop>clipToBitmapLSystify</tabstop>
   <tabstop>pagePresetGcode</tabstop>
   <tabstop>pageWidthGcode</tabstop>
@@ -2963,17 +2977,17 @@ when command is finished</string>
   <tabstop>xScaleGcode</tabstop>
   <tabstop>lockXYGcode</tabstop>
   <tabstop>yScaleGcode</tabstop>
+  <tabstop>samplingDistanceGcode</tabstop>
+  <tabstop>maximumApproximationErrorGcode</tabstop>
   <tabstop>offsetPresetGcode</tabstop>
   <tabstop>xOffsetGcode</tabstop>
   <tabstop>yOffsetGcode</tabstop>
+  <tabstop>homeGcode</tabstop>
+  <tabstop>homeEndGcode</tabstop>
   <tabstop>penUpCmdGcode</tabstop>
   <tabstop>penDownCmdGcode</tabstop>
   <tabstop>drawingSpeedGcode</tabstop>
   <tabstop>penDownSpeedGcode</tabstop>
-  <tabstop>samplingDistanceGcode</tabstop>
-  <tabstop>maximumApproximationErrorGcode</tabstop>
-  <tabstop>homeGcode</tabstop>
-  <tabstop>homeEndGcode</tabstop>
   <tabstop>eport2dGcode</tabstop>
   <tabstop>eport2dGcodePerLayer</tabstop>
   <tabstop>portGcodeSender</tabstop>
@@ -2990,6 +3004,11 @@ when command is finished</string>
   <tabstop>cmdFinishedGcodeSender</tabstop>
   <tabstop>queueSizeGcodeSender</tabstop>
   <tabstop>serialMonitorGcodeSender</tabstop>
+  <tabstop>addLayer</tabstop>
+  <tabstop>removeLayer</tabstop>
+  <tabstop>layersList</tabstop>
+  <tabstop>squigglifySetup</tabstop>
+  <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources/>
  <connections/>

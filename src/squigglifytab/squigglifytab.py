@@ -6,8 +6,8 @@ from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 
 from mapping import Mapping
 from tab import Tab
-from utils import frange
 from tab_constants import SQUIGGLIFYTAB
+from utils import frange
 
 
 class SquigglifyTab(Tab):
@@ -70,12 +70,13 @@ class SquigglifyTab(Tab):
         summarize ui controls in a model (dict of key->value)
         :return: model
         """
-        model = {'noOfLines': self.parent.noOfLines.value(), 'invertColors': self.parent.invertColors.checkState(),
-                 'verticalSquiggles': self.parent.verticalSquiggles.checkState(),
-                 'strength': self.parent.strength.value(), 'detail': self.parent.detail.value(),
-                 'lineWidth': self.parent.lineWidth.value(), 'minBrightness': self.parent.minBrightness.value(),
-                 'maxBrightness': self.parent.maxBrightness.value(), 'minStepSize': self.parent.minStepSize.value(),
-                 'maxStepSize': self.parent.maxStepSize.value()}
+        model = {'noOfLines'        : self.parent.noOfLines.value(),
+                 'invertColors'     : int(self.parent.invertColors.checkState()),
+                 'verticalSquiggles': int(self.parent.verticalSquiggles.checkState()),
+                 'strength'         : self.parent.strength.value(), 'detail': self.parent.detail.value(),
+                 'lineWidth'        : self.parent.lineWidth.value(), 'minBrightness': self.parent.minBrightness.value(),
+                 'maxBrightness'    : self.parent.maxBrightness.value(), 'minStepSize': self.parent.minStepSize.value(),
+                 'maxStepSize'      : self.parent.maxStepSize.value()}
         return model
 
     def model_to_ui(self, model):
