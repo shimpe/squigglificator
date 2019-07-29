@@ -1,8 +1,8 @@
 import os
 from os.path import expanduser
 
-from PyQt5.QtCore import Qt, QPersistentModelIndex, QRect
-from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem, QPainter
+from PyQt5.QtCore import Qt, QPersistentModelIndex, QModelIndex, QRect
+from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QPainter
 from PyQt5.QtSvg import QSvgGenerator
 from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QGraphicsPixmapItem, QGraphicsItemGroup
 
@@ -10,6 +10,7 @@ from bubblifytab.bubblifytab import BubblifyTab
 from gcodesendertab.gcodesendertab import GcodeSenderTab
 from gcodetab.gcodetab import GcodeTab
 from img2svg import Ui_MainWindow
+from layeritem import LayerItem
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
 
@@ -26,6 +27,7 @@ class MyMainWindow(Ui_MainWindow):
         super().__init__()
         self.application = application
         self.homeFolder = expanduser("~")
+        self.properties_over_all_layers_per_tab = {}
 
     def finishSetupUi(self):
         """
@@ -40,15 +42,14 @@ class MyMainWindow(Ui_MainWindow):
         self.homeFolder = None
         self.layersModel = QStandardItemModel()
         self.layersList.setModel(self.layersModel)
-        self.layersExtraProperties = {}
         self.previousActiveLayer = None
+        self.itemsPerLayer = {}
+        self.tabs = [SquigglifyTab, BubblifyTab, LSystifyTab, GcodeTab, GcodeSenderTab]
+        self.tabhandlers = [t(self, self.itemsPerLayer) for t in self.tabs]
         self.AddLayer()
         self.layersList.setCurrentIndex(self.layersModel.index(0, 0))
         self.bitmapVisibility = True
         self.generated = {}
-        self.itemsPerLayer = {}
-        self.tabs = [SquigglifyTab, BubblifyTab, LSystifyTab, GcodeTab, GcodeSenderTab]
-        self.tabhandlers = [t(self, self.itemsPerLayer) for t in self.tabs]
 
     def setupSlots(self):
         """
@@ -96,10 +97,8 @@ class MyMainWindow(Ui_MainWindow):
         if fname:
             print("Save ", fname)
 
-    def UpdateLastUsedMethod(self, persistentmodelindex, method):
-        if persistentmodelindex not in self.layersExtraProperties:
-            self.layersExtraProperties[persistentmodelindex] = {}
-        self.layersExtraProperties[persistentmodelindex]['method'] = method
+    def UpdateLastUsedMethod(self, layer_model_index, method):
+        self.layersModel.itemFromIndex(QModelIndex(layer_model_index)).set_last_used_method(method)
 
     def ShowToolbar(self):
         """
@@ -180,9 +179,14 @@ class MyMainWindow(Ui_MainWindow):
         action triggered when user requests addition of a new layer
         :return:
         """
-        item = QStandardItem("Layer {0}".format(self.layersModel.rowCount() + 1))
-        item.setCheckable(True)
-        item.setCheckState(Qt.Checked)
+        item = LayerItem("Layer {0}".format(self.layersModel.rowCount() + 1))
+        params_per_tab = {}
+        for tab in TABS_WITH_PER_LAYER_PARAMS:
+            tabidx = tab().get_id()
+            item.set_parameters_for_tab(tabidx, self.tabhandlers[tabidx].ui_to_model())
+        for tab in TABS_OVER_ALL_LAYERS:
+            tabidx = tab().get_id()
+            self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
         self.layersModel.appendRow(item)
 
     def RemoveSelected(self):
@@ -218,52 +222,41 @@ class MyMainWindow(Ui_MainWindow):
             self.bitmapVisibility = True
 
     def LayerSelectionChanged(self, new_layer):
-        new_layer = QPersistentModelIndex(new_layer)
-
+        persistent_new_layer = QPersistentModelIndex(new_layer)
         if self.previousActiveLayer is None:
             previous_layer = QPersistentModelIndex(self.layersModel.index(0, 0))
         else:
             previous_layer = self.previousActiveLayer
-
-        self.previousActiveLayer = new_layer
+        self.previousActiveLayer = persistent_new_layer
 
         # remember parameter settings from previous layer when switching to new layer
-
-        # create missing entries in the model
-
-        if previous_layer not in self.layersExtraProperties:
-            self.layersExtraProperties[previous_layer] = {}
-        if "GENERAL" not in self.layersExtraProperties:
-            self.layersExtraProperties["GENERAL"] = {}
-
         # store layer dependent parameters
-        for t in TABS_WITH_PER_LAYER_PARAMS:
-            tabidx = self.tabs.index(t)
-            self.layersExtraProperties[previous_layer][tabidx] = self.tabhandlers[tabidx].ui_to_model()
+        if previous_layer.isValid():  # could have been deleted...
+            for t in TABS_WITH_PER_LAYER_PARAMS:
+                tabidx = self.tabs.index(t)
+                self.layersModel.itemFromIndex(QModelIndex(previous_layer)).parameters_per_tab[tabidx] = \
+                    self.tabhandlers[tabidx].ui_to_model()
 
         # store overall parameters
         for t in TABS_OVER_ALL_LAYERS:
             tabidx = self.tabs.index(t)
-            self.layersExtraProperties["GENERAL"][tabidx] = self.tabhandlers[tabidx].ui_to_model()
+            self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
 
         # show parameter settings on newly selected layer if they were stored in a previous visit already
-        if new_layer in self.layersExtraProperties:
-            # restore layer dependent parameters
-            for t in TABS_WITH_PER_LAYER_PARAMS:
-                tabidx = self.tabs.index(t)
-                if tabidx in self.layersExtraProperties[new_layer]:
-                    self.tabhandlers[tabidx].model_to_ui(self.layersExtraProperties[new_layer][tabidx])
+        for t in TABS_WITH_PER_LAYER_PARAMS:
+            tabidx = self.tabs.index(t)
+            self.tabhandlers[tabidx].model_to_ui(
+                self.layersModel.itemFromIndex(new_layer).get_parameters_for_tab(tabidx))
 
-            # restore overall parameters
-            for t in TABS_OVER_ALL_LAYERS:
-                tabidx = self.tabs.index(t)
-                if tabidx in self.layersExtraProperties[new_layer]:
-                    self.tabhandlers[tabidx].model_to_ui(self.layersExtraProperties["GENERAL"][tabidx])
+        # restore overall parameters
+        for t in TABS_OVER_ALL_LAYERS:
+            tabidx = self.tabs.index(t)
+            if tabidx in self.properties_over_all_layers_per_tab:
+                self.tabhandlers[tabidx].model_to_ui(self.properties_over_all_layers_per_tab[tabidx])
 
-            # also make last used method the active tab
-            if 'method' in self.layersExtraProperties[new_layer]:
-                last_used_method = self.layersExtraProperties[new_layer]['method']
-                self.squigglifySetup.setCurrentIndex(last_used_method)
+        # also make last used method the active tab
+        last_used_method = self.layersModel.itemFromIndex(new_layer).get_last_used_method()
+        self.squigglifySetup.setCurrentIndex(last_used_method)
 
     def LayerChanged(self):
         """

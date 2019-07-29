@@ -16,10 +16,11 @@ class GcodeSenderTab(Tab):
 
     def __init__(self, parent=None, itemsPerLayer=None):
         super().__init__(parent, itemsPerLayer)
-        self.homeFolder = expanduser("~")
-        self.server = PlotterServer(self.parent.cmdFinishedGcodeSender.text().strip())
-        self.paused = False
-        self.item_to_device = {}
+        if parent is not None:
+            self.homeFolder = expanduser("~")
+            self.server = PlotterServer(self.parent.cmdFinishedGcodeSender.text().strip())
+            self.paused = False
+            self.item_to_device = {}
 
     def setupSlots(self):
         """
