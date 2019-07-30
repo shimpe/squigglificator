@@ -1,7 +1,7 @@
 import re
 
 import numpy as np
-from PyQt5.QtCore import Qt, QPersistentModelIndex
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import qGray, QPainterPath, QPen
 from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsItemGroup
 from skimage.draw import line
@@ -25,8 +25,8 @@ class LSystifyTab(Tab):
     tab to represent the lsystify wizard
     """
 
-    def __init__(self, parent=None, itemsPerLayer=None):
-        super().__init__(parent, itemsPerLayer)
+    def __init__(self, parent=None, layersModel=None):
+        super().__init__(parent, layersModel)
         self.localBitmap = None
         self.lsystem = LSystem()
         self.lsysteminterpreter = LSystemInterpreter()
@@ -224,7 +224,7 @@ class LSystifyTab(Tab):
         self.reversed_pixel_order = pixel_order
         self.localBitmap = self.parent.bitmap.copy()
         self.make(self.toBlackAndWhite(self.localBitmap))
-        self.last_used_method.emit(QPersistentModelIndex(self.parent.layersList.currentIndex()), self.get_id())
+        self.last_used_method.emit(self.parent.layersList.currentIndex(), self.get_id())
 
     def make(self, image):
         """
@@ -408,11 +408,9 @@ class LSystifyTab(Tab):
         self.getdata()
         self.run_lsystem()
 
-        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
-        if layerId not in self.itemsPerLayer:
-            self.itemsPerLayer[layerId] = None
-        if self.itemsPerLayer[layerId] is not None:
-            self.parent.scene.removeItem(self.itemsPerLayer[layerId])
+        old_group = self.layersModel.itemFromIndex(self.parent.layersList.currentIndex()).get_graphics_items_group()
+        if old_group:
+            self.parent.scene.removeItem(old_group)
 
         group = QGraphicsItemGroup()
         path = QPainterPath()
@@ -431,8 +429,7 @@ class LSystifyTab(Tab):
         pen.setWidth(self.strokeWidth)
         item.setPen(pen)
         group.addToGroup(item)
-        self.parent.scene.addItem(group)
-        self.itemsPerLayer[layerId] = group
+        self.addNewGraphicsItems(group)
 
     def discretize_lsystem(self):
         """

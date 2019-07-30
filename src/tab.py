@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QPersistentModelIndex, QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, QModelIndex
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
 
@@ -9,12 +9,12 @@ class Tab(QObject):
     """
     base class for tabs
     """
-    last_used_method = pyqtSignal(QPersistentModelIndex, int)
+    last_used_method = pyqtSignal(QModelIndex, int)
 
-    def __init__(self, parent=None, itemsPerLayer=None):
+    def __init__(self, parent=None, layersModel=None):
         super().__init__()
         self.parent = parent
-        self.itemsPerLayer = itemsPerLayer
+        self.layersModel = layersModel
 
     def after_load_bitmap(self):
         """
@@ -90,11 +90,10 @@ class Tab(QObject):
         convenience method for tabs to clear graphics on current layer while maintaining internal model
         :return: nothing
         """
-        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
-        if layerId not in self.itemsPerLayer:
-            self.itemsPerLayer[layerId] = None
-        if self.itemsPerLayer[layerId] is not None:
-            self.parent.scene.removeItem(self.itemsPerLayer[layerId])
+        graphics_items_group = self.layersModel.itemFromIndex(
+            self.parent.layersList.currentIndex()).get_graphics_items_group()
+        if graphics_items_group:
+            self.parent.scene.removeItem(graphics_items_group)
 
     def addNewGraphicsItems(self, group):
         """
@@ -103,5 +102,4 @@ class Tab(QObject):
         :return: nothing
         """
         self.parent.scene.addItem(group)
-        layerId = QPersistentModelIndex(self.parent.layersList.currentIndex())
-        self.itemsPerLayer[layerId] = group
+        self.layersModel.itemFromIndex(self.parent.layersList.currentIndex()).set_graphics_items_group(group)

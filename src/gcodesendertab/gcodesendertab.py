@@ -14,8 +14,8 @@ class GcodeSenderTab(Tab):
     tab to implement a gcode sender
     """
 
-    def __init__(self, parent=None, itemsPerLayer=None):
-        super().__init__(parent, itemsPerLayer)
+    def __init__(self, parent=None, layersModel=None):
+        super().__init__(parent, layersModel)
         if parent is not None:
             self.homeFolder = expanduser("~")
             self.server = PlotterServer(self.parent.cmdFinishedGcodeSender.text().strip())

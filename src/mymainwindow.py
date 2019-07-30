@@ -44,9 +44,8 @@ class MyMainWindow(Ui_MainWindow):
         self.layersModel = QStandardItemModel()
         self.layersList.setModel(self.layersModel)
         self.previousActiveLayer = None
-        self.itemsPerLayer = {}
         self.tabs = [SquigglifyTab, BubblifyTab, LSystifyTab, GcodeTab, GcodeSenderTab]
-        self.tabhandlers = [t(self, self.itemsPerLayer) for t in self.tabs]
+        self.tabhandlers = [t(self, self.layersModel) for t in self.tabs]
         self.AddLayer()
         self.layersList.setCurrentIndex(self.layersModel.index(0, 0))
         self.bitmapVisibility = True
@@ -100,9 +99,11 @@ class MyMainWindow(Ui_MainWindow):
                 return
 
         self.layersModel.clear()
-        for layer in self.itemsPerLayer:
-            if self.itemsPerLayer[layer] is not None:
-                self.scene.removeItem(self.itemsPerLayer[layer])
+        for layer_idx in range(self.layersModel.rowCount()):
+            gfx = self.layersModel.item(layer_idx).get_graphics_items_group()
+            if gfx is not None:
+                self.scene.removeItem(gfx)
+
         self.properties_over_all_layers_per_tab = {}
         no_of_layers = len(simple_model["layer_dependent_parameters"].keys())
         for l in range(no_of_layers):
@@ -134,7 +135,7 @@ class MyMainWindow(Ui_MainWindow):
             yaml.dump(summary_model, outfile, default_flow_style=False)
 
     def UpdateLastUsedMethod(self, layer_model_index, method):
-        self.layersModel.itemFromIndex(QModelIndex(layer_model_index)).set_last_used_method(method)
+        self.layersModel.itemFromIndex(layer_model_index).set_last_used_method(method)
 
     def ShowToolbar(self):
         """
@@ -169,9 +170,10 @@ class MyMainWindow(Ui_MainWindow):
                                             self.homeFolder, "Image files (*.jpg *.jpeg *.gif *.png *.bmp)")[0]
         if fname:
             # clean up all old data
-            for layer in self.itemsPerLayer:
-                if self.itemsPerLayer[layer] is not None:
-                    self.scene.removeItem(self.itemsPerLayer[layer])
+            for layer_idx in range(self.layersModel.rowCount()):
+                gfx = self.layersModel.item(layer_idx).get_graphics_items_group()
+                if gfx:
+                    self.scene.removeItem(gfx)
             # create new data
             self.bitmap = QImage(fname)
             if self.bitmap:
@@ -231,10 +233,10 @@ class MyMainWindow(Ui_MainWindow):
         :return:
         """
         for i in self.layersList.selectedIndexes():
-            index = QPersistentModelIndex(i)
-            if index in self.itemsPerLayer:
-                self.scene.removeItem(self.itemsPerLayer[index])
-                del self.itemsPerLayer[index]
+            gfx = self.layersModel.itemFromIndex(i).get_graphics_items_group()
+            if gfx:
+                self.scene.removeItem(gfx)
+            self.layersModel.itemFromIndex(i).remove_graphics_items_group()
             self.layersModel.removeRow(i.row())
         if self.layersModel.rowCount() == 0:
             self.AddLayer()
@@ -302,13 +304,10 @@ class MyMainWindow(Ui_MainWindow):
         numRows = self.layersModel.rowCount()
         for row in range(numRows):
             item = self.layersModel.item(row)
-            index = QPersistentModelIndex(self.layersModel.index(row, 0))
-            if index not in self.itemsPerLayer:
-                return
             if item.checkState() == Qt.Checked:
-                self.itemsPerLayer[index].setVisible(True)
+                item.get_graphics_items_group().setVisible(True)
             else:
-                self.itemsPerLayer[index].setVisible(False)
+                item.get_graphics_items_group().setVisible(False)
 
     def ExportSVG(self):
         """
@@ -353,19 +352,19 @@ class MyMainWindow(Ui_MainWindow):
             self.ToggleBitmap()
 
         # make stuff invisible to avoid sending it to svg
-        for idx, layer in enumerate(self.itemsPerLayer):
-            print("*** iteration {0}".format(idx))
-            layer_filename = "{0}_layer{1}.svg".format(os.path.splitext(filename)[0], idx + 1)
+        for layer_idx in range(self.layersModel.rowCount()):
+            print("*** iteration {0}".format(layer_idx))
+            layer_filename = "{0}_layer{1}.svg".format(os.path.splitext(filename)[0], layer_idx + 1)
             for item in self.scene.items():
                 item.setVisible(True)
                 forceAlwaysInvisible = item.__class__ == QGraphicsPixmapItem
                 forceInvisibleInCurrentLayer = item.__class__ == QGraphicsItemGroup and \
-                                               (item != self.itemsPerLayer[layer] or \
-                                                self.layersModel.item(idx).checkState() != Qt.Checked)
+                                               (item != self.layersModel.item(layer_idx).get_graphics_items_group() or \
+                                                self.layersModel.item(layer_idx).checkState() != Qt.Checked)
                 if forceAlwaysInvisible or forceInvisibleInCurrentLayer:  # ouch
                     print("setting idx to invisible for item {0}".format(item))
                     item.setVisible(False)
-            if self.layersModel.item(idx).checkState() == Qt.Checked:
+            if self.layersModel.item(layer_idx).checkState() == Qt.Checked:
                 generator = QSvgGenerator()
                 generator.setFileName(layer_filename)
                 sceneSize = self.scene.sceneRect().size()
@@ -379,10 +378,10 @@ class MyMainWindow(Ui_MainWindow):
                 painter.end()
 
         # restore visibility
-        for idx, layer in enumerate(self.itemsPerLayer):
+        for layer_idx in range(self.layersModel.rowCount()):
             for item in self.scene.items():
                 if item.__class__ == QGraphicsItemGroup and \
-                        self.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
+                        self.layersModel.item(layer_idx).checkState() == Qt.Checked:  # ouch
                     item.setVisible(True)
 
     def get_sketch_code(self):

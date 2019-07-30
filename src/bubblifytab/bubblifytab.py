@@ -1,7 +1,7 @@
 from random import random
 
 import numpy as np
-from PyQt5.QtCore import Qt, QPersistentModelIndex
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import qGray, QPen
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItemGroup
 from scipy import spatial
@@ -16,8 +16,8 @@ class BubblifyTab(Tab):
     this tab implements the "Bubblify" wizard
     """
 
-    def __init__(self, parent=None, itemsPerLayer=None):
-        super().__init__(parent, itemsPerLayer)
+    def __init__(self, parent=None, layersModel=None):
+        super().__init__(parent, layersModel)
         self.localBitmap = None
 
     def setupSlots(self):
@@ -40,8 +40,8 @@ class BubblifyTab(Tab):
         self.parent.maxRadiusBubblify.setValue(10)
         self.parent.invertColorsBubblify.setCheckState(Qt.Unchecked)
         self.parent.minProbabilityBubblify.setValue(1)
-        self.parent.maxProbabilityBubblify.value(20)
-        self.parent.radiusToleranceBubblify.value(0.4)
+        self.parent.maxProbabilityBubblify.setValue(20)
+        self.parent.radiusToleranceBubblify.setValue(0.4)
 
     def get_id(self):
         return BUBBLIFYTAB
@@ -76,7 +76,7 @@ class BubblifyTab(Tab):
             return
         self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
         self.makeBubbles(self.localBitmap)
-        self.last_used_method.emit(QPersistentModelIndex(self.parent.layersList.currentIndex()), self.get_id())
+        self.last_used_method.emit(self.parent.layersList.currentIndex(), self.get_id())
 
     def makeBubbles(self, image):
         """
@@ -151,6 +151,7 @@ class BubblifyTab(Tab):
                 pen.setWidth(strokeWidth)
                 item.setPen(pen)
                 group.addToGroup(item)
+
             self.addNewGraphicsItems(group)
 
             self.parent.progressBarBubblify.setVisible(False)

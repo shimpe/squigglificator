@@ -16,8 +16,8 @@ class GcodeTab(Tab):
     gcode generation tab
     """
 
-    def __init__(self, parent=None, itemsPerLayer=None):
-        super().__init__(parent, itemsPerLayer)
+    def __init__(self, parent=None, layersModel=None):
+        super().__init__(parent, layersModel)
         self.homeFolder = expanduser("~")
 
     def setupSlots(self):
@@ -254,28 +254,28 @@ class GcodeTab(Tab):
         filename = newPath[0]
 
         # make stuff invisible to avoid sending it to gcode
-        for idx, layer in enumerate(self.itemsPerLayer):
-            print("*** iteration {0}".format(idx))
-            layer_filename = "{0}_layer{1}.cnc".format(splitext(filename)[0], idx + 1)
+        for layer_idx in range(self.layersModel.rowCount()):
+            print("*** iteration {0}".format(layer_idx))
+            layer_filename = "{0}_layer{1}.cnc".format(splitext(filename)[0], layer_idx + 1)
             for item in self.parent.scene.items():
                 item.setVisible(True)
                 forceAlwaysInvisible = item.__class__ == QGraphicsPixmapItem
                 forceInvisibleInCurrentLayer = item.__class__ == QGraphicsItemGroup and \
-                                               (item != self.itemsPerLayer[layer] or \
-                                                self.parent.layersModel.item(idx).checkState() != Qt.Checked)
+                                               (item != self.layersModel.item(layer_idx).get_graphics_items_group() or \
+                                                self.parent.layersModel.item(layer_idx).checkState() != Qt.Checked)
                 if forceAlwaysInvisible or forceInvisibleInCurrentLayer:  # ouch
                     print("setting idx to invisible for item {0}".format(item))
                     item.setVisible(False)
-            if self.parent.layersModel.item(idx).checkState() == Qt.Checked:
+            if self.parent.layersModel.item(layer_idx).checkState() == Qt.Checked:
                 gen = self.generate_code()
                 with open(layer_filename, "w") as f:
                     f.write(gen.code)
 
         # restore visibility
-        for idx, layer in enumerate(self.itemsPerLayer):
+        for layer_idx in range(self.layersModel.rowCount()):
             for item in self.parent.scene.items():
                 if item.__class__ == QGraphicsItemGroup and \
-                        self.parent.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
+                        self.parent.layersModel.item(layer_idx).checkState() == Qt.Checked:  # ouch
                     item.setVisible(True)
 
     def generate_code(self):
@@ -296,8 +296,8 @@ class GcodeTab(Tab):
                              self.parent.penDownSpeedGcode.value(),
                              self.parent.samplingDistanceGcode.value(),
                              self.parent.maximumApproximationErrorGcode.value())
-        for layer in self.itemsPerLayer:
-            for item in self.itemsPerLayer[layer].childItems():
+        for layer_idx in range(self.layersModel.rowCount()):
+            for item in self.layersModel.item(layer_idx).get_graphics_items_group().childItems():
                 gen.process_item(item)
         gen.add_statistics()
         gen.footer()
@@ -318,23 +318,23 @@ class GcodeTab(Tab):
         """
         # make stuff invisible to avoid sending it to gcode
         list_of_gen = []
-        for idx, layer in enumerate(self.itemsPerLayer):
+        for layer_idx in range(self.layersModel.rowCount()):
             for item in self.parent.scene.items():
                 item.setVisible(True)
                 forceAlwaysInvisible = item.__class__ == QGraphicsPixmapItem
                 forceInvisibleInCurrentLayer = item.__class__ == QGraphicsItemGroup and \
-                                               (item != self.itemsPerLayer[layer] or \
-                                                self.parent.layersModel.item(idx).checkState() != Qt.Checked)
+                                               (item != self.layersModel.item(layer_idx).get_graphics_items_group() or \
+                                                self.parent.layersModel.item(layer_idx).checkState() != Qt.Checked)
                 if forceAlwaysInvisible or forceInvisibleInCurrentLayer:  # ouch
                     item.setVisible(False)
-            if self.parent.layersModel.item(idx).checkState() == Qt.Checked:
+            if self.parent.layersModel.item(layer_idx).checkState() == Qt.Checked:
                 list_of_gen.append(self.generate_code())
 
         # restore visibility
-        for idx, layer in enumerate(self.itemsPerLayer):
+        for layer_idx in enumerate(self.layersModel.rowCount()):
             for item in self.parent.scene.items():
                 if item.__class__ == QGraphicsItemGroup and \
-                        self.parent.layersModel.item(idx).checkState() == Qt.Checked:  # ouch
+                        self.parent.layersModel.item(layer_idx).checkState() == Qt.Checked:  # ouch
                     item.setVisible(True)
 
         return list_of_gen

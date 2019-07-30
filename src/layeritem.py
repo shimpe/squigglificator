@@ -9,6 +9,7 @@ class LayerItem(QStandardItem):
         self.setCheckState(Qt.Checked)
         self.parameters_per_tab = {}
         self.last_used_method = 0
+        self.graphics_items = None
 
     def get_last_used_method(self):
         return self.last_used_method
@@ -27,3 +28,12 @@ class LayerItem(QStandardItem):
 
     def set_parameters_for_tab(self, tabidx, parameters):
         self.parameters_per_tab[tabidx] = parameters.copy()
+
+    def set_graphics_items_group(self, group):
+        self.graphics_items = group
+
+    def remove_graphics_items_group(self):
+        self.graphics_items = None
+
+    def get_graphics_items_group(self):
+        return self.graphics_items
