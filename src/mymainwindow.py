@@ -1,10 +1,11 @@
 import os
 from os.path import expanduser
 
+import yaml
 from PyQt5.QtCore import Qt, QPersistentModelIndex, QModelIndex, QRect
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QPainter
 from PyQt5.QtSvg import QSvgGenerator
-from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QGraphicsPixmapItem, QGraphicsItemGroup
+from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QGraphicsPixmapItem, QGraphicsItemGroup, QMessageBox
 
 from bubblifytab.bubblifytab import BubblifyTab
 from gcodesendertab.gcodesendertab import GcodeSenderTab
@@ -88,14 +89,49 @@ class MyMainWindow(Ui_MainWindow):
     def LoadSketch(self):
         fname = QFileDialog.getOpenFileName(self.centralwidget, 'Open sketch',
                                             self.homeFolder, "Sketch files (*.sq)")[0]
-        if fname:
-            print("Load ", fname)
+        if not fname:
+            return
+
+        with open(fname, 'r') as stream:
+            try:
+                simple_model = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                QMessageBox.error("Problem loading .sq file!! Reason: {0}".format(exc))
+                return
+
+        self.layersModel.clear()
+        for layer in self.itemsPerLayer:
+            if self.itemsPerLayer[layer] is not None:
+                self.scene.removeItem(self.itemsPerLayer[layer])
+        self.properties_over_all_layers_per_tab = {}
+        no_of_layers = len(simple_model["layer_dependent_parameters"].keys())
+        for l in range(no_of_layers):
+            self.AddLayer()
+            for tab in TABS_WITH_PER_LAYER_PARAMS:
+                tabidx = tab().get_id()
+                self.layersModel.item(l, 0).set_parameters_for_tab(tabidx,
+                                                                   simple_model["layer_dependent_parameters"][l][
+                                                                       tabidx])
+                self.layersModel.item(l, 0).set_last_used_method(
+                    simple_model["layer_dependent_parameters"][l]["last_used_method"])
+        self.properties_over_all_layers_per_tab = simple_model["layer_independent_parameters"]
 
     def SaveSketch(self):
         fname = QFileDialog.getSaveFileName(self.centralwidget, 'Save sketch',
                                             self.homeFolder, "Sketch files (*.sq)")[0]
-        if fname:
-            print("Save ", fname)
+        if not fname:
+            return
+
+        summary_model = {}
+        summary_model["layer_independent_parameters"] = self.properties_over_all_layers_per_tab
+        summary_model["layer_dependent_parameters"] = {}
+        for l in range(self.layersModel.rowCount()):
+            data = self.layersModel.item(l, 0).get_parameters()
+            summary_model["layer_dependent_parameters"][l] = data
+            last_used_method = self.layersModel.item(l, 0).get_last_used_method()
+            summary_model["layer_dependent_parameters"][l]["last_used_method"] = last_used_method
+        with open(fname, 'w') as outfile:
+            yaml.dump(summary_model, outfile, default_flow_style=False)
 
     def UpdateLastUsedMethod(self, layer_model_index, method):
         self.layersModel.itemFromIndex(QModelIndex(layer_model_index)).set_last_used_method(method)
@@ -233,24 +269,24 @@ class MyMainWindow(Ui_MainWindow):
         # store layer dependent parameters
         if previous_layer.isValid():  # could have been deleted...
             for t in TABS_WITH_PER_LAYER_PARAMS:
-                tabidx = self.tabs.index(t)
+                tabidx = t().get_id()
                 self.layersModel.itemFromIndex(QModelIndex(previous_layer)).parameters_per_tab[tabidx] = \
                     self.tabhandlers[tabidx].ui_to_model()
 
         # store overall parameters
         for t in TABS_OVER_ALL_LAYERS:
-            tabidx = self.tabs.index(t)
+            tabidx = t().get_id()
             self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
 
         # show parameter settings on newly selected layer if they were stored in a previous visit already
         for t in TABS_WITH_PER_LAYER_PARAMS:
-            tabidx = self.tabs.index(t)
+            tabidx = t().get_id()
             self.tabhandlers[tabidx].model_to_ui(
                 self.layersModel.itemFromIndex(new_layer).get_parameters_for_tab(tabidx))
 
         # restore overall parameters
         for t in TABS_OVER_ALL_LAYERS:
-            tabidx = self.tabs.index(t)
+            tabidx = t().get_id()
             if tabidx in self.properties_over_all_layers_per_tab:
                 self.tabhandlers[tabidx].model_to_ui(self.properties_over_all_layers_per_tab[tabidx])
 

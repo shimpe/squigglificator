@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QPersistentModelIndex, QObject, pyqtSignal
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
+
 from tab_constants import UNDEFINED
 
 
