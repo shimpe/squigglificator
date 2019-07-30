@@ -118,7 +118,7 @@ class MyMainWindow(Ui_MainWindow):
         for l in range(no_of_layers):
             self.AddLayer()
             for tab in TABS_WITH_PER_LAYER_PARAMS:
-                tabidx = tab().get_id()
+                tabidx = tab.get_id()
                 self.layersModel.item(l, 0).set_parameters_for_tab(tabidx,
                                                                    simple_model["layer_dependent_parameters"][
                                                                        "method_parameters"][l][
@@ -132,7 +132,7 @@ class MyMainWindow(Ui_MainWindow):
             for l in range(no_of_layers):
                 self.layersList.setCurrentIndex(self.layersModel.index(l, 0))
                 for tab in TABS_WITH_PER_LAYER_PARAMS:
-                    tabidx = tab().get_id()
+                    tabidx = tab.get_id()
                     if tabidx == simple_model["layer_dependent_parameters"]["last_used_method"][l]:
                         self.tabhandlers[tabidx].process_without_signals()
 
@@ -259,10 +259,10 @@ class MyMainWindow(Ui_MainWindow):
 
     def update_layer_item_model_from_ui(self, item):
         for tab in TABS_WITH_PER_LAYER_PARAMS:
-            tabidx = tab().get_id()
+            tabidx = tab.get_id()
             item.set_parameters_for_tab(tabidx, self.tabhandlers[tabidx].ui_to_model())
         for tab in TABS_OVER_ALL_LAYERS:
-            tabidx = tab().get_id()
+            tabidx = tab.get_id()
             self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
 
     def RemoveSelected(self):
@@ -309,24 +309,24 @@ class MyMainWindow(Ui_MainWindow):
         # store layer dependent parameters
         if previous_layer.isValid():  # could have been deleted...
             for t in TABS_WITH_PER_LAYER_PARAMS:
-                tabidx = t().get_id()
+                tabidx = t.get_id()
                 self.layersModel.itemFromIndex(QModelIndex(previous_layer)).parameters_per_tab[tabidx] = \
                     self.tabhandlers[tabidx].ui_to_model()
 
         # store overall parameters
         for t in TABS_OVER_ALL_LAYERS:
-            tabidx = t().get_id()
+            tabidx = t.get_id()
             self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
 
         # show parameter settings on newly selected layer if they were stored in a previous visit already
         for t in TABS_WITH_PER_LAYER_PARAMS:
-            tabidx = t().get_id()
+            tabidx = t.get_id()
             self.tabhandlers[tabidx].model_to_ui(
                 self.layersModel.itemFromIndex(new_layer).get_parameters_for_tab(tabidx))
 
         # restore overall parameters
         for t in TABS_OVER_ALL_LAYERS:
-            tabidx = t().get_id()
+            tabidx = t.get_id()
             if tabidx in self.properties_over_all_layers_per_tab:
                 self.tabhandlers[tabidx].model_to_ui(self.properties_over_all_layers_per_tab[tabidx])
 

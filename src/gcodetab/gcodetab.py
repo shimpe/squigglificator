@@ -35,7 +35,8 @@ class GcodeTab(Tab):
         self.parent.eport2dGcode.clicked.connect(self.OnGenerateGCodeAllLayers)
         self.parent.eport2dGcodePerLayer.clicked.connect(self.OnGenerateGCodePerLayer)
 
-    def get_id(self):
+    @staticmethod
+    def get_id():
         return GCODETAB
 
     def ui_to_model(self):

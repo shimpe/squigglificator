@@ -43,7 +43,8 @@ class LSystifyTab(Tab):
         self.OnMethod("Circles")
         self.OnPreset("Hilbert")
 
-    def get_id(self):
+    @staticmethod
+    def get_id():
         return LSYSTIFYTAB
 
     def ui_to_model(self):

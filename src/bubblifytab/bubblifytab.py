@@ -43,7 +43,8 @@ class BubblifyTab(Tab):
         self.parent.maxProbabilityBubblify.setValue(20)
         self.parent.radiusToleranceBubblify.setValue(0.4)
 
-    def get_id(self):
+    @staticmethod
+    def get_id():
         return BUBBLIFYTAB
 
     def ui_to_model(self):
@@ -72,7 +73,7 @@ class BubblifyTab(Tab):
             return
         self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
         self.makeBubbles(self.localBitmap)
-        
+
     def process(self):
         """
         performs the bubblification

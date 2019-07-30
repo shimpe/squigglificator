@@ -65,7 +65,8 @@ class SquigglifyTab(Tab):
         self.parent.minStepSize.setValue(1)
         self.parent.maxStepSize.setValue(10)
 
-    def get_id(self):
+    @staticmethod
+    def get_id():
         return SQUIGGLIFYTAB
 
     def ui_to_model(self):

@@ -2,8 +2,6 @@ from PyQt5.QtCore import QObject, pyqtSignal, QModelIndex
 from PyQt5.QtGui import qGray, QColor, QImage
 from PyQt5.QtWidgets import QMessageBox
 
-from tab_constants import UNDEFINED
-
 
 class Tab(QObject):
     """
@@ -36,9 +34,6 @@ class Tab(QObject):
         :return:
         """
         return True
-
-    def get_id(self):
-        return UNDEFINED
 
     def ui_to_model(self):
         """

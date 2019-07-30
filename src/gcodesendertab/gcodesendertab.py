@@ -48,7 +48,8 @@ class GcodeSenderTab(Tab):
         self.server.on_killed.connect(self.OnKilledServer)
         self.server.on_queuesize_changed.connect(self.OnQueueSizeChanged)
 
-    def get_id(self):
+    @staticmethod
+    def get_id():
         return GCODESENDERTAB
 
     def ui_to_model(self):
