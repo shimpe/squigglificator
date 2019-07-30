@@ -111,10 +111,11 @@ class MyMainWindow(Ui_MainWindow):
             for tab in TABS_WITH_PER_LAYER_PARAMS:
                 tabidx = tab().get_id()
                 self.layersModel.item(l, 0).set_parameters_for_tab(tabidx,
-                                                                   simple_model["layer_dependent_parameters"][l][
+                                                                   simple_model["layer_dependent_parameters"][
+                                                                       "method_parameters"][l][
                                                                        tabidx])
                 self.layersModel.item(l, 0).set_last_used_method(
-                    simple_model["layer_dependent_parameters"][l]["last_used_method"])
+                    simple_model["layer_dependent_parameters"]["last_used_method"][l])
         self.properties_over_all_layers_per_tab = simple_model["layer_independent_parameters"]
 
     def SaveSketch(self):
@@ -123,14 +124,23 @@ class MyMainWindow(Ui_MainWindow):
         if not fname:
             return
 
+        # make sure latest modifications are saved as well!
+        item = self.layersModel.itemFromIndex(self.layersList.currentIndex())
+        self.update_layer_item_model_from_ui(item)
+
+        # build a model to save
         summary_model = {}
         summary_model["layer_independent_parameters"] = self.properties_over_all_layers_per_tab
         summary_model["layer_dependent_parameters"] = {}
         for l in range(self.layersModel.rowCount()):
             data = self.layersModel.item(l, 0).get_parameters()
-            summary_model["layer_dependent_parameters"][l] = data
+            if 'method_parameters' not in summary_model["layer_dependent_parameters"]:
+                summary_model["layer_dependent_parameters"]["method_parameters"] = {}
+            summary_model["layer_dependent_parameters"]["method_parameters"][l] = data
             last_used_method = self.layersModel.item(l, 0).get_last_used_method()
-            summary_model["layer_dependent_parameters"][l]["last_used_method"] = last_used_method
+            if 'last_used_method' not in summary_model["layer_dependent_parameters"]:
+                summary_model["layer_dependent_parameters"]["last_used_method"] = {}
+            summary_model["layer_dependent_parameters"]["last_used_method"][l] = last_used_method
         with open(fname, 'w') as outfile:
             yaml.dump(summary_model, outfile, default_flow_style=False)
 
@@ -218,14 +228,16 @@ class MyMainWindow(Ui_MainWindow):
         :return:
         """
         item = LayerItem("Layer {0}".format(self.layersModel.rowCount() + 1))
-        params_per_tab = {}
+        self.update_layer_item_model_from_ui(item)
+        self.layersModel.appendRow(item)
+
+    def update_layer_item_model_from_ui(self, item):
         for tab in TABS_WITH_PER_LAYER_PARAMS:
             tabidx = tab().get_id()
             item.set_parameters_for_tab(tabidx, self.tabhandlers[tabidx].ui_to_model())
         for tab in TABS_OVER_ALL_LAYERS:
             tabidx = tab().get_id()
             self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
-        self.layersModel.appendRow(item)
 
     def RemoveSelected(self):
         """
