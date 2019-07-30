@@ -67,15 +67,18 @@ class BubblifyTab(Tab):
         self.parent.minBrightnessBubblify.setValue(int(model['minBrightness']))
         self.parent.maxBrightnessBubblify.setValue(int(model['maxBrightness']))
 
+    def process_without_signals(self):
+        if not self.checkBitmapLoaded():
+            return
+        self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
+        self.makeBubbles(self.localBitmap)
+        
     def process(self):
         """
         performs the bubblification
         :return:
         """
-        if not self.checkBitmapLoaded():
-            return
-        self.localBitmap = self.toBlackAndWhite(self.parent.bitmap.copy())
-        self.makeBubbles(self.localBitmap)
+        self.process_without_signals()
         self.last_used_method.emit(self.parent.layersList.currentIndex(), self.get_id())
 
     def makeBubbles(self, image):

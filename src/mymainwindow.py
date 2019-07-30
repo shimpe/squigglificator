@@ -29,6 +29,7 @@ class MyMainWindow(Ui_MainWindow):
         self.application = application
         self.homeFolder = expanduser("~")
         self.properties_over_all_layers_per_tab = {}
+        self.last_loaded_bitmap = ""
 
     def finishSetupUi(self):
         """
@@ -105,6 +106,14 @@ class MyMainWindow(Ui_MainWindow):
                 self.scene.removeItem(gfx)
 
         self.properties_over_all_layers_per_tab = {}
+        self.last_loaded_bitmap = ""
+
+        if simple_model["bitmap"]:
+            self.load_bitmap_file(simple_model["bitmap"])
+
+        if not simple_model["bitmap_visible"]:
+            self.ToggleBitmap()
+
         no_of_layers = len(simple_model["layer_dependent_parameters"].keys())
         for l in range(no_of_layers):
             self.AddLayer()
@@ -116,7 +125,16 @@ class MyMainWindow(Ui_MainWindow):
                                                                        tabidx])
                 self.layersModel.item(l, 0).set_last_used_method(
                     simple_model["layer_dependent_parameters"]["last_used_method"][l])
+
         self.properties_over_all_layers_per_tab = simple_model["layer_independent_parameters"]
+
+        if self.last_loaded_bitmap:
+            for l in range(no_of_layers):
+                self.layersList.setCurrentIndex(self.layersModel.index(l, 0))
+                for tab in TABS_WITH_PER_LAYER_PARAMS:
+                    tabidx = tab().get_id()
+                    if tabidx == simple_model["layer_dependent_parameters"]["last_used_method"][l]:
+                        self.tabhandlers[tabidx].process_without_signals()
 
     def SaveSketch(self):
         fname = QFileDialog.getSaveFileName(self.centralwidget, 'Save sketch',
@@ -130,6 +148,9 @@ class MyMainWindow(Ui_MainWindow):
 
         # build a model to save
         summary_model = {}
+        summary_model["version"] = "0.0.1"
+        summary_model["bitmap"] = self.last_loaded_bitmap
+        summary_model["bitmap_visible"] = self.bitmapVisibility
         summary_model["layer_independent_parameters"] = self.properties_over_all_layers_per_tab
         summary_model["layer_dependent_parameters"] = {}
         for l in range(self.layersModel.rowCount()):
@@ -178,24 +199,29 @@ class MyMainWindow(Ui_MainWindow):
         """
         fname = QFileDialog.getOpenFileName(self.centralwidget, 'Open file',
                                             self.homeFolder, "Image files (*.jpg *.jpeg *.gif *.png *.bmp)")[0]
-        if fname:
-            # clean up all old data
-            for layer_idx in range(self.layersModel.rowCount()):
-                gfx = self.layersModel.item(layer_idx).get_graphics_items_group()
-                if gfx:
-                    self.scene.removeItem(gfx)
-            # create new data
-            self.bitmap = QImage(fname)
-            if self.bitmap:
-                if self.bitmapItem is not None:
-                    self.scene.removeItem(self.bitmapItem)
-                self.bitmapItem = QGraphicsPixmapItem(QPixmap.fromImage(self.bitmap))
-                self.scene.addItem(self.bitmapItem)
-                self.hideBitmap.setText("Hide Bitmap")
-                self.bitmapVisibility = True
+        if not fname:
+            return
 
+        self.load_bitmap_file(fname)
+
+    def load_bitmap_file(self, fname):
+        # clean up all old data
+        for layer_idx in range(self.layersModel.rowCount()):
+            gfx = self.layersModel.item(layer_idx).get_graphics_items_group()
+            if gfx:
+                self.scene.removeItem(gfx)
+        # create new data
+        self.bitmap = QImage(fname)
+        if self.bitmap:
+            if self.bitmapItem is not None:
+                self.scene.removeItem(self.bitmapItem)
+            self.bitmapItem = QGraphicsPixmapItem(QPixmap.fromImage(self.bitmap))
+            self.scene.addItem(self.bitmapItem)
+            self.hideBitmap.setText("Hide Bitmap")
+            self.bitmapVisibility = True
         for t in self.tabhandlers:
             t.after_load_bitmap()
+        self.last_loaded_bitmap = fname
 
     def ActionZoom_In(self):
         """

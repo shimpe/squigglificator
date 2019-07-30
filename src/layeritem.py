@@ -21,7 +21,7 @@ class LayerItem(QStandardItem):
         return self.parameters_per_tab
 
     def set_parameters(self, parameters_per_tab):
-        self.parameters_per_tab = parameters_per_tab
+        self.parameters_per_tab = parameters_per_tab.copy()
 
     def get_parameters_for_tab(self, tabidx):
         return self.parameters_per_tab[tabidx]

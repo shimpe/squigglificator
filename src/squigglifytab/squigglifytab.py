@@ -33,15 +33,18 @@ class SquigglifyTab(Tab):
         # self.parent.minStepSize.valueChanged.connect(self.Squigglify)
         # self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
 
+    def process_without_signals(self):
+        if not self.checkBitmapLoaded():
+            return
+        self.localBitmap = self.parent.bitmap.copy()
+        self.makeSquiggles(self.toBlackAndWhite(self.localBitmap))
+
     def process(self):
         """
         called to calculate the squiggles from a bitmap
         :return:
         """
-        if not self.checkBitmapLoaded():
-            return
-        self.localBitmap = self.parent.bitmap.copy()
-        self.makeSquiggles(self.toBlackAndWhite(self.localBitmap))
+        self.process_without_signals()
         self.last_used_method.emit(self.parent.layersList.currentIndex(), self.get_id())
 
     def SetDefaults(self):

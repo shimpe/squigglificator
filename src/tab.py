@@ -90,10 +90,11 @@ class Tab(QObject):
         convenience method for tabs to clear graphics on current layer while maintaining internal model
         :return: nothing
         """
-        graphics_items_group = self.layersModel.itemFromIndex(
-            self.parent.layersList.currentIndex()).get_graphics_items_group()
-        if graphics_items_group:
-            self.parent.scene.removeItem(graphics_items_group)
+        layer = self.layersModel.itemFromIndex(self.parent.layersList.currentIndex())
+        if layer:
+            graphics_items_group = layer.get_graphics_items_group()
+            if graphics_items_group:
+                self.parent.scene.removeItem(graphics_items_group)
 
     def addNewGraphicsItems(self, group):
         """

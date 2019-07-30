@@ -209,7 +209,7 @@ class LSystifyTab(Tab):
         if gs["dirstack"]:
             gs["dirstack"].pop()
 
-    def process(self):
+    def process_without_signals(self):
         """
         calculates the lsystification of bitmap, i.e. the lsystem is used as iterator through the bitmap
         :return:
@@ -224,6 +224,9 @@ class LSystifyTab(Tab):
         self.reversed_pixel_order = pixel_order
         self.localBitmap = self.parent.bitmap.copy()
         self.make(self.toBlackAndWhite(self.localBitmap))
+
+    def process(self):
+        self.process_without_signals()
         self.last_used_method.emit(self.parent.layersList.currentIndex(), self.get_id())
 
     def make(self, image):
