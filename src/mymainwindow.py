@@ -94,7 +94,7 @@ class MyMainWindow(Ui_MainWindow):
 
         with open(fname, 'r') as stream:
             try:
-                simple_model = yaml.safe_load(stream)
+                summary_model = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 QMessageBox.error("Problem loading .sq file!! Reason: {0}".format(exc))
                 return
@@ -108,33 +108,37 @@ class MyMainWindow(Ui_MainWindow):
         self.properties_over_all_layers_per_tab = {}
         self.last_loaded_bitmap = ""
 
-        if simple_model["bitmap"]:
-            self.load_bitmap_file(simple_model["bitmap"])
+        if summary_model["bitmap"]:
+            self.load_bitmap_file(summary_model["bitmap"])
 
-        if not simple_model["bitmap_visible"]:
+        if not summary_model["bitmap_visible"]:
             self.ToggleBitmap()
 
-        no_of_layers = len(simple_model["layer_dependent_parameters"].keys())
+        no_of_layers = len(summary_model["layer_dependent_parameters"]["method_parameters"].keys())
         for l in range(no_of_layers):
             self.AddLayer()
             for tab in TABS_WITH_PER_LAYER_PARAMS:
                 tabidx = tab.get_id()
                 self.layersModel.item(l, 0).set_parameters_for_tab(tabidx,
-                                                                   simple_model["layer_dependent_parameters"][
+                                                                   summary_model["layer_dependent_parameters"][
                                                                        "method_parameters"][l][
                                                                        tabidx])
                 self.layersModel.item(l, 0).set_last_used_method(
-                    simple_model["layer_dependent_parameters"]["last_used_method"][l])
+                    summary_model["layer_dependent_parameters"]["last_used_method"][l])
 
-        self.properties_over_all_layers_per_tab = simple_model["layer_independent_parameters"]
+        self.properties_over_all_layers_per_tab = summary_model["layer_independent_parameters"]
 
         if self.last_loaded_bitmap:
             for l in range(no_of_layers):
                 self.layersList.setCurrentIndex(self.layersModel.index(l, 0))
                 for tab in TABS_WITH_PER_LAYER_PARAMS:
                     tabidx = tab.get_id()
-                    if tabidx == simple_model["layer_dependent_parameters"]["last_used_method"][l]:
+                    if tabidx == summary_model["layer_dependent_parameters"]["last_used_method"][l]:
                         self.tabhandlers[tabidx].process_without_signals()
+
+        for l in range(no_of_layers):
+            self.layersModel.item(l, 0).setCheckState(
+                Qt.Checked if summary_model["layer_dependent_parameters"]["layer_enabled"][l] else Qt.Unchecked)
 
     def SaveSketch(self):
         fname = QFileDialog.getSaveFileName(self.centralwidget, 'Save sketch',
@@ -162,6 +166,10 @@ class MyMainWindow(Ui_MainWindow):
             if 'last_used_method' not in summary_model["layer_dependent_parameters"]:
                 summary_model["layer_dependent_parameters"]["last_used_method"] = {}
             summary_model["layer_dependent_parameters"]["last_used_method"][l] = last_used_method
+            if 'layer_enabled' not in summary_model["layer_dependent_parameters"]:
+                summary_model["layer_dependent_parameters"]["layer_enabled"] = {}
+            summary_model["layer_dependent_parameters"]["layer_enabled"][l] = self.layersModel.item(l,
+                                                                                                    0).checkState() == Qt.Checked
         with open(fname, 'w') as outfile:
             yaml.dump(summary_model, outfile, default_flow_style=False)
 
