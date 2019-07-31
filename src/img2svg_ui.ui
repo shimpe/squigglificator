@@ -51,7 +51,7 @@
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -1582,6 +1582,168 @@
          </property>
         </widget>
        </widget>
+       <widget class="QWidget" name="tab_4">
+        <attribute name="title">
+         <string>LinifyTab</string>
+        </attribute>
+        <widget class="QToolButton" name="linify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>181</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Linify on selected layer</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="setDefaultsLinify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>80</y>
+           <width>88</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Default</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="region1Linify">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>40</y>
+           <width>151</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="region2Linify">
+         <property name="geometry">
+          <rect>
+           <x>240</x>
+           <y>40</y>
+           <width>151</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="region3Linify">
+         <property name="geometry">
+          <rect>
+           <x>420</x>
+           <y>40</y>
+           <width>151</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>200</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_41">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>331</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Color separation regions</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_42">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>58</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0 to</string>
+         </property>
+         <property name="buddy">
+          <cstring>region1Linify</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_43">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>50</y>
+           <width>31</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>To</string>
+         </property>
+         <property name="buddy">
+          <cstring>region2Linify</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_44">
+         <property name="geometry">
+          <rect>
+           <x>400</x>
+           <y>50</y>
+           <width>31</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>To</string>
+         </property>
+         <property name="buddy">
+          <cstring>region3Linify</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_45">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>50</y>
+           <width>121</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>To 255</string>
+         </property>
+         <property name="buddy">
+          <cstring>region3Linify</cstring>
+         </property>
+        </widget>
+       </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
          <string>Gcode generation</string>
@@ -3009,6 +3171,11 @@ when command is finished</string>
   <tabstop>layersList</tabstop>
   <tabstop>squigglifySetup</tabstop>
   <tabstop>graphicsView</tabstop>
+  <tabstop>region1Linify</tabstop>
+  <tabstop>region2Linify</tabstop>
+  <tabstop>region3Linify</tabstop>
+  <tabstop>setDefaultsLinify</tabstop>
+  <tabstop>linify</tabstop>
  </tabstops>
  <resources/>
  <connections/>

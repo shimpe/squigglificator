@@ -12,10 +12,12 @@ from gcodesendertab.gcodesendertab import GcodeSenderTab
 from gcodetab.gcodetab import GcodeTab
 from img2svg import Ui_MainWindow
 from layeritem import LayerItem
+from linifytab.linifytab import LinifyTab
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
+from tab_constants import TAB_ORDER
 
-TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab]
+TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab, LinifyTab]
 TABS_OVER_ALL_LAYERS = [GcodeTab, GcodeSenderTab]
 
 
@@ -45,7 +47,9 @@ class MyMainWindow(Ui_MainWindow):
         self.layersModel = QStandardItemModel()
         self.layersList.setModel(self.layersModel)
         self.previousActiveLayer = None
-        self.tabs = [SquigglifyTab, BubblifyTab, LSystifyTab, GcodeTab, GcodeSenderTab]
+        all_tabs = TABS_WITH_PER_LAYER_PARAMS.copy()
+        all_tabs.extend(TABS_OVER_ALL_LAYERS)
+        self.tabs = all_tabs
         self.tabhandlers = [t(self, self.layersModel) for t in self.tabs]
         self.AddLayer()
         self.layersList.setCurrentIndex(self.layersModel.index(0, 0))
@@ -340,7 +344,7 @@ class MyMainWindow(Ui_MainWindow):
 
         # also make last used method the active tab
         last_used_method = self.layersModel.itemFromIndex(new_layer).get_last_used_method()
-        self.squigglifySetup.setCurrentIndex(last_used_method)
+        self.squigglifySetup.setCurrentIndex(TAB_ORDER[last_used_method])
 
     def LayerChanged(self):
         """
