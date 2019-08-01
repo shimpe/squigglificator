@@ -2,6 +2,7 @@ import datetime
 import os
 
 import numpy as np
+from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsPixmapItem
 
 from gcodetab.bezierapproximator import BezierApproximator
 from gcodetab.beziercurve import BezierCurve
@@ -9,14 +10,14 @@ from gcodetab.biarc import Biarc
 from gcodetab.gcodestatistics import GcodeStatistics
 from gcodetab.line import Line
 
-from PyQt5.QtWidgets import QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsPixmapItem
-
 FORCE_PRINT = True
+
 
 class GCodeGenerator(object):
     """
     class to generate GCode from QGraphicsItems
     """
+
     def __init__(self, pageheight,
                  xscale, yscale,
                  xoffset, yoffset,
@@ -55,9 +56,12 @@ class GCodeGenerator(object):
             elif item.__class__ == QGraphicsPathItem:
                 self.path(item)
             elif item.__class__ == QGraphicsPixmapItem:
-                pass # ignore bitmap
+                pass  # ignore bitmap
+            elif item.__class__ == QGraphicsLineItem:
+                self.line(item)
             else:
-                print("Unknown QGraphicsItem type?! Please extend GCodeGenerator.process_item for class {0}".format(item.__class__))
+                print("Unknown QGraphicsItem type?! Please extend GCodeGenerator.process_item for class {0}".format(
+                    item.__class__))
 
     def add_comment(self, comment, force_print=False):
         """
@@ -272,6 +276,12 @@ G01 {1} F{2} (start from known state: pen up)
                     self.corr_radius(xradius)),
                 os.linesep)
         self.statistics.circles += 1
+
+    def line(self, lineitem):
+        self.pen_up()
+        self.move_to(lineitem.line().x1(), lineitem.line().y1())
+        self.pen_down()
+        self.move_to(lineitem.line().x2(), lineitem.line().y2())
 
     def path(self, pathitem):
         """

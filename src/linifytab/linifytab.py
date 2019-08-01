@@ -76,23 +76,24 @@ class LinifyTab(Tab):
                     for x in range(image.width()):
                         grayvalue = qGray(image.pixel(x, y))
                         start_drawing = (grayvalue < bounds[linetype]) and not drawing
-                        stop_drawing = ((grayvalue >= bounds[linetype]) or (x == (image.width() - 1))) and drawing
                         if start_drawing:
                             coordinates.append([[x, qt_y]])
                             drawing = True
-                        elif stop_drawing:
+                        stop_drawing = ((grayvalue >= bounds[linetype]) or (x == (image.width() - 1))) and drawing
+                        if stop_drawing:
                             coordinates[-1].append([x, qt_y])
                             drawing = False
-                        else:
-                            pass
 
         group = QGraphicsItemGroup()
         for lineseg in coordinates:
-            lineitem = QGraphicsLineItem(lineseg[0][0], lineseg[0][1], lineseg[1][0], lineseg[1][1])
-            pen = QPen()
-            pen.setWidth(1 / sections)
-            lineitem.setPen(pen)
-            group.addToGroup(lineitem)
+            if len(lineseg) != 2 or len(lineseg[0]) != 2 or len(lineseg[1]) != 2:
+                print("Unexpected lineseg: ", lineseg)
+            else:
+                lineitem = QGraphicsLineItem(lineseg[0][0], lineseg[0][1], lineseg[1][0], lineseg[1][1])
+                pen = QPen()
+                pen.setWidth(1 / sections)
+                lineitem.setPen(pen)
+                group.addToGroup(lineitem)
 
         self.addNewGraphicsItems(group)
 
