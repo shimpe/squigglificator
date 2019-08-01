@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/squigglifytab" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/gcodesendertab" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/gcodetab" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/linifytab" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
