@@ -237,7 +237,7 @@ class GcodeSenderTab(Tab):
                 pd=self.parent.penDownCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text()),
             'Go to 0,0 (fast)'                                                   : "G00 X0 Y0",
-            'Home (slow and accurate)'                                           : "G00 X0 Y0|G28 X Y",
+            'Home (slowly, more accurate)'                                       : "G00 X0 Y0|G28 X Y",
             'Move along page outline with pen up'                                : "G00 {pu} F{ps}|G00 X0 Y0|G01 X{pw} Y0 F{ds}|G01 X{pw} Y{ph}|G01 X0 Y{ph}|G01 X0 Y0".format(
                 pu=self.parent.penUpCmdGcode.text(),
                 ps=self.parent.penDownSpeedGcode.text(),
@@ -362,8 +362,10 @@ class GcodeSenderTab(Tab):
             ret = msg_box.exec()
 
         if ret == QMessageBox.Cancel:
-            msg_box = QMessageBox.information(
-                "Before start of every new layer, the system will go into pause. Simply click resume to start drawing the next layer.")
+            msg_box = QMessageBox.information(self.parent.centralwidget,
+                                              "Send by layer",
+                                              "Before start of every new layer, the system will go into pause. Simply click resume to start drawing the next layer.",
+                                              QMessageBox.Ok)
             self.Log(
                 "[UI] Please wait while code is being generated. UI will be unresponsive while code is being generated.")
             self.parent.application.processEvents()
