@@ -332,7 +332,7 @@ class GcodeTab(Tab):
                 list_of_gen.append(self.generate_code())
 
         # restore visibility
-        for layer_idx in enumerate(self.layersModel.rowCount()):
+        for layer_idx in range(self.layersModel.rowCount()):
             for item in self.parent.scene.items():
                 if item.__class__ == QGraphicsItemGroup and \
                         self.parent.layersModel.item(layer_idx).checkState() == Qt.Checked:  # ouch
