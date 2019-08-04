@@ -103,11 +103,11 @@ class MyMainWindow(Ui_MainWindow):
                 QMessageBox.error("Problem loading .sq file!! Reason: {0}".format(exc))
                 return
 
-        self.layersModel.clear()
         for layer_idx in range(self.layersModel.rowCount()):
             gfx = self.layersModel.item(layer_idx).get_graphics_items_group()
             if gfx is not None:
                 self.scene.removeItem(gfx)
+        self.layersModel.clear()
 
         self.properties_over_all_layers_per_tab = {}
         self.last_loaded_bitmap = ""
@@ -129,8 +129,13 @@ class MyMainWindow(Ui_MainWindow):
                                                                        tabidx])
                 self.layersModel.item(l, 0).set_last_used_method(
                     summary_model["layer_dependent_parameters"]["last_used_method"][l])
+                self.tabhandlers[tabidx].model_to_ui(summary_model["layer_dependent_parameters"][
+                                                         "method_parameters"][l][tabidx])
 
         self.properties_over_all_layers_per_tab = summary_model["layer_independent_parameters"]
+        for tab in TABS_OVER_ALL_LAYERS:
+            tabidx = tab.get_id()
+            self.tabhandlers[tabidx].model_to_ui(self.properties_over_all_layers_per_tab[tabidx])
 
         if self.last_loaded_bitmap:
             for l in range(no_of_layers):
