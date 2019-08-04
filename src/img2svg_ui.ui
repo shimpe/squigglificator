@@ -51,7 +51,7 @@
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2424,6 +2424,9 @@ Check in simulator e.g. Camotics</string>
            <height>32</height>
           </rect>
          </property>
+         <property name="decimals">
+          <number>5</number>
+         </property>
          <property name="value">
           <double>1.000000000000000</double>
          </property>
@@ -2436,6 +2439,9 @@ Check in simulator e.g. Camotics</string>
            <width>101</width>
            <height>32</height>
           </rect>
+         </property>
+         <property name="decimals">
+          <number>5</number>
          </property>
          <property name="value">
           <double>1.000000000000000</double>

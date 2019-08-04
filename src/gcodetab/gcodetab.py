@@ -100,6 +100,7 @@ class GcodeTab(Tab):
             self.OnYScaleChanged(value, True)
             self.parent.xScaleGcode.blockSignals(False)
             self.parent.yScaleGcode.blockSignals(False)
+        self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
         self.update_size_label()
 
     def OnYScaleChanged(self, value, skip_update_dependent=False):
@@ -116,6 +117,7 @@ class GcodeTab(Tab):
             self.OnXScaleChanged(value, True)
             self.parent.xScaleGcode.blockSignals(False)
             self.parent.yScaleGcode.blockSignals(False)
+        self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
         self.update_size_label()
 
     def OnLockXYScaleClicked(self, checked):
@@ -145,6 +147,8 @@ class GcodeTab(Tab):
         self.parent.pageHeightGcode.setValue(options[text].height)
         self.parent.xMarginGcode.setValue(options[text].xmargin)
         self.parent.yMarginGcode.setValue(options[text].ymargin)
+        self.OnOffsetPresetGcode(self.parent.offsetPresetGcode.currentText())
+        self.update_size_label()
 
     def OnOffsetPresetGcode(self, text):
         """
