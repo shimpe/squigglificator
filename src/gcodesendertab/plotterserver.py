@@ -1,12 +1,14 @@
-from PyQt5.QtCore import QObject, pyqtSignal
-from serial.serialutil import SerialException
-from serial import serial_for_url
-from plotterserver_constants import LAYER_CHANGE_CMD, KILL_SERVER
-from time import sleep
-from os import linesep
 import io
+from os import linesep
 from queue import Queue, Empty
 from threading import Thread
+from time import sleep
+
+from PyQt5.QtCore import QObject, pyqtSignal
+from serial import serial_for_url
+from serial.serialutil import SerialException
+
+from plotterserver_constants import LAYER_CHANGE_CMD, KILL_SERVER
 
 SETTLING_TIME = 2.0
 TIMEOUT = 10
@@ -46,7 +48,6 @@ class PlotterServer(QObject):
         """
         if self.serial and self.serial.is_open:
             self.submit(KILL_SERVER)
-        self.close()
         self.killed = True
 
     def start(self):
@@ -113,6 +114,7 @@ class PlotterServer(QObject):
             if self.canceled:
                 self.cleanup_remaining_queue_entries(queue)
                 self.canceled = False
+                self.paused = False
 
         self.cleanup_remaining_queue_entries(queue)
         self.close()
