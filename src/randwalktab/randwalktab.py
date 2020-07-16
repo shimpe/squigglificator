@@ -56,6 +56,7 @@ class RandomWalkTabTab(Tab):
         self.parent.localBrightnessAdjustmentWalkify.setValue(8)
         self.parent.reductionNeighborhoodWalkify.setValue(5)
         self.parent.polylineSimplificationToleranceWalkify.setValue(10)
+        self.parent.useSmootherShapesWalkify.setCheckState(Qt.Checked)
 
     @staticmethod
     def get_id():
@@ -73,7 +74,8 @@ class RandomWalkTabTab(Tab):
                  'maxBrightness'    : self.parent.maxBrightnessWalkify.value(),
                  'localBrightnessAdjustment'      : self.parent.localBrightnessAdjustmentWalkify.value(),
                  'reductionNeighborhood' : self.parent.reductionNeighborhoodWalkify.value(),
-                 'polylineSimplificationTolerance' : self.parent.polylineSimplificationToleranceWalkify.value()}
+                 'polylineSimplificationTolerance' : self.parent.polylineSimplificationToleranceWalkify.value(),
+                 'useSmootherShapes' : self.parent.useSmootherShapesWalkify.checkState()}
         return model
 
     def model_to_ui(self, model):
@@ -90,6 +92,7 @@ class RandomWalkTabTab(Tab):
         self.parent.localBrightnessAdjustmentWalkify.setValue(int(model['localBrightnessAdjustment']))
         self.parent.reductionNeighborhoodWalkify.setValue(int(model['reductionNeighborhood']))
         self.parent.polylineSimplificationToleranceWalkify.setValue(int(model['polylineSimplificationTolerance']))
+        self.parent.useSmootherShapesWalkify.setCheckState(model['useSmootherShapes'])
 
     def lighten_one_pixel(self, image, offset, x, y):
         currcolor = qGray(image.pixel(x, y))
@@ -178,11 +181,27 @@ class RandomWalkTabTab(Tab):
 
         for w in range(no_of_walks):
             path = QPainterPath()
+            in_the_middle_of_a_quad = False
             for idx, c in enumerate(coordinates[w]):
-                if idx == 0:
-                    path.moveTo(coordinates[w][idx][0], coordinates[w][idx][1])
+                quad = self.parent.useSmootherShapesWalkify.checkState() == Qt.Checked
+                if not quad:
+                    if idx == 0:
+                        path.moveTo(coordinates[w][idx][0], coordinates[w][idx][1])
+                    else:
+                        path.lineTo(coordinates[w][idx][0], coordinates[w][idx][1])
                 else:
-                    path.lineTo(coordinates[w][idx][0], coordinates[w][idx][1])
+                    if idx == 0:
+                        path.moveTo(coordinates[w][idx][0], coordinates[w][idx][1])
+                    elif idx % 2 == 1:
+                        middlex, middley = coordinates[w][idx][0], coordinates[w][idx][1]
+                        in_the_middle_of_a_quad = True
+                    else:
+                        path.quadTo(middlex, middley, coordinates[w][idx][0], coordinates[w][idx][1])
+                        in_the_middle_of_a_quad = False
+
+            if in_the_middle_of_a_quad:
+                path.lineTo(middlex, middley)
+
             item = QGraphicsPathItem(path)
             pen = QPen()
             pen.setWidth(stroke_width)
