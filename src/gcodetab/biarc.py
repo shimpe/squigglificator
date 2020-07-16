@@ -69,10 +69,13 @@ class Biarc(object):
         :return: 2x1 np.array containing x,y
         """
         s = self.a1.length() / (self.a1.length() + self.a2.length())
-        if t <= s:
-            return self.a1.point_at(t / s)
+        if s > 0:
+            if t <= s:
+                return self.a1.point_at(t / s)
+            else:
+                return self.a2.point_at((t - s) / (1 - s))
         else:
-            return self.a2.point_at((t - s) / (1 - s))
+            return self.a1.point_at(0)
 
     def length(self):
         """

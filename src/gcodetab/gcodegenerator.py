@@ -81,7 +81,7 @@ class GCodeGenerator(object):
         """
         self.code = self.statistics.summarize() + self.code
 
-    def corr_y(self, y):
+    def corr_y(self, y, allow_outside_page=False):
         """
         apply scaling (user defined) and flip y axis (qt coordinate system is left-handed)
         :param y: qt y value
@@ -89,11 +89,17 @@ class GCodeGenerator(object):
         """
         # yoffset calculation already took yscale into account; don't apply twice
         value = (self.ph - (self.yscale * y + self.yo))
-        if value < 0:
-            self.add_comment("GCODE GENERATION WARNING! Negative y value generated?!", FORCE_PRINT)
+        if value < 0 and not allow_outside_page:
+            self.add_comment("GCODE GENERATION WARNING! Negative x value {0} = ({1} - ({2}*{3} + {4})) generated?!".format(
+                value,
+                self.ph,
+                self.yscale,
+                y,
+                self.yo),
+                FORCE_PRINT)
         return value
 
-    def corr_x(self, x):
+    def corr_x(self, x, allow_outside_page=False):
         """
         apply scaling
         :param x:  qt x value
@@ -101,8 +107,9 @@ class GCodeGenerator(object):
         """
         # xoffset calculation already took yscale into account; don't apply twice
         value = self.xscale * x + self.xo
-        if value < 0:
-            self.add_comment("GCODE GENERATION WARNING! Negative x value generated?!", FORCE_PRINT)
+        if value < 0 and not allow_outside_page:
+            self.add_comment("GCODE GENERATION WARNING! Negative x value {0} = {1}*{2} + {3} generated?!".format(value,
+                       self.xscale, x, self.xo), FORCE_PRINT)
         return value
 
     def corr_radius(self, r):
@@ -342,8 +349,8 @@ G01 {1} F{2} (start from known state: pen up)
         """
         self.add_comment(comment)
         center = arc.c
-        cx = self.corr_x(center[0][0])
-        cy = self.corr_y(center[1][0])
+        cx = self.corr_x(center[0][0], allow_outside_page=True)
+        cy = self.corr_y(center[1][0], allow_outside_page=True)
         beginp = arc.point_at(0)
         bx = self.corr_x(beginp[0][0])
         by = self.corr_y(beginp[1][0])

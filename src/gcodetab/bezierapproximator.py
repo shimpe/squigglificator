@@ -118,27 +118,30 @@ class BezierApproximator(object):
                 max_distance = 0
                 max_distance_at = 0
                 nr_points_to_check = int(biarc.length() / sampling_step)
-                parameter_step = 1 / nr_points_to_check
-
-                for i in range(nr_points_to_check):
-                    t = parameter_step * i
-                    u1 = biarc.point_at(t)
-                    u2 = bezier.point_at(t)
-                    distance = np.linalg.norm(u1 - u2)
-                    if distance > max_distance:
-                        max_distance = distance
-                        max_distance_at = t
-
-                # Check if the two curves are close enough
-                if max_distance > tolerance:
-                    # If not, split the bezier curve the point where the distance is the maximum
-                    # and try again with the two halves
-                    bs = bezier.split(max_distance_at)
-                    curves.append(bs[1])
-                    curves.append(bs[0])
+                if not nr_points_to_check:
+                    biarcs.append(Line().from_points(bezier.p1, bezier.p2))
                 else:
-                    # Otherwise we are done with the current bezier
-                    biarcs.append(biarc)
+                    parameter_step = 1 / nr_points_to_check
+
+                    for i in range(nr_points_to_check):
+                        t = parameter_step * i
+                        u1 = biarc.point_at(t)
+                        u2 = bezier.point_at(t)
+                        distance = np.linalg.norm(u1 - u2)
+                        if distance > max_distance:
+                            max_distance = distance
+                            max_distance_at = t
+
+                    # Check if the two curves are close enough
+                    if max_distance > tolerance:
+                        # If not, split the bezier curve the point where the distance is the maximum
+                        # and try again with the two halves
+                        bs = bezier.split(max_distance_at)
+                        curves.append(bs[1])
+                        curves.append(bs[0])
+                    else:
+                        # Otherwise we are done with the current bezier
+                        biarcs.append(biarc)
         return biarcs
 
 
