@@ -15,9 +15,10 @@ from layeritem import LayerItem
 from linifytab.linifytab import LinifyTab
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
+from randwalktab.randwalktab import RandomWalkTabTab
 from tab_constants import TAB_ORDER
 
-TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab, LinifyTab]
+TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab, LinifyTab, RandomWalkTabTab]
 TABS_OVER_ALL_LAYERS = [GcodeTab, GcodeSenderTab]
 
 
@@ -360,9 +361,13 @@ class MyMainWindow(Ui_MainWindow):
         for row in range(numRows):
             item = self.layersModel.item(row)
             if item.checkState() == Qt.Checked:
-                item.get_graphics_items_group().setVisible(True)
+                g = item.get_graphics_items_group()
+                if g:
+                    g.setVisible(True)
             else:
-                item.get_graphics_items_group().setVisible(False)
+                g = item.get_graphics_items_group()
+                if g:
+                    g.setVisible(False)
 
     def ExportSVG(self):
         """

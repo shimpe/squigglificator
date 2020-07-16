@@ -51,7 +51,7 @@
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -1793,6 +1793,323 @@
          </property>
          <property name="text">
           <string>white</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="RandowWalkTab">
+        <attribute name="title">
+         <string>Random Walk</string>
+        </attribute>
+        <widget class="QToolButton" name="walkify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>170</y>
+           <width>221</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Random Walk on Selected Layer</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="setDefaultsWalkify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>130</y>
+           <width>88</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Default</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxBrightnessWalkify">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>40</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>255</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="minBrightnessWalkify">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>0</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_20">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>50</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max Brightness</string>
+         </property>
+         <property name="buddy">
+          <cstring>maxBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_21">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>10</y>
+           <width>101</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Min Brightness</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_22">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>90</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Local Brightness Reduction</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="localBrightnessAdjustmentWalkify">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>80</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>8</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_23">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Steps Per Walk</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="noOfLineSegmentsWalkify">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>40</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000000</number>
+         </property>
+         <property name="value">
+          <number>30000</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="lineWidthWalkify">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>80</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_24">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Line Width</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="noOfWalksWalkify">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>0</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_25">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Number Of Walks</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_26">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>130</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Reduction Neighborhood</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="reductionNeighborhoodWalkify">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>120</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="polylineSimplificationToleranceWalkify">
+         <property name="geometry">
+          <rect>
+           <x>500</x>
+           <y>160</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_27">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>170</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Polyline Simplification Tol.</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
          </property>
         </widget>
        </widget>
