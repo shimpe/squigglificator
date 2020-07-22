@@ -51,7 +51,7 @@ class MyMainWindow(Ui_MainWindow):
         all_tabs = TABS_WITH_PER_LAYER_PARAMS.copy()
         all_tabs.extend(TABS_OVER_ALL_LAYERS)
         self.tabs = all_tabs
-        self.tabhandlers = [t(self, self.layersModel) for t in self.tabs]
+        self.tabhandlers = {t.get_id(): t(self, self.layersModel) for t in self.tabs}
         self.AddLayer()
         self.layersList.setCurrentIndex(self.layersModel.index(0, 0))
         self.bitmapVisibility = True
@@ -85,8 +85,8 @@ class MyMainWindow(Ui_MainWindow):
         self.exportSvg.clicked.connect(self.ExportSVG)
         self.exportSvgPerLayer.clicked.connect(self.ExportSVGPerLayer)
         for t in self.tabhandlers:
-            t.setupSlots()
-            t.last_used_method.connect(self.UpdateLastUsedMethod)
+            self.tabhandlers[t].setupSlots()
+            self.tabhandlers[t].last_used_method.connect(self.UpdateLastUsedMethod)
 
         self.saveSketch.clicked.connect(self.SaveSketch)
         self.loadSketch.clicked.connect(self.LoadSketch)
@@ -206,7 +206,7 @@ class MyMainWindow(Ui_MainWindow):
         :return:
         """
         for t in self.tabhandlers:
-            t.on_quit()
+            self.tabhandlers[t].on_quit()
         import sys
         sys.exit()
 
@@ -238,7 +238,7 @@ class MyMainWindow(Ui_MainWindow):
             self.hideBitmap.setText("Hide Bitmap")
             self.bitmapVisibility = True
         for t in self.tabhandlers:
-            t.after_load_bitmap()
+            self.tabhandlers[t].after_load_bitmap()
         self.last_loaded_bitmap = fname
 
     def ActionZoom_In(self):
@@ -278,10 +278,10 @@ class MyMainWindow(Ui_MainWindow):
     def update_layer_item_model_from_ui(self, item):
         for tab in TABS_WITH_PER_LAYER_PARAMS:
             tabidx = tab.get_id()
-            item.set_parameters_for_tab(tabidx, self.tabhandlers[TAB_ORDER[tabidx]].ui_to_model())
+            item.set_parameters_for_tab(tabidx, self.tabhandlers[tabidx].ui_to_model())
         for tab in TABS_OVER_ALL_LAYERS:
             tabidx = tab.get_id()
-            self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[TAB_ORDER[tabidx]].ui_to_model()
+            self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
 
     def RemoveSelected(self):
         """
@@ -449,21 +449,18 @@ class MyMainWindow(Ui_MainWindow):
         method used to be able to call code generation (implemented in gcodetab) from gcodesendertab
         :return: an object containing gcode
         """
-        tabidx = self.tabs.index(GcodeTab)
-        return self.tabhandlers[tabidx].get_sketch_code()
+        return self.tabhandlers[GcodeTab.get_id()].get_sketch_code()
 
     def get_sketch_by_layer(self):
         """
         method used to be able to call code generation (implemented in gcodetab) from gcodesendertab
         :return: a list of objects containing gcode
         """
-        tabidx = self.tabs.index(GcodeTab)
-        return self.tabhandlers[tabidx].get_sketch_by_layer()
+        return self.tabhandlers[GcodeTab.get_id()].get_sketch_by_layer()
 
     def check_drawing_fits(self):
         """
         method used to check that drawing fits within margins (implemented in gcodetab) from gcodesendertab
         :return: boolean
         """
-        tabidx = self.tabs.index(GcodeTab)
-        return self.tabhandlers[tabidx].check_drawing_fits()
+        return self.tabhandlers[GcodeTab.get_id()].check_drawing_fits()
