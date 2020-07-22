@@ -22,6 +22,9 @@ class GcodeSenderTab(Tab):
             self.paused = False
             self.item_to_device = {}
 
+    def process_without_signals(self):
+        pass
+
     def setupSlots(self):
         """
         set up slots to make the buttons do something
