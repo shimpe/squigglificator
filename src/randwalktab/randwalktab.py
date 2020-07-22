@@ -75,7 +75,7 @@ class RandomWalkTabTab(Tab):
                  'localBrightnessAdjustment'      : self.parent.localBrightnessAdjustmentWalkify.value(),
                  'reductionNeighborhood' : self.parent.reductionNeighborhoodWalkify.value(),
                  'polylineSimplificationTolerance' : self.parent.polylineSimplificationToleranceWalkify.value(),
-                 'useSmootherShapes' : self.parent.useSmootherShapesWalkify.checkState()}
+                 'useSmootherShapes' : int(self.parent.useSmootherShapesWalkify.checkState())}
         return model
 
     def model_to_ui(self, model):

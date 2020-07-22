@@ -101,7 +101,7 @@ class MyMainWindow(Ui_MainWindow):
             try:
                 summary_model = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
-                QMessageBox.error("Problem loading .sq file!! Reason: {0}".format(exc))
+                QMessageBox.critical(self.graphicsView, "Error","Problem loading .sq file!! Reason: {0}".format(exc))
                 return
 
         for layer_idx in range(self.layersModel.rowCount()):
@@ -278,10 +278,10 @@ class MyMainWindow(Ui_MainWindow):
     def update_layer_item_model_from_ui(self, item):
         for tab in TABS_WITH_PER_LAYER_PARAMS:
             tabidx = tab.get_id()
-            item.set_parameters_for_tab(tabidx, self.tabhandlers[tabidx].ui_to_model())
+            item.set_parameters_for_tab(tabidx, self.tabhandlers[TAB_ORDER[tabidx]].ui_to_model())
         for tab in TABS_OVER_ALL_LAYERS:
             tabidx = tab.get_id()
-            self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[tabidx].ui_to_model()
+            self.properties_over_all_layers_per_tab[tabidx] = self.tabhandlers[TAB_ORDER[tabidx]].ui_to_model()
 
     def RemoveSelected(self):
         """
