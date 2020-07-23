@@ -51,7 +51,7 @@
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2126,6 +2126,145 @@
          </property>
          <property name="checked">
           <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="HatchifyTab">
+        <attribute name="title">
+         <string>Hatchify</string>
+        </attribute>
+        <widget class="QPushButton" name="setDefaultsHatchify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>180</y>
+           <width>88</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Default</string>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="hatchify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>220</y>
+           <width>221</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Hatchify on Selected Layer</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="includeContoursHatchify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>20</y>
+           <width>221</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Include contours</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="includeHatchingHatchify">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>221</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Include hatching</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="hatchSizeHatchify">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>80</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+         <property name="value">
+          <number>16</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_29">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Hatch Size</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="contourSimplificationHatchify">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>120</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+         <property name="value">
+          <number>2</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_30">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>130</y>
+           <width>171</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Contour Simplification</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
          </property>
         </widget>
        </widget>

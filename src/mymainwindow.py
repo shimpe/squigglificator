@@ -16,9 +16,10 @@ from linifytab.linifytab import LinifyTab
 from lsystifytab.lsystifytab import LSystifyTab
 from squigglifytab.squigglifytab import SquigglifyTab
 from randwalktab.randwalktab import RandomWalkTabTab
+from hatchifytab.hatchifytab import HatchifyTab
 from tab_constants import TAB_ORDER
 
-TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab, LinifyTab, RandomWalkTabTab]
+TABS_WITH_PER_LAYER_PARAMS = [SquigglifyTab, BubblifyTab, LSystifyTab, LinifyTab, RandomWalkTabTab, HatchifyTab]
 TABS_OVER_ALL_LAYERS = [GcodeTab, GcodeSenderTab]
 
 
