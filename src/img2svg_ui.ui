@@ -51,7 +51,7 @@
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>5</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="squigglifySetupTab">
         <attribute name="title">
@@ -2213,7 +2213,7 @@
           <number>100000</number>
          </property>
          <property name="value">
-          <number>16</number>
+          <number>8</number>
          </property>
         </widget>
         <widget class="QLabel" name="lineWidthLabel_29">
@@ -2242,13 +2242,13 @@
           </rect>
          </property>
          <property name="minimum">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="maximum">
           <number>100000</number>
          </property>
          <property name="value">
-          <number>2</number>
+          <number>3</number>
          </property>
         </widget>
         <widget class="QLabel" name="lineWidthLabel_30">
@@ -2261,7 +2261,112 @@
           </rect>
          </property>
          <property name="text">
-          <string>Contour Simplification</string>
+          <string>Contour Simplification Tol.</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxGVHorizontalHatchingHatchify">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>20</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>144</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_31">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>30</y>
+           <width>251</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max GV for horizontal hatching</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxGVDenseHorizontalHatchingHatchify">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>60</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>64</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_32">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>70</y>
+           <width>251</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max GV for dense horizontal hatching</string>
+         </property>
+         <property name="buddy">
+          <cstring>minBrightness</cstring>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="maxGVCrossHatchingHatchify">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>100</y>
+           <width>81</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>16</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lineWidthLabel_33">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>110</y>
+           <width>241</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Max GV for cross-hatching</string>
          </property>
          <property name="buddy">
           <cstring>minBrightness</cstring>
@@ -3614,25 +3719,25 @@ when command is finished</string>
   <tabstop>exportSvg</tabstop>
   <tabstop>exportSvgPerLayer</tabstop>
   <tabstop>noOfLines</tabstop>
-  <tabstop>strength</tabstop>
-  <tabstop>minBrightness</tabstop>
   <tabstop>invertColors</tabstop>
-  <tabstop>detail</tabstop>
-  <tabstop>maxBrightness</tabstop>
   <tabstop>verticalSquiggles</tabstop>
+  <tabstop>strength</tabstop>
+  <tabstop>detail</tabstop>
   <tabstop>lineWidth</tabstop>
+  <tabstop>minBrightness</tabstop>
+  <tabstop>maxBrightness</tabstop>
   <tabstop>minStepSize</tabstop>
-  <tabstop>setDefaults</tabstop>
   <tabstop>maxStepSize</tabstop>
+  <tabstop>setDefaults</tabstop>
   <tabstop>squigglify</tabstop>
   <tabstop>minRadiusBubblify</tabstop>
-  <tabstop>minProbabilityBubblify</tabstop>
-  <tabstop>minBrightnessBubblify</tabstop>
   <tabstop>maxRadiusBubblify</tabstop>
-  <tabstop>maxProbabilityBubblify</tabstop>
-  <tabstop>maxBrightnessBubblify</tabstop>
   <tabstop>invertColorsBubblify</tabstop>
+  <tabstop>minProbabilityBubblify</tabstop>
+  <tabstop>maxProbabilityBubblify</tabstop>
   <tabstop>radiusToleranceBubblify</tabstop>
+  <tabstop>minBrightnessBubblify</tabstop>
+  <tabstop>maxBrightnessBubblify</tabstop>
   <tabstop>setDefaultsBubblify</tabstop>
   <tabstop>bubblify</tabstop>
   <tabstop>presetLSystify</tabstop>
@@ -3661,6 +3766,31 @@ when command is finished</string>
   <tabstop>drawLSystemLSystify</tabstop>
   <tabstop>lsystify</tabstop>
   <tabstop>clipToBitmapLSystify</tabstop>
+  <tabstop>region1Linify</tabstop>
+  <tabstop>region2Linify</tabstop>
+  <tabstop>region3Linify</tabstop>
+  <tabstop>setDefaultsLinify</tabstop>
+  <tabstop>linify</tabstop>
+  <tabstop>noOfWalksWalkify</tabstop>
+  <tabstop>minBrightnessWalkify</tabstop>
+  <tabstop>noOfLineSegmentsWalkify</tabstop>
+  <tabstop>maxBrightnessWalkify</tabstop>
+  <tabstop>lineWidthWalkify</tabstop>
+  <tabstop>localBrightnessAdjustmentWalkify</tabstop>
+  <tabstop>reductionNeighborhoodWalkify</tabstop>
+  <tabstop>polylineSimplificationToleranceWalkify</tabstop>
+  <tabstop>useSmootherShapesWalkify</tabstop>
+  <tabstop>setDefaultsWalkify</tabstop>
+  <tabstop>walkify</tabstop>
+  <tabstop>includeContoursHatchify</tabstop>
+  <tabstop>includeHatchingHatchify</tabstop>
+  <tabstop>hatchSizeHatchify</tabstop>
+  <tabstop>contourSimplificationHatchify</tabstop>
+  <tabstop>maxGVHorizontalHatchingHatchify</tabstop>
+  <tabstop>maxGVDenseHorizontalHatchingHatchify</tabstop>
+  <tabstop>maxGVCrossHatchingHatchify</tabstop>
+  <tabstop>setDefaultsHatchify</tabstop>
+  <tabstop>hatchify</tabstop>
   <tabstop>pagePresetGcode</tabstop>
   <tabstop>pageWidthGcode</tabstop>
   <tabstop>pageHeightGcode</tabstop>
@@ -3669,21 +3799,22 @@ when command is finished</string>
   <tabstop>xScaleGcode</tabstop>
   <tabstop>lockXYGcode</tabstop>
   <tabstop>yScaleGcode</tabstop>
-  <tabstop>samplingDistanceGcode</tabstop>
-  <tabstop>maximumApproximationErrorGcode</tabstop>
   <tabstop>offsetPresetGcode</tabstop>
   <tabstop>xOffsetGcode</tabstop>
   <tabstop>yOffsetGcode</tabstop>
-  <tabstop>homeGcode</tabstop>
-  <tabstop>homeEndGcode</tabstop>
   <tabstop>penUpCmdGcode</tabstop>
   <tabstop>penDownCmdGcode</tabstop>
   <tabstop>drawingSpeedGcode</tabstop>
   <tabstop>penDownSpeedGcode</tabstop>
+  <tabstop>samplingDistanceGcode</tabstop>
+  <tabstop>maximumApproximationErrorGcode</tabstop>
+  <tabstop>homeGcode</tabstop>
+  <tabstop>homeEndGcode</tabstop>
   <tabstop>eport2dGcode</tabstop>
   <tabstop>eport2dGcodePerLayer</tabstop>
   <tabstop>portGcodeSender</tabstop>
   <tabstop>refreshPortsGcodeSender</tabstop>
+  <tabstop>baudRateGcodeSender</tabstop>
   <tabstop>sendSketchGcodeSender</tabstop>
   <tabstop>sendByLayerGcodeSender</tabstop>
   <tabstop>sendFileGcodeSender</tabstop>
@@ -3691,21 +3822,15 @@ when command is finished</string>
   <tabstop>pauseGcodeSender</tabstop>
   <tabstop>cancelGcodeSender</tabstop>
   <tabstop>sendRawTextGcodeSender</tabstop>
-  <tabstop>baudRateGcodeSender</tabstop>
   <tabstop>initFinishedGcodeSender</tabstop>
   <tabstop>cmdFinishedGcodeSender</tabstop>
   <tabstop>queueSizeGcodeSender</tabstop>
   <tabstop>serialMonitorGcodeSender</tabstop>
-  <tabstop>addLayer</tabstop>
+  <tabstop>graphicsView</tabstop>
+  <tabstop>squigglifySetup</tabstop>
   <tabstop>removeLayer</tabstop>
   <tabstop>layersList</tabstop>
-  <tabstop>squigglifySetup</tabstop>
-  <tabstop>graphicsView</tabstop>
-  <tabstop>region1Linify</tabstop>
-  <tabstop>region2Linify</tabstop>
-  <tabstop>region3Linify</tabstop>
-  <tabstop>setDefaultsLinify</tabstop>
-  <tabstop>linify</tabstop>
+  <tabstop>addLayer</tabstop>
  </tabstops>
  <resources/>
  <connections/>
