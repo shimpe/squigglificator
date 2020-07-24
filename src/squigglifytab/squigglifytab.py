@@ -22,16 +22,6 @@ class SquigglifyTab(Tab):
         """
         self.parent.squigglify.clicked.connect(self.process)
         self.parent.setDefaults.clicked.connect(self.SetDefaults)
-        # self.parent.noOfLines.valueChanged.connect(self.Squigglify)
-        # self.parent.invertColors.stateChanged.connect(self.Squigglify)
-        # self.parent.verticalSquiggles.stateChanged.connect(self.Squigglify)
-        # self.parent.strength.valueChanged.connect(self.Squigglify)
-        # self.parent.detail.valueChanged.connect(self.Squigglify)
-        # self.parent.lineWidth.valueChanged.connect(self.Squigglify)
-        # self.parent.maxBrightness.valueChanged.connect(self.Squigglify)
-        # self.parent.minBrightness.valueChanged.connect(self.Squigglify)
-        # self.parent.minStepSize.valueChanged.connect(self.Squigglify)
-        # self.parent.maxStepSize.valueChanged.connect(self.Squigglify)
 
     def process_without_signals(self):
         if not self.checkBitmapLoaded():
